@@ -1,0 +1,31 @@
+@media screen and (max-width: 411px) {
+  header {
+    justify-content: center;
+    flex-wrap: wrap;
+    align-content: space-between;
+  }
+
+  .headerText {
+    margin: auto;
+  }
+
+  form {
+    margin-bottom: 10px;
+    margin-top: 20px;
+  }
+}
+
+@media screen and (min-width: 411px) and (max-width: 600px) {
+  header {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .headerText {
+    margin: auto;
+  }
+
+  form {
+    margin: 25px;
+  }
+}

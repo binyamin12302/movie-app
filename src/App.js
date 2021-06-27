@@ -4,7 +4,8 @@ import Movie from "./Movie";
 import Loading from "./Loading";
 import NotFound from "./NotFound";
 import { debounce } from "lodash";
-import "./App.css";
+import "./css/Style.css";
+import "./css/Mobile.css";
 
 function App() {
   const [movies, setMovies] = useState({

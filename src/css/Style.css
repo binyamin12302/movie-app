@@ -26,7 +26,8 @@ header {
 
 .headerText {
   color: #8088a0;
-  font-family: 'Londrina Shadow', cursive;
+  font-family: "Londrina Shadow", cursive;
+  margin-left: 7%;
 }
 .search {
   background-color: transparent;
@@ -71,7 +72,7 @@ main {
 .movie-info {
   color: #eee;
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   padding: 0.5rem 1rem 1rem;
   letter-spacing: 0.5px;
@@ -177,7 +178,7 @@ ul {
   color: #95a5a6;
   text-align: center;
   margin-top: 100px;
-  font-family: 'Be Vietnam', sans-serif;
+  font-family: "Be Vietnam", sans-serif;
   font-size: 100%;
 }
 
@@ -203,4 +204,21 @@ ul {
   100% {
     transform: rotate(360deg);
   }
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #ebebeb;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: #8088a0; 
 }

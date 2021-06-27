@@ -11,13 +11,9 @@ function Movie(props) {
   }
 
   function getClassByRate(vote) {
-    if (vote >= 8) {
-      return "green";
-    } else if (vote >= 5) {
-      return "orange";
-    } else {
-      return "red";
-    }
+    if (vote >= 8) return "green";
+    if (vote >= 5) return "orange";
+    return "red";
   }
 
   return (
