@@ -100,6 +100,7 @@ function App() {
           <input onChange={handleInputChange} type="text" value={searchInput} id="search" className="search" placeholder="Search" />
         </form>
       </header>
+      <main id="main">{content}</main>
       {searchInput === "" && (
         <div className="navigation page">
           <ul className="pagination">
@@ -114,7 +115,6 @@ function App() {
           </ul>
         </div>
       )}
-      <main id="main">{content}</main>
     </div>
   );
 }
