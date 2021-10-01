@@ -6,10 +6,11 @@ import NotFound from "./NotFound";
 import { debounce } from "lodash";
 import "./css/Style.css";
 import "./css/Mobile.css";
+import ReactPaginate from 'react-paginate';
 
 function App() {
   const [movies, setMovies] = useState({
-    page: 1,
+    page: JSON.parse(localStorage.getItem('allTasks')) || 1,
     results: [],
     total_pages: 500
   });
@@ -20,9 +21,12 @@ function App() {
   const [isMovieFound, setIsMovieFound] = useState(false);
 
   useEffect(() => {
+    const ourRequest = Axios.CancelToken.source();
+
     async function fetchData() {
       try {
-        const response = await Axios.get(`https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&page=${movies.page}`);
+        setIsLoading(true);
+        const response = await Axios.get(`https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&page=${movies.page}`, { cancelToken: ourRequest.token });
         setMovies(response.data);
         setIsLoading(false);
       } catch (e) {
@@ -30,6 +34,10 @@ function App() {
       }
     }
     fetchData();
+
+    return () => {
+      ourRequest.cancel();
+    };
   }, [movies.page]);
 
   const handler = useMemo(
@@ -59,18 +67,31 @@ function App() {
     [handler]
   );
 
-  function handleNextAndPreviousClick(e) {
+  function handlePageClick(data) {
+
+    let selected = data.selected
+
+
+
+    if (selected) {
+      selected++
+    } else {
+      selected = 1
+    }
+
     setMovies(prevstate => {
-      return { ...prevstate, page: e.target.innerText === "»" ? prevstate.page + 1 : prevstate.page - 1 };
+      return { ...prevstate, page: selected };
     });
+
+
+    saveInLocalStorage(selected)
   }
 
-  function handlePageMovie(e) {
-    const numberPage = parseInt(e.target.innerText);
-    setMovies(prevstate => {
-      return { ...prevstate, page: numberPage };
-    });
+
+  function saveInLocalStorage(data) {
+    localStorage.setItem("allTasks", JSON.stringify(data));
   }
+
 
   const allMovies = isLoading ? (
     <Loading />
@@ -94,27 +115,32 @@ function App() {
 
   return (
     <div>
+
       <header>
         <h1 className="headerText">MoiveApp</h1>
         <form onSubmit={e => e.preventDefault()} id="form">
           <input onChange={handleInputChange} type="text" value={searchInput} id="search" className="search" placeholder="Search" />
         </form>
       </header>
-      <main id="main">{content}</main>
-      {searchInput === "" && (
-        <div className="navigation page">
-          <ul className="pagination">
-            {movies.page > 1 ? <li onClick={handleNextAndPreviousClick}>&laquo;</li> : null}
-            <li className="active">{movies.page}</li>
-            {movies.page <= 499 && <li onClick={e => handlePageMovie(e)}>{movies.page + 1}</li>}
-            {movies.page <= 498 && <li onClick={e => handlePageMovie(e)}>{movies.page + 2}</li>}
-            {movies.page <= 497 && <li onClick={e => handlePageMovie(e)}>{movies.page + 3}</li>}
-            {movies.page <= 496 && <li onClick={e => handlePageMovie(e)}>{movies.page + 4}</li>}
-            {movies.page <= 495 && <li onClick={e => handlePageMovie(e)}>{movies.page + 5}</li>}
-            {movies.page < 495 ? <li onClick={handleNextAndPreviousClick}>&raquo;</li> : null}
-          </ul>
-        </div>
-      )}
+
+      <ReactPaginate
+        previousLabel={'previous'}
+        nextLabel={'next'}
+        breakLabel={'...'}
+        breakClassName={'break-me'}
+        pageCount={movies.total_pages}
+        marginPagesDisplayed={2}
+        pageRangeDisplayed={5}
+        onPageChange={handlePageClick}
+        containerClassName={`pagination ${searchInput !== '' && 'hide-pagination'}`}
+        activeClassName={`active`}
+        initialPage={movies.page - 1}
+      />
+
+      <main id="main">
+        {content}
+      </main>
+
     </div>
   );
 }

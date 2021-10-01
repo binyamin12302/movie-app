@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display=swap");
 
 :root {
-  --primary-color: #22254b;
+  --primary-color  : #22254b;
   --secondary-color: #373b69;
 }
 
@@ -13,30 +13,31 @@
 
 body {
   background-color: var(--primary-color);
-  font-family: "Poppins", sans-serif;
-  margin: 0;
+  font-family     : "Poppins", sans-serif;
+  margin          : 0;
 }
 
 header {
-  display: flex;
+  display         : flex;
   background-color: var(--secondary-color);
-  align-items: baseline;
-  justify-content: space-between;
+  align-items     : baseline;
+  justify-content : space-between;
 }
 
 .headerText {
-  color: #8088a0;
+  color      : #8088a0;
   font-family: "Londrina Shadow", cursive;
   margin-left: 7%;
 }
+
 .search {
   background-color: transparent;
-  border: 2px solid var(--primary-color);
-  border-radius: 50px;
-  font-family: inherit;
-  font-size: 1rem;
-  padding: 0.5rem 1rem;
-  color: #fff;
+  border          : 2px solid var(--primary-color);
+  border-radius   : 50px;
+  font-family     : inherit;
+  font-size       : 1rem;
+  padding         : 0.5rem 1rem;
+  color           : #fff;
 }
 
 .search::placeholder {
@@ -44,25 +45,25 @@ header {
 }
 
 .search:focus {
-  outline: none;
+  outline         : none;
   background-color: var(--primary-color);
 }
 
 main {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
+  display        : flex;
+  flex-wrap      : wrap;
+  flex-direction : row;
   justify-content: center;
 }
 
 .movie {
-  width: 300px;
-  margin: 1rem;
+  width           : 300px;
+  margin          : 1rem;
   background-color: var(--secondary-color);
-  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.2);
-  position: relative;
-  overflow: hidden;
-  border-radius: 3px;
+  box-shadow      : 0 4px 5px rgba(0, 0, 0, 0.2);
+  position        : relative;
+  overflow        : hidden;
+  border-radius   : 3px;
 }
 
 .movie img {
@@ -70,12 +71,12 @@ main {
 }
 
 .movie-info {
-  color: #eee;
-  display: flex;
-  align-items: baseline;
+  color          : #eee;
+  display        : flex;
+  align-items    : baseline;
   justify-content: space-between;
-  padding: 0.5rem 1rem 1rem;
-  letter-spacing: 0.5px;
+  padding        : 0.5rem 1rem 1rem;
+  letter-spacing : 0.5px;
 }
 
 .movie-info h3 {
@@ -84,9 +85,9 @@ main {
 
 .movie-info span {
   background-color: var(--primary-color);
-  padding: 0.25rem 0.5rem;
-  border-radius: 3px;
-  font-weight: bold;
+  padding         : 0.25rem 0.5rem;
+  border-radius   : 3px;
+  font-weight     : bold;
 }
 
 .movie-info span.green {
@@ -103,15 +104,15 @@ main {
 
 .overview {
   background-color: #fff;
-  padding: 2rem;
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  max-height: 100%;
-  transform: translateY(101%);
-  overflow-y: auto;
-  transition: transform 0.3s ease-in;
+  padding         : 2rem;
+  position        : absolute;
+  left            : 0;
+  bottom          : 0;
+  right           : 0;
+  max-height      : 100%;
+  transform       : translateY(101%);
+  overflow-y      : auto;
+  transition      : transform 0.3s ease-in;
 }
 
 .movie:hover .overview {
@@ -119,45 +120,56 @@ main {
 }
 
 .navigation {
-  display: flex;
+  display        : flex;
   justify-content: center;
-  margin: 20px 20px;
+  margin         : 20px 20px;
 }
 
 .next {
-  background-color: var(--secondary-color);
-  border: none;
-  padding: 15px 32px;
-  color: #eee;
+  border   : none;
+  padding  : 15px 32px;
+  color    : #eee;
   font-size: 16px;
 }
 
 .next:hover {
   background-color: #353a72d0;
-  cursor: pointer;
+  cursor          : pointer;
+}
+
+
+.pagination {
+  display        : flex;
+  margin-top     : 19px;
+  justify-content: center;
+}
+
+.hide-pagination {
+  display: none;
 }
 
 .previous {
-  border: none;
-  padding: 15px 32px;
-  color: black;
+  border   : none;
+  padding  : 15px 32px;
+  color    : black;
   font-size: 16px;
-  cursor: pointer;
+  cursor   : pointer;
 }
 
-.pagination {
-  display: flex;
-  padding: initial;
-  background-color: #fff;
-  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.2);
-}
 
 .pagination li {
-  color: black;
-  padding: 8px 16px;
-  text-decoration: none;
-  transition: background-color 0.3s;
-  cursor: pointer;
+  color           : black;
+  padding         : 8px 10px;
+  text-decoration : none;
+  transition      : background-color 0.3s;
+  cursor          : pointer;
+  background-color: #95a5a6;
+  background-color: #fff;
+  margin-bottom   : 10px;
+}
+
+.pagination li a {
+  padding: inherit;
 }
 
 ul {
@@ -166,8 +178,8 @@ ul {
 
 .pagination li.active {
   background-color: var(--secondary-color);
-  color: white;
-  border: 1px solid #eee;
+  color           : white;
+  border          : 1px solid #eee;
 }
 
 .pagination li:hover:not(.active) {
@@ -175,11 +187,11 @@ ul {
 }
 
 .not-found {
-  color: #95a5a6;
-  text-align: center;
-  margin-top: 100px;
+  color      : #95a5a6;
+  text-align : center;
+  margin-top : 100px;
   font-family: "Be Vietnam", sans-serif;
-  font-size: 100%;
+  font-size  : 100%;
 }
 
 .text-notfound {
@@ -187,20 +199,22 @@ ul {
 }
 
 .loader {
-  border: 16px solid #f3f3f3;
-  border-radius: 50%;
-  border-top: 16px solid #373b69;
-  margin-top: 200px;
-  width: 120px;
-  height: 120px;
-  -webkit-animation: spin 2s linear infinite; /* Safari */
-  animation: spin 2s linear infinite;
+  border           : 16px solid #f3f3f3;
+  border-radius    : 50%;
+  border-top       : 16px solid #373b69;
+  margin-top       : 200px;
+  width            : 120px;
+  height           : 120px;
+  -webkit-animation: spin 2s linear infinite;
+  /* Safari */
+  animation        : spin 2s linear infinite;
 }
 
 @keyframes spin {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -212,13 +226,13 @@ ul {
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #ebebeb;
+  background-color     : #ebebeb;
   -webkit-border-radius: 10px;
-  border-radius: 10px;
+  border-radius        : 10px;
 }
 
 ::-webkit-scrollbar-thumb {
   -webkit-border-radius: 10px;
-  border-radius: 10px;
-  background: #8088a0; 
+  border-radius        : 10px;
+  background           : #8088a0;
 }
