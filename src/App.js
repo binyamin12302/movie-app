@@ -135,6 +135,7 @@ function App() {
         containerClassName={`pagination ${searchInput !== '' && 'hide-pagination'}`}
         activeClassName={`active`}
         initialPage={movies.page - 1}
+        pageClassName={'link'}
       />
 
       <main id="main">
