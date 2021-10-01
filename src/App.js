@@ -25,12 +25,11 @@ function App() {
 
     async function fetchData() {
       try {
-        setIsLoading(true);
         const response = await Axios.get(`https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&page=${movies.page}`, { cancelToken: ourRequest.token });
         setMovies(response.data);
         setIsLoading(false);
       } catch (e) {
-        console.log("There was a problem.");
+        console.log("There was a problem ww.");
       }
     }
     fetchData();
@@ -71,14 +70,13 @@ function App() {
 
     let selected = data.selected
 
-
-
     if (selected) {
       selected++
     } else {
       selected = 1
     }
 
+    setIsLoading(true);
     setMovies(prevstate => {
       return { ...prevstate, page: selected };
     });
@@ -117,10 +115,12 @@ function App() {
     <div>
 
       <header>
-        <h1 className="headerText">MoiveApp</h1>
-        <form onSubmit={e => e.preventDefault()} id="form">
-          <input onChange={handleInputChange} type="text" value={searchInput} id="search" className="search" placeholder="Search" />
-        </form>
+        <div className="main-header">
+          <h1 className="headerText">MoiveApp</h1>
+          <form onSubmit={e => e.preventDefault()} id="form">
+            <input onChange={handleInputChange} type="text" value={searchInput} id="search" className="search" placeholder="Search" />
+          </form>
+        </div>
       </header>
 
       <ReactPaginate

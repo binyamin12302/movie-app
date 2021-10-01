@@ -17,7 +17,7 @@ body {
   margin          : 0;
 }
 
-header {
+.main-header {
   display         : flex;
   background-color: var(--secondary-color);
   align-items     : baseline;
@@ -38,6 +38,7 @@ header {
   font-size       : 1rem;
   padding         : 0.5rem 1rem;
   color           : #fff;
+  margin-right    : 90px;
 }
 
 .search::placeholder {
@@ -69,6 +70,7 @@ main {
 .movie img {
   width: 100%;
 }
+
 
 .movie-info {
   color          : #eee;
@@ -137,6 +139,10 @@ main {
   cursor          : pointer;
 }
 
+
+.break-me {
+  display: block;
+}
 
 .pagination {
   display        : flex;
