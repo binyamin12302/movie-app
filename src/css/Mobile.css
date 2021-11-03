@@ -31,7 +31,6 @@
     margin: 10% 20%;
   }
 
-
   .link {
     display: none;
   }
@@ -51,12 +50,13 @@
     margin: auto;
   }
 
-  form {
-    margin: 25px;
-  }
-
   .search {
     margin: auto;
+  }
+
+
+  form {
+    margin: 25px;
   }
 
   .link {
@@ -70,10 +70,6 @@
   .break-me {
     display: none;
   }
-
-  .pagination {
-    width: 85%;
-  }
 }
 
 @media screen and (min-width: 768px) and (max-width: 800px) {
@@ -82,38 +78,22 @@
     display: none;
   }
 
-  .search {
-    margin-right: 65px;
-  }
 
-  .pagination {
-    width: 95%;
+  main {
+    margin-bottom: 50%;
   }
 
 }
 
 
 @media screen and (min-width: 1024px) and (min-height: 1366px) {
-  .search {
-    margin-right: 165px;
-  }
 
   main {
-    display        : flex;
-    flex-wrap      : wrap;
-    flex-direction : row;
-    justify-content: flex-start;
-  }
-
-  .movie {
-    width: 267px;
-  }
-
-  .pagination {
-    width: 85%
+    margin-bottom: 50%;
   }
 
   .loader {
     margin: 18% 40%;
   }
+
 }
