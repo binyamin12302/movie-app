@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital@0;1&display=swap');
+
+.home-guest .movies {
+    display        : flex;
+    flex-wrap      : wrap;
+    flex-direction : row;
+    justify-content: center;
+}
+
+
+.section-title {
+    color      : #f9fafdcc;
+    font-weight: 300;
+    text-align : center;
+    text-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px;
+}
+
+
+.section-content {
+    padding-bottom: 13%;
+}
+
+
+.text-muted {
+    font-size     : 18px;
+    font-weight   : 400;
+    line-height   : 24px;
+    letter-spacing: .5px;
+    max-width     : 650px;
+    margin        : 0 auto;
+    text-align    : center;
+    color         : hsla(0, 0%, 100%, .5);
+    margin-top    : 10px;
+}
+
+
+.register-btn {
+    padding         : 6px 10px;
+    margin          : auto;
+    display         : block;
+    font-size       : 17px;
+    margin-top      : 20px;
+    box-shadow      : 0 10px 12px 0 rgba(0, 0, 0, 0.2), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+    background-color: var(--main-color-btn);
+}
+
+.register-btn:hover {
+    background-color: var(--secondary-color-btn);
+}
