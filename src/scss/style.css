@@ -1,0 +1,231 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display=swap");
+.container {
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+h1,
+h2 {
+  font-weight: 300;
+  line-height: 1.2;
+}
+
+ul {
+  list-style-type: none;
+}
+
+.tc {
+  text-align: center;
+}
+
+button {
+  color: #f4f4f4;
+  font-size: 17px;
+  border: none;
+  cursor: pointer;
+}
+
+.text-lorem {
+  color: #f4f4f4;
+  font-weight: 100;
+  color: #dcdde1c9;
+}
+
+.heading-2 {
+  color: #f4f4f4;
+  font-weight: 400;
+}
+
+.wrap-form {
+  background-color: rgba(0, 0, 0, 0.4);
+  color: #f4f4f4;
+  font-family: "Muli", sans-serif;
+  overflow: hidden;
+  width: 40%;
+  margin: auto;
+  margin-top: 4%;
+}
+
+.wrap-form .nav-link {
+  text-decoration: none;
+  color: lightblue;
+}
+
+.link {
+  text-decoration: none;
+}
+
+.fa-star {
+  color: #0984e3;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+}
+
+html {
+  min-height: 80vh;
+  position: relative;
+}
+
+html body {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  background-color: #22254b;
+  height: 100%;
+}
+
+#header {
+  background-color: #373b69;
+}
+
+#header .container {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#header .container .logo-header {
+  color: #8088a0;
+  font-family: "Londrina Shadow", cursive;
+  text-align: center;
+}
+
+#header .container #navigation button {
+  padding: 6px 10px;
+  margin-top: 8px;
+  margin-right: 16px;
+}
+
+#header .container #navigation .home-btn {
+  background-color: #474787;
+}
+
+#header .container #navigation .home-btn .home-link {
+  text-decoration: none;
+  color: #fff;
+}
+
+#header .container #navigation .home-btn:hover {
+  background-color: #48488f;
+}
+
+#header .container #navigation .login-btn {
+  background-color: rgba(116, 120, 156, 0.637);
+}
+
+#header .container #navigation .login-btn:hover {
+  background-color: rgba(112, 116, 155, 0.6);
+}
+
+#not-found {
+  color: #95a5a6;
+  text-align: center;
+  margin-top: 100px;
+  font-family: "Be Vietnam", sans-serif;
+  font-size: 100%;
+}
+
+#not-found .text-notfound {
+  margin-left: 50px;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #ebebeb;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: #8088a0;
+}
+
+/* 
+.next {
+  border: none;
+  padding: 15px 32px;
+  color: #eee;
+  font-size: 16px;
+}
+
+.next:hover {
+  background-color: #353a72d0;
+  cursor: pointer;
+}
+
+.break-me {
+  display: block;
+}
+
+.pagination {
+  display: flex;
+  margin-top: 19px;
+  justify-content: center;
+}
+
+.hide-pagination {
+  display: none;
+}
+
+.previous {
+  border: none;
+  padding: 15px 32px;
+  color: black;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.pagination li {
+  color: black;
+  padding: 8px 10px;
+  text-decoration: none;
+  transition: background-color 0.3s;
+  cursor: pointer;
+  background-color: #95a5a6;
+  background-color: #fff;
+  margin-bottom: 10px;
+}
+
+.pagination li a {
+  padding: inherit;
+}
+
+.pagination li.active {
+  background-color: $secondary-color;
+  color: white;
+  border: 1px solid #eee;
+}
+
+.pagination li:hover:not(.active) {
+  background-color: #ddd;
+}
+ */
+/* .search {
+    background-color: transparent;
+    border          : 2px solid var(--primary-color);
+    border-radius   : 50px;
+    font-family     : inherit;
+    font-size       : 1rem;
+    padding         : 0.5rem 1rem;
+    color           : #fff;
+    margin-right    : 90px;
+}
+
+.search::placeholder {
+    color: #7378c5;
+}
+
+.search:focus {
+    outline         : none;
+    background-color: var(--primary-color);
+}
+ */
+/*# sourceMappingURL=style.css.map */

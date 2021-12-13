@@ -1,0 +1,61 @@
+@import "config";
+
+.container {
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+h1,
+h2 {
+  font-weight: 300;
+  line-height: 1.2;
+}
+
+ul {
+  list-style-type: none;
+}
+
+.tc {
+  text-align: center;
+}
+
+button {
+  color: $light-color;
+  font-size: 17px;
+  border: none;
+  cursor: pointer;
+}
+
+.text-lorem {
+  color: $light-color;
+  font-weight: 100;
+  color: #dcdde1c9;
+}
+
+.heading-2  {
+  color: $light-color;
+  font-weight: 400;
+}
+
+.wrap-form {
+  background-color: rgba(0, 0, 0, 0.4);
+  color: $light-color;
+  font-family: "Muli", sans-serif;
+  overflow: hidden;
+  width: 40%;
+  margin: auto;
+  margin-top: 2%;
+}
+
+.wrap-form .nav-link {
+  text-decoration: none;
+  color: lightblue;
+}
+
+.link {
+  text-decoration: none;
+}
+
+.fa-star {
+  color: #0984e3;
+}

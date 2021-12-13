@@ -1,0 +1,21 @@
+// Variables
+$website-width: 1280px;
+$primary-color: #22254b;
+$secondary-color: #373b69;
+$main-color-btn: rgba(116, 120, 156, 0.637);
+$main-hover-btn: rgba(112, 116, 155, 0.6);
+$light-color: #f4f4f4;
+$medium-color: #ccc;
+$dark-color: #1e272e;
+$bg-primary: rgba(116, 120, 156, 0.637);
+$bg-primary-hover: rgba(112, 116, 155, 0.6);
+$bg-secondary: #474787;
+
+// Set Text Color
+@function set-text-color($color) {
+  @if (lightness($color) > 50) {
+    @return #000;
+  } @else {
+    @return #fff;
+  }
+}
