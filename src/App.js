@@ -11,8 +11,7 @@ import ReactPaginate from 'react-paginate';
 function App() {
   const [movies, setMovies] = useState({
     page: JSON.parse(localStorage.getItem('pageNumber')) || 1,
-    results: [],
-    total_pages: 500
+    results: []
   });
 
   const [searchInput, setSearchInput] = useState("");
@@ -112,7 +111,7 @@ function App() {
         nextLabel={'next'}
         breakLabel={'...'}
         breakClassName={'break-me'}
-        pageCount={movies.total_pages}
+        pageCount={500}
         marginPagesDisplayed={2}
         pageRangeDisplayed={5}
         onPageChange={handlePageClick}
