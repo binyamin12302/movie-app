@@ -17,7 +17,7 @@ function HomeUser() {
 
   const initialState = {
     results: [],
-    total_pages: 500,
+    total_pages: JSON.parse(localStorage.getItem('totalPages')) || 500,
     currentPage: JSON.parse(localStorage.getItem('pageNumber')) || 1,
     baseUrl: JSON.parse(localStorage.getItem('currentMoviesUrl')) ||
       `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&page=`
@@ -30,7 +30,7 @@ function HomeUser() {
         return;
       case "selectedPage":
         draft.currentPage = action.value
-        saveInLocalStorage(action.value)
+        saveInLocalStorageSelectedNumber(action.value)
         return;
       case "POPULAR":
         draft.baseUrl = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&page=`
@@ -38,7 +38,7 @@ function HomeUser() {
         return;
       case "TOP-RATED":
         draft.baseUrl = `https://api.themoviedb.org/3/movie/top_rated?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US&page=`
-        draft.total_pages = 479
+        draft.total_pages = 473
         return;
       case "UPCOMING":
         draft.baseUrl = `https://api.themoviedb.org/3/movie/upcoming?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US&page=`
@@ -69,7 +69,6 @@ function HomeUser() {
     , [appDispatch, state.baseUrl, dispatch]);
 
 
-
   const handlePaginationClick = useCallback(
     data => {
       let selected = data.selected
@@ -80,21 +79,6 @@ function HomeUser() {
     [dispatch]
   );
 
-
-  function saveInLocalStorage(selected) {
-    localStorage.setItem("pageNumber", JSON.stringify(selected));
-  }
-
-  function saveInLocalStorageCurrentClassName(e) {
-    localStorage.setItem("currentClassName", JSON.stringify(e));
-  }
-
-  function saveInLocalStorageCurrentMoviesUrl(url) {
-    localStorage.setItem("currentMoviesUrl", JSON.stringify(url));
-  }
-
-
-
   const allMovies = state.results.map((movie, index) => {
     return <Movie movie={movie} key={index} />;
   })
@@ -102,7 +86,6 @@ function HomeUser() {
   const filteredMovies = appState.filteredMovies.map((movie, index) => {
     return <Movie movie={movie} key={index} />;
   })
-
 
   const filteredMoviesResults = appState.filteredMovies.length === 0 && appState.searchInput !== "" ? <NotFound /> : filteredMovies;
   const content = appState.searchInput === "" ? allMovies : filteredMoviesResults;
@@ -117,8 +100,9 @@ function HomeUser() {
   useEffect(() => {
     appDispatch({ type: "loadingPage", value: true })
     saveInLocalStorageCurrentMoviesUrl(state.baseUrl)
+    saveInLocalStorageTotalPages(state.total_pages)
     getMovies(state.currentPage)
-  }, [state.currentPage, getMovies, appDispatch, state.baseUrl, dispatch])
+  }, [state.currentPage, getMovies, appDispatch, state.baseUrl, state.total_pages])
 
 
   function handleClassName(event) {
@@ -134,6 +118,23 @@ function HomeUser() {
     }
 
     saveInLocalStorageCurrentClassName(event.target.innerText)
+  }
+
+
+  function saveInLocalStorageSelectedNumber(selected) {
+    localStorage.setItem("pageNumber", JSON.stringify(selected));
+  }
+
+  function saveInLocalStorageCurrentClassName(e) {
+    localStorage.setItem("currentClassName", JSON.stringify(e));
+  }
+
+  function saveInLocalStorageCurrentMoviesUrl(url) {
+    localStorage.setItem("currentMoviesUrl", JSON.stringify(url));
+  }
+
+  function saveInLocalStorageTotalPages(pages) {
+    localStorage.setItem("totalPages", JSON.stringify(pages));
   }
 
   return (

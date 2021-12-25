@@ -22,7 +22,7 @@ function Movie(props) {
 
   return (
     <>
-      <div className="movie-card">
+      <div className="movie-card box">
         <img src={source} alt={movie.title} />
         <div className="movie-info">
           <div>
