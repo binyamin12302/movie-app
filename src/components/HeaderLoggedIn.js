@@ -11,7 +11,7 @@ function HeaderLoggedIn() {
   const history = useHistory();
 
   const logout = async () => {
-    appDispatch({ type: "notificationLoading"})
+    appDispatch({ type: "notificationLoading" })
     await signOut(auth)
     history.push("/");
     appDispatch({ type: "notificationResult", value: "You have successfully logged out.", typeMessage: `${toast.TYPE.SUCCESS}`, transition: Bounce, autoClose: 2000 })
@@ -19,6 +19,9 @@ function HeaderLoggedIn() {
 
   return (
     <>
+      <div>
+        <i className="far fa-user user-icon"></i>
+      </div>
       <Link to='/'>
         <button className="login-btn" type="button" onClick={logout}>
           Logout

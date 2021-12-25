@@ -8,8 +8,8 @@ function HeaderLoggedOut() {
   const currentText = location.pathname === "/login" ? "Register" : "Login"
 
 
-  function handleClick(e) {
-    let text = e.target.innerText;
+  function handleClick(event) {
+    let text = event.target.innerText;
 
     return text === "Login"
       ? history.push("/login")
@@ -21,7 +21,7 @@ function HeaderLoggedOut() {
       <button className="login-btn" type="button" onClick={handleClick}>
         {currentText}
       </button>
-    </> 
+    </>
   );
 }
 

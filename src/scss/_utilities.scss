@@ -1,4 +1,4 @@
-@import "config";
+@import 'config';
 
 .container {
   margin-left: 10%;
@@ -32,7 +32,14 @@ button {
   color: #dcdde1c9;
 }
 
-.heading-2  {
+.text {
+  color: #a4b0be;
+  font-weight: 100;
+  position: absolute;
+  bottom: 0;
+}
+
+.heading-2 {
   color: $light-color;
   font-weight: 400;
 }
@@ -40,7 +47,7 @@ button {
 .wrap-form {
   background-color: rgba(0, 0, 0, 0.4);
   color: $light-color;
-  font-family: "Muli", sans-serif;
+  font-family: 'Muli', sans-serif;
   overflow: hidden;
   width: 40%;
   margin: auto;
@@ -58,4 +65,11 @@ button {
 
 .fa-star {
   color: #0984e3;
+}
+
+.user-icon {
+  color: #a0a0d8;
+  font-size: 150%;
+  letter-spacing: 10px;
+  margin-top: 10%;
 }

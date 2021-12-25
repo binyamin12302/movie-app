@@ -1,58 +1,98 @@
 import Axios from "axios";
 import { debounce } from "lodash";
-import React, { useContext, useMemo, useCallback } from "react";
+import React, { useCallback, useContext, useEffect, useMemo } from "react";
 import ReactPaginate from 'react-paginate';
-import { useImmer } from "use-immer";
+import { Link } from "react-router-dom";
+import { useImmerReducer } from "use-immer";
 import DispatchContext from "../DispatchContext.js";
 import StateContext from "../StateContext";
-import Movie from "./Movie.js";
 import LoadingPage from './LoadingPage';
+import Movie from "./Movie.js";
 import NotFound from "./NotFound.js";
-import { Link } from "react-router-dom";
-
 
 function HomeUser() {
   const appState = useContext(StateContext);
   const appDispatch = useContext(DispatchContext);
-  const [state, setState] = useImmer({
-    page: JSON.parse(localStorage.getItem('pageNumber')) || 1,
+  const currentClassName = JSON.parse(localStorage.getItem('currentClassName'));
+
+  const initialState = {
     results: [],
-    total_pages: 500
-  })
+    total_pages: 500,
+    currentPage: JSON.parse(localStorage.getItem('pageNumber')) || 1,
+    baseUrl: JSON.parse(localStorage.getItem('currentMoviesUrl')) ||
+      `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&page=`
+  }
+
+  function ourReducer(draft, action) {
+    switch (action.type) {
+      case "fetchComplete":
+        draft.results = action.value
+        return;
+      case "selectedPage":
+        draft.currentPage = action.value
+        saveInLocalStorage(action.value)
+        return;
+      case "POPULAR":
+        draft.baseUrl = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&page=`
+        draft.total_pages = 500
+        return;
+      case "TOP-RATED":
+        draft.baseUrl = `https://api.themoviedb.org/3/movie/top_rated?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US&page=`
+        draft.total_pages = 479
+        return;
+      case "UPCOMING":
+        draft.baseUrl = `https://api.themoviedb.org/3/movie/upcoming?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US&page=`
+        draft.total_pages = 34
+        return;
+      case "NOW-PLAYING":
+        draft.baseUrl = `https://api.themoviedb.org/3/movie/now_playing?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US&region=DE&page=`
+        draft.total_pages = 4
+        return;
+      default:
+    }
+  }
+
+  const [state, dispatch] = useImmerReducer(ourReducer, initialState);
 
   const getMovies = useMemo(
     () =>
       debounce(async function (selected) {
         try {
-          const response = await Axios.get(`https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&page=${selected}`);
-          setState(draft => {
-            draft.results = response.data.results
-          })
+          const response = await Axios.get(`${state.baseUrl + selected}`);
+          dispatch({ type: "fetchComplete", value: response.data.results })
           appDispatch({ type: "loadingPage", value: false })
+          console.log(response.data)
         } catch (e) {
           console.log("There was a problem ww.");
         }
-      }, 750),
-    [appDispatch, setState]
-  );
+      }, 100)
+    , [appDispatch, state.baseUrl, dispatch]);
 
 
-  const handlePageClick = useCallback(
+
+  const handlePaginationClick = useCallback(
     data => {
       let selected = data.selected
       selected ? selected++ : selected = 1
-      appDispatch({ type: "loadingPage", value: true })
-      getMovies(selected);
-      saveInLocalStorage(selected)
+      dispatch({ type: "selectedPage", value: selected })
       window.scrollTo(0, 0)
     },
-    [getMovies, appDispatch]
+    [dispatch]
   );
 
 
   function saveInLocalStorage(selected) {
     localStorage.setItem("pageNumber", JSON.stringify(selected));
   }
+
+  function saveInLocalStorageCurrentClassName(e) {
+    localStorage.setItem("currentClassName", JSON.stringify(e));
+  }
+
+  function saveInLocalStorageCurrentMoviesUrl(url) {
+    localStorage.setItem("currentMoviesUrl", JSON.stringify(url));
+  }
+
 
 
   const allMovies = state.results.map((movie, index) => {
@@ -64,49 +104,83 @@ function HomeUser() {
   })
 
 
-  const dn = appState.filteredMovies.length === 0 && appState.searchInput !== "" ? <NotFound /> : filteredMovies;
+  const filteredMoviesResults = appState.filteredMovies.length === 0 && appState.searchInput !== "" ? <NotFound /> : filteredMovies;
+  const content = appState.searchInput === "" ? allMovies : filteredMoviesResults;
 
-  const content = appState.searchInput === "" ? allMovies : dn;
+  function handleCurrentPage(event) {
+    handleClassName(event)
+    dispatch({ type: "selectedPage", value: 1 })
+    dispatch({ type: `${event.target.innerText.replace(/\s/g, '-')}` })
+  }
+
+
+  useEffect(() => {
+    appDispatch({ type: "loadingPage", value: true })
+    saveInLocalStorageCurrentMoviesUrl(state.baseUrl)
+    getMovies(state.currentPage)
+  }, [state.currentPage, getMovies, appDispatch, state.baseUrl, dispatch])
+
+
+  function handleClassName(event) {
+
+    let allCurrentClassName = Array.from(document.getElementsByClassName('current'))
+
+    allCurrentClassName.forEach(element => {
+      element.classList.remove('current')
+    });
+
+    if (event) {
+      event.target.classList.add('current')
+    }
+
+    saveInLocalStorageCurrentClassName(event.target.innerText)
+  }
 
   return (
     <>
-
       <main id="home-guest">
-
         <div id="nav-home-user" >
           <nav id="main-nav">
             <ul>
-              <li><Link to="/" className="current">Popular Movies</Link></li>
-              <li><Link to="#about-a">Latest Movies</Link></li>
-              <li><Link to="#work-a">Work</Link></li>
-              <li><Link to="#contact-a">Contact</Link></li>
+              <li><Link to="/" className={!currentClassName || currentClassName === 'POPULAR' ? 'current' : ''} onClick={handleCurrentPage}>Popular</Link></li>
+              <li><Link to="#top-rated" className={currentClassName === 'TOP RATED' ? 'current' : ''} onClick={handleCurrentPage}>Top Rated</Link></li>
+              <li><Link to="#upcoming" className={currentClassName === 'UPCOMING' ? 'current' : ''} onClick={handleCurrentPage}>Upcoming</Link></li>
+              <li><Link to="#now-playing" className={currentClassName === 'NOW PLAYING' ? 'current' : ''} onClick={handleCurrentPage}>Now Playing</Link></li>
             </ul>
           </nav>
         </div>
 
-
-
-        <section id="home-user" >
-          <div className="movies  user-movies">
-            {appState.loadingPage ? <LoadingPage /> : content}
-          </div>
-        </section>
-
         <ReactPaginate
-          previousLabel={'previous'}
-          nextLabel={'next'}
-          breakLabel={'...'}
           breakClassName={'break-me'}
           pageCount={state.total_pages}
           marginPagesDisplayed={2}
           pageRangeDisplayed={5}
-          onPageChange={handlePageClick}
+          onPageChange={handlePaginationClick}
           containerClassName={`pagination ${appState.searchInput !== '' && 'hide-pagination'}`}
+          forcePage={state.currentPage - 1}
           activeClassName={`active`}
-          initialPage={state.page - 1}
-          pageClassName={'link'}
+          disableInitialCallback={true}
         />
 
+        {appState.loadingPage ? <LoadingPage /> :
+          <>
+            <section id="home-user" >
+              <div className="movies  user-movies">
+                {content}
+                <ReactPaginate
+                  breakClassName={'break-me'}
+                  pageCount={state.total_pages}
+                  marginPagesDisplayed={2}
+                  pageRangeDisplayed={5}
+                  onPageChange={handlePaginationClick}
+                  containerClassName={`pagination ${appState.searchInput !== '' && 'hide-pagination'}`}
+                  activeClassName={`active`}
+                  forcePage={state.currentPage - 1}
+                />
+              </div>
+            </section>
+          </>
+        }
       </main>
 
     </>

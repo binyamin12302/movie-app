@@ -42,6 +42,7 @@ function Header() {
 
   const headerContent = appState.loggedIn ? <HeaderLoggedIn /> : <HeaderLoggedOut />
 
+
   return (
     <>
       <header>
@@ -52,11 +53,13 @@ function Header() {
               <input type="text" onChange={handleInputChange} value={searchInput} id="search" className="search" placeholder="Search" />
             }
             <div id="navigation">
-              <button className="home-btn" type="button">
-                <Link to="/" className="home-link">
-                  Home
-                </Link>
-              </button>
+              {!appState.loggedIn &&
+                <button className="home-btn" type="button">
+                  <Link to="/" className="home-link">
+                    Home
+                  </Link>
+                </button>
+              }
               {headerContent}
             </div>
           </div>

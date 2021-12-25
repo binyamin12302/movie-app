@@ -57,15 +57,13 @@ function App() {
     }
   }
 
-
-
-
   function notificationResult(value, message, transion, autoclose) {
     if (!toast.isActive(toastId)) {
       toastId = toast.update(customId, {
         render: value,
         position: toast.POSITION.TOP_CENTER,
         toastId: customId,
+        draggable: true,
         type: message,
         autoClose: autoclose || 3000,
         transition: transion || Flip,
@@ -95,12 +93,14 @@ function App() {
         // ...your code to handle authenticated users.
         localStorage.setItem("userLoggedIn", state.loggedIn);
         dispatch({ type: "login" });
-        console.log(user.accessToken)
       } else {
         // No user is signed in...code to handle unauthenticated users.
         console.log("sorry");
+     
         localStorage.removeItem("userLoggedIn");
         localStorage.removeItem('pageNumber');
+        localStorage.removeItem('currentMoviesUrl');
+        localStorage.removeItem('currentClassName');
         dispatch({ type: "logout" });
       }
     });

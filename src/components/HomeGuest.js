@@ -1,15 +1,19 @@
 import Axios from "axios";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useImmer } from "use-immer";
+import DispatchContext from "../DispatchContext.js";
+import StateContext from "../StateContext";
 import Loading from "./LoadingPage";
 import Movie from "./Movie";
 
 function HomeGuest() {
+  const appState = useContext(StateContext);
+  const appDispatch = useContext(DispatchContext);
+
   const [state, setState] = useImmer({
     latestMovies: [],
     popularMovies: [],
-    isLoading: true,
   });
 
   useEffect(() => {
@@ -26,14 +30,15 @@ function HomeGuest() {
         setState((draft) => {
           draft.latestMovies = responseLatestApi.data.results;
           draft.popularMovies = responsePopularApi.data.results;
-          draft.isLoading = false;
         });
+
+        appDispatch({ type: "loadingPage", value: false })
       } catch (e) {
         console.log("There was a problem ");
       }
     }
     fetchData();
-  }, [setState]);
+  }, [setState, appDispatch]);
 
   const [latestMovies, popularMovies] = [
     state.latestMovies
@@ -46,7 +51,7 @@ function HomeGuest() {
 
   return (
     <>
-      {state.isLoading ? (
+      {appState.loadingPage ? (
         <main>
           <Loading />
         </main>

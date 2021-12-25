@@ -18,12 +18,17 @@ function Movie(props) {
     return "red";
   }
 
+  const date = new Date(`${movie.release_date}`)
+
   return (
     <>
       <div className="movie-card">
         <img src={source} alt={movie.title} />
         <div className="movie-info">
-          <h3>{movie.title}</h3>
+          <div>
+            <h3>{movie.title}</h3>
+            <p className="text">{date.toDateString()}</p>
+          </div>
           <span className={getClassByRate(movie.vote_average)}>{movie.vote_average}</span>
         </div>
         {appState.loggedIn && <div className="overview">

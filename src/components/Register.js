@@ -22,11 +22,10 @@ function Register() {
     appDispatch({ type: "notificationLoading" })
 
     if (state.registerPassword !== state.confirmPassword) {
-      appDispatch({ type: "notificationResult", value: "The password confirmation does not match", typeMessage: `${toast.TYPE.ERROR}` })
+      return appDispatch({ type: "notificationResult", value: "The password confirmation does not match", typeMessage: `${toast.TYPE.ERROR}` })
     }
 
     try {
-
       await createUserWithEmailAndPassword(
         auth,
         state.registerEmail,

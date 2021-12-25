@@ -10,7 +10,6 @@ function GoogleButton() {
     const appDispatch = useContext(DispatchContext);
 
     const signInWithGoogle = async () => {
-
         appDispatch({ type: "notificationLoading" })
         try {
             await signInWithPopup(
@@ -24,7 +23,6 @@ function GoogleButton() {
             appDispatch({ type: "notificationResult", value: error.message.split(':')[1], typeMessage: `${toast.TYPE.ERROR}` })
         }
     }
-
 
     return (
         <>
