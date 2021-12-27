@@ -17,7 +17,9 @@ function HeaderLoggedOut() {
   }
 
   return (
-    <>
+    // @TODO: The <> </> (fragment) is not neccessery here . 
+    <> 
+      
       <button className="login-btn" type="button" onClick={handleClick}>
         {currentText}
       </button>

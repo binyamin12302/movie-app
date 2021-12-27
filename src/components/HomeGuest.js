@@ -17,7 +17,7 @@ function HomeGuest() {
   });
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo(0, 0); 
 
     async function fetchData() {
       try {
@@ -74,7 +74,8 @@ function HomeGuest() {
               <h2 className="heading-2  tc">Get an account today </h2>
               <p className="text-muted">
                 Access free content on all of your devices, sync your list and
-                continue watching anywhere.{" "}
+                continue watching anywhere.{" "} 
+                {/* @TODO: why {" "} ?? */}
               </p>
               <Link className="link" to="/register">
                 <button className="register-btn" type="submit">

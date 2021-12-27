@@ -22,7 +22,8 @@ function HeaderLoggedIn() {
       <div>
         <i className="far fa-user user-icon"></i>
       </div>
-      <Link to='/'>
+      <Link to='/'> 
+      {/* @TODO: The link is uneccessry here because you already redirect the user on "logout" function. and also I think is not a good practice to put button inside a link. */}
         <button className="login-btn" type="button" onClick={logout}>
           Logout
         </button>

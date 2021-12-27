@@ -19,7 +19,8 @@ function Footer() {
           </Link>
         </p>
         <p className="copyright-footer">
-          Copyright &copy; 2021 {""}
+          {/* @TODO: Why are you putting {""} in many places in the code? if you want to put a space, you can also able to do that with &nbsp; (same as copy). */}
+          Copyright &copy; 2021 {""} 
           <Link to="/">MovieApp</Link>. All rights reserved.
         </p>
       </footer>

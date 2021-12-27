@@ -6,8 +6,8 @@ import DispatchContext from "../DispatchContext.js";
 import { auth, provider } from "../firebase/Firebase.js";
 
 function GoogleButton() {
-    const history = useHistory();
-    const appDispatch = useContext(DispatchContext);
+    const history = useHistory(); 
+    const appDispatch = useContext(DispatchContext); // @TODO: I think camelCase it better because DispatchContext in not a component. (dispatchContext)
 
     const signInWithGoogle = async () => {
         appDispatch({ type: "notificationLoading" })

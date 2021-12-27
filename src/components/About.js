@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
-function About() {
-  useEffect(() => {
+function About() { 
+  useEffect(() => { // @TODO: I think this useEffect can be use in App.js or something, it will be better to call in on every route page (listen to location.pathname in the useEffect)
     window.scrollTo(0, 0);
   }, []);
 

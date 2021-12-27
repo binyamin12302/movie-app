@@ -14,7 +14,7 @@ function Login() {
 
 
   useEffect(() => {
-    const labels = document.querySelectorAll(".form-control label");
+    const labels = document.querySelectorAll(".form-control label"); // @TODO: its unsecured and really bad paractice to use innerHtml, and also its very bad to update the html directly with javascript when you are using react. 
 
     labels.forEach((label) => {
       label.innerHTML = label.innerText
@@ -27,7 +27,6 @@ function Login() {
     });
 
   }, []);
-
 
   const login = async (e) => {
     e.preventDefault();
@@ -67,7 +66,7 @@ function Login() {
               <label>Email</label>
             </div>
             <div className="form-control">
-              <input type="password" required autoComplete="new-password" onChange={(e) => {
+              <input type="password" required autoComplete="new-password" onChange={(e) => { // @TODO: you can use a destucture what is prettier. {target: {value}}
                 setLoginPassword(e.target.value);
               }} />
               <label>Password</label>

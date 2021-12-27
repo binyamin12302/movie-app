@@ -8,7 +8,7 @@ import HeaderLoggedIn from "./HeaderLoggedIn";
 import HeaderLoggedOut from "./HeaderLoggedOut";
 
 function Header() {
-  const appState = useContext(StateContext);
+  const appState = useContext(StateContext); // @TODO: camelCase
   const appDispatch = useContext(DispatchContext);
 
   const [searchInput, setSearchInput] = useState("");

@@ -18,10 +18,12 @@ function Movie(props) {
     return "red";
   }
 
-  const date = new Date(`${movie.release_date}`)
+  const date = new Date(`${movie.release_date}`) // @TODO: try to using the built-in Date object. instead its much better to use "date-nfs" library or similar. 
 
+  // @TODO: You can use "useMemo", and "useCallback in this component, and also in the other for better performance. 
   return (
-    <>
+    <>  
+    {/* @TODO: search for all uneccesseries fragments and delete them. */}
       <div className="movie-card box">
         <img src={source} alt={movie.title} />
         <div className="movie-info">

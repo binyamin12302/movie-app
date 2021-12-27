@@ -34,7 +34,7 @@ function HomeUser() {
         return;
       case "POPULAR":
         draft.baseUrl = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&page=`
-        draft.total_pages = 500
+        draft.total_pages = 500 // @TODO: why did you limit the total pages hardcoded ? (in all cases)
         return;
       case "TOP-RATED":
         draft.baseUrl = `https://api.themoviedb.org/3/movie/top_rated?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US&page=`
