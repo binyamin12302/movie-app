@@ -1,5 +1,5 @@
 import { signInWithEmailAndPassword } from "@firebase/auth";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { toast } from 'react-toastify';
 import DispatchContext from "../DispatchContext.js";
@@ -12,21 +12,12 @@ function Login() {
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
 
-
-  useEffect(() => {
-    const labels = document.querySelectorAll(".form-control label"); // @TODO: its unsecured and really bad paractice to use innerHtml, and also its very bad to update the html directly with javascript when you are using react. 
-
-    labels.forEach((label) => {
-      label.innerHTML = label.innerText
-        .split("")
-        .map(
-          (letter, idx) =>
-            `<span style="transition-delay:${idx * 50}ms">${letter}</span>`
-        )
-        .join("");
-    });
-
-  }, []);
+  const splitLetters = (word) =>  
+          word
+          .split("")
+          .map(
+            (letter, idx) => (<span style={{transitionDelay: `${idx * 50}ms`}}>{letter}</span>)
+          );
 
   const login = async (e) => {
     e.preventDefault();
@@ -63,13 +54,13 @@ function Login() {
               <input type="text " required onChange={(e) => {
                 setLoginEmail(e.target.value);
               }} />
-              <label>Email</label>
+              <label>{splitLetters("Email")}</label>
             </div>
             <div className="form-control">
               <input type="password" required autoComplete="new-password" onChange={(e) => { // @TODO: you can use a destucture what is prettier. {target: {value}}
                 setLoginPassword(e.target.value);
               }} />
-              <label>Password</label>
+              <label>{splitLetters("Password")}</label>
             </div>
             <button className="btn">Login</button>
             <GoogleButton />
