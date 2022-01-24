@@ -1,17 +1,24 @@
 import Axios from "axios";
 import { debounce } from "lodash";
-import React, { useCallback, useContext, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useCallback, useContext, useEffect, useMemo } from "react";
+import { useLocation, useHistory } from "react-router-dom";
 import DispatchContext from "../DispatchContext.js";
 import StateContext from "../StateContext";
 import HeaderLoggedIn from "./HeaderLoggedIn";
 import HeaderLoggedOut from "./HeaderLoggedOut";
 
+
 function Header() {
   const appState = useContext(StateContext);
   const appDispatch = useContext(DispatchContext);
+  const location = useLocation();
+  const history = useHistory();
 
-  const [searchInput, setSearchInput] = useState("");
+
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [location.pathname])
 
   const searchMovie = useMemo(
     () =>
@@ -31,7 +38,6 @@ function Header() {
 
   const handleInputChange = useCallback(
     e => {
-      setSearchInput(e.target.value);
       appDispatch({ type: "searchInput", value: e.target.value })
       appDispatch({ type: "loadingPage", value: true })
       searchMovie(e.target.value)
@@ -42,30 +48,27 @@ function Header() {
 
   const headerContent = appState.loggedIn ? <HeaderLoggedIn /> : <HeaderLoggedOut />
 
-
   return (
-    <>
-      <header>
-        <div id="header">
-          <div className="container">
-            <h2 className="logo-header">MoiveApp</h2>
+    <header>
+      <div id="header">
+        <div className="container">
+          <h2 className="logo-header">MoiveApp</h2>
+          {appState.loggedIn &&
+            <input type="text" onChange={handleInputChange} value={appState.searchInput} id="search" className="search" placeholder="Search" />
+          }
+          <div id="navigation">
             {appState.loggedIn &&
-              <input type="text" onChange={handleInputChange} value={searchInput} id="search" className="search" placeholder="Search" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png" alt='Avatar' className='avatar' />
             }
-            <div id="navigation">
-              {!appState.loggedIn &&
-                <button className="home-btn" type="button">
-                  <Link to="/" className="home-link">
-                    Home
-                  </Link>
-                </button>
-              }
-              {headerContent}
-            </div>
+
+            <button className="home-btn" type="button" onClick={() => history.push("/")}>
+              Home
+            </button>
+            {headerContent}
           </div>
         </div>
-      </header>
-    </>
+      </div>
+    </header>
   );
 }
 

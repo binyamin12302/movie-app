@@ -41,74 +41,72 @@ function Register() {
   };
 
   return (
-    <>
-      <div className="wrap-form">
-        <form id="register-page" onSubmit={register} >
-          <h1>Register</h1>
-          <p>Please fill in this form to create an account.</p>
-          <hr />
-          <label htmlFor="email">Email</label>
-          <input
-            type="text"
-            placeholder="Enter Email"
-            name="email"
-            id="email"
-            required
-            onChange={(e) => {
-              setState(draft => {
-                draft.registerEmail = e.target.value;
-              });
-            }}
-          />
-          <label htmlFor="psw">Password</label>
-          <input
-            type="password"
-            placeholder="Enter Password"
-            name="psw"
-            id="psw"
-            required
-            autoComplete="new-password"
-            onChange={(e) => {
-              setState(draft => {
-                draft.registerPassword = e.target.value;
-              });
-            }}
-          />
-          <label htmlFor="psw-confirm">confirm Password</label>
-          <input
-            type="password"
-            placeholder="confirm Password"
-            name="psw-confirm"
-            id="psw-confirm"
-            required
-            onChange={(e) => {
-              setState(draft => {
-                draft.confirmPassword = e.target.value;
-              });
-            }}
-          />
-          <hr />
-          <p>
-            By creating an account you agree to our{" "}
-            <Link className="nav-link " to="terms/">
-              Terms & Privacy
-            </Link>
-            .
-          </p>{" "}
-          <button type="submit" className="register-btn-form">
-            {" "}
-            Register{" "}
-          </button>
-          <p>
-            Already have an account?{" "}
-            <Link className="nav-link " to="login/">
-              Login
-            </Link>
-            .
-          </p>
-        </form>
-      </div>
-    </>
+    <div className="wrap-form">
+      <form id="register-page" onSubmit={register} >
+        <h1>Register</h1>
+        <p>Please fill in this form to create an account.</p>
+        <hr />
+        <label htmlFor="email">Email</label>
+        <input
+          type="text"
+          placeholder="Enter Email"
+          name="email"
+          id="email"
+          required
+          onChange={(e) => {
+            setState(draft => {
+              draft.registerEmail = e.target.value;
+            });
+          }}
+        />
+        <label htmlFor="psw">Password</label>
+        <input
+          type="password"
+          placeholder="Enter Password"
+          name="psw"
+          id="psw"
+          required
+          autoComplete="new-password"
+          onChange={(e) => {
+            setState(draft => {
+              draft.registerPassword = e.target.value;
+            });
+          }}
+        />
+        <label htmlFor="psw-confirm">Confirm Password</label>
+        <input
+          type="password"
+          placeholder="Confirm Password"
+          name="psw-confirm"
+          id="psw-confirm"
+          required
+          onChange={(e) => {
+            setState(draft => {
+              draft.confirmPassword = e.target.value;
+            });
+          }}
+        />
+        <hr />
+        <p>
+          By creating an account you agree to our &nbsp;
+          <Link className="nav-link " to="terms/">
+            Terms & Privacy
+          </Link>
+          .
+        </p> &nbsp;
+        <button type="submit" className="register-btn-form">
+          &nbsp;
+          Register &nbsp;
+        </button>
+        <p>
+          Already have an account? &nbsp;
+          <Link className="nav-link " to="login/">
+            Login
+          </Link>
+          .
+        </p>
+      </form>
+    </div>
   );
 }
 

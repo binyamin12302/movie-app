@@ -6,14 +6,17 @@ import { Link } from "react-router-dom";
 import { useImmerReducer } from "use-immer";
 import DispatchContext from "../DispatchContext.js";
 import StateContext from "../StateContext";
-import LoadingPage from './LoadingPage';
-import Movie from "./Movie.js";
-import NotFound from "./NotFound.js";
+import LoadingCard from "./LoadingCard.js";
+import LoadingPage from "./LoadingPage.js";
+import MovieCard from "./MovieCard.js";
 
-function HomeUser() {
+function HomeUser(props) {
   const appState = useContext(StateContext);
   const appDispatch = useContext(DispatchContext);
   const currentClassName = JSON.parse(localStorage.getItem('currentClassName'));
+
+  
+
 
   const initialState = {
     results: [],
@@ -30,7 +33,7 @@ function HomeUser() {
         return;
       case "selectedPage":
         draft.currentPage = action.value
-        saveInLocalStorageSelectedNumber(action.value)
+        saveInLocalStorage("pageNumber", action.value)
         return;
       case "POPULAR":
         draft.baseUrl = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&page=`
@@ -42,11 +45,11 @@ function HomeUser() {
         return;
       case "UPCOMING":
         draft.baseUrl = `https://api.themoviedb.org/3/movie/upcoming?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US&page=`
-        draft.total_pages = 34
+        draft.total_pages = 11
         return;
       case "NOW-PLAYING":
         draft.baseUrl = `https://api.themoviedb.org/3/movie/now_playing?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US&region=DE&page=`
-        draft.total_pages = 4
+        draft.total_pages = 3
         return;
       default:
     }
@@ -60,12 +63,11 @@ function HomeUser() {
         try {
           const response = await Axios.get(`${state.baseUrl + selected}`);
           dispatch({ type: "fetchComplete", value: response.data.results })
-          appDispatch({ type: "loadingPage", value: false })
-          console.log(response.data)
+          appDispatch({ type: "loadingCard", value: false })
         } catch (e) {
           console.log("There was a problem ww.");
         }
-      }, 100)
+      }, 200)
     , [appDispatch, state.baseUrl, dispatch]);
 
 
@@ -80,15 +82,8 @@ function HomeUser() {
   );
 
   const allMovies = state.results.map((movie, index) => {
-    return <Movie movie={movie} key={index} />;
+    return <MovieCard movie={movie} key={index} pathname={props.location.pathname} />;
   })
-
-  const filteredMovies = appState.filteredMovies.map((movie, index) => {
-    return <Movie movie={movie} key={index} />;
-  })
-
-  const filteredMoviesResults = appState.filteredMovies.length === 0 && appState.searchInput !== "" ? <NotFound /> : filteredMovies;
-  const content = appState.searchInput === "" ? allMovies : filteredMoviesResults;
 
   function handleCurrentPage(event) {
     handleClassName(event)
@@ -96,17 +91,15 @@ function HomeUser() {
     dispatch({ type: `${event.target.innerText.replace(/\s/g, '-')}` })
   }
 
-
   useEffect(() => {
-    appDispatch({ type: "loadingPage", value: true })
-    saveInLocalStorageCurrentMoviesUrl(state.baseUrl)
-    saveInLocalStorageTotalPages(state.total_pages)
+    appDispatch({ type: "loadingCard", value: true })
     getMovies(state.currentPage)
-  }, [state.currentPage, getMovies, appDispatch, state.baseUrl, state.total_pages])
+    saveInLocalStorage("totalPages", state.total_pages)
+    saveInLocalStorage("currentMoviesUrl", state.baseUrl)
+  }, [state.currentPage, state.total_pages, state.baseUrl, getMovies, appDispatch])
 
 
   function handleClassName(event) {
-
     let allCurrentClassName = Array.from(document.getElementsByClassName('current'))
 
     allCurrentClassName.forEach(element => {
@@ -117,74 +110,61 @@ function HomeUser() {
       event.target.classList.add('current')
     }
 
-    saveInLocalStorageCurrentClassName(event.target.innerText)
+    saveInLocalStorage("currentClassName", event.target.innerText)
   }
 
-
-  function saveInLocalStorageSelectedNumber(selected) {
-    localStorage.setItem("pageNumber", JSON.stringify(selected));
+  function saveInLocalStorage(name, value) {
+    localStorage.setItem(`${name}`, JSON.stringify(value));
   }
 
-  function saveInLocalStorageCurrentClassName(e) {
-    localStorage.setItem("currentClassName", JSON.stringify(e));
-  }
-
-  function saveInLocalStorageCurrentMoviesUrl(url) {
-    localStorage.setItem("currentMoviesUrl", JSON.stringify(url));
-  }
-
-  function saveInLocalStorageTotalPages(pages) {
-    localStorage.setItem("totalPages", JSON.stringify(pages));
-  }
+  const content = appState.loadingCard ? <LoadingCard /> : allMovies
 
   return (
-    <>
-      <main id="home-guest">
-        <div id="nav-home-user" >
-          <nav id="main-nav">
-            <ul>
-              <li><Link to="/" className={!currentClassName || currentClassName === 'POPULAR' ? 'current' : ''} onClick={handleCurrentPage}>Popular</Link></li>
-              <li><Link to="#top-rated" className={currentClassName === 'TOP RATED' ? 'current' : ''} onClick={handleCurrentPage}>Top Rated</Link></li>
-              <li><Link to="#upcoming" className={currentClassName === 'UPCOMING' ? 'current' : ''} onClick={handleCurrentPage}>Upcoming</Link></li>
-              <li><Link to="#now-playing" className={currentClassName === 'NOW PLAYING' ? 'current' : ''} onClick={handleCurrentPage}>Now Playing</Link></li>
-            </ul>
-          </nav>
-        </div>
-
-        <ReactPaginate
-          breakClassName={'break-me'}
-          pageCount={state.total_pages}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={5}
-          onPageChange={handlePaginationClick}
-          containerClassName={`pagination ${appState.searchInput !== '' && 'hide-pagination'}`}
-          forcePage={state.currentPage - 1}
-          activeClassName={`active`}
-          disableInitialCallback={true}
-        />
-
-        {appState.loadingPage ? <LoadingPage /> :
-          <>
-            <section id="home-user" >
-              <div className="movies  user-movies">
+    <main id="home-user">
+      <div className="nav-home-user" >
+        <nav className="main-nav">
+          <ul>
+            <li><Link to="/" className={!currentClassName || currentClassName === 'POPULAR' ? 'current' : ''} onClick={handleCurrentPage}>Popular</Link></li>
+            <li><Link to="#top-rated" className={currentClassName === 'TOP RATED' ? 'current' : ''} onClick={handleCurrentPage}>Top Rated</Link></li>
+            <li><Link to="#upcoming" className={currentClassName === 'UPCOMING' ? 'current' : ''} onClick={handleCurrentPage}>Upcoming</Link></li>
+            <li><Link to="#now-playing" className={currentClassName === 'NOW PLAYING' ? 'current' : ''} onClick={handleCurrentPage}>Now Playing</Link></li>
+          </ul>
+        </nav>
+      </div>
+      <section >
+        {
+          appState.loadingPage ? <LoadingPage /> :
+            <>
+              <ReactPaginate
+                previousLabel={'Previous'}
+                nextLabel={"Next"}
+                breakClassName={'break-me'}
+                pageCount={state.total_pages}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
+                onPageChange={handlePaginationClick}
+                containerClassName={`pagination ${appState.searchInput !== '' && 'hide-pagination'}`}
+                forcePage={state.currentPage - 1}
+                activeClassName={`active`}
+                disableInitialCallback={true}
+              />
+              <div className="container-movie">
                 {content}
-                <ReactPaginate
-                  breakClassName={'break-me'}
-                  pageCount={state.total_pages}
-                  marginPagesDisplayed={2}
-                  pageRangeDisplayed={5}
-                  onPageChange={handlePaginationClick}
-                  containerClassName={`pagination ${appState.searchInput !== '' && 'hide-pagination'}`}
-                  activeClassName={`active`}
-                  forcePage={state.currentPage - 1}
-                />
               </div>
-            </section>
-          </>
+              <ReactPaginate
+                breakClassName={'break-me'}
+                pageCount={state.total_pages}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
+                onPageChange={handlePaginationClick}
+                containerClassName={`pagination ${appState.searchInput !== '' && 'hide-pagination'}`}
+                activeClassName={`active`}
+                forcePage={state.currentPage - 1}
+              />
+            </>
         }
-      </main>
-
-    </>
+      </section>
+    </main>
   );
 }
 

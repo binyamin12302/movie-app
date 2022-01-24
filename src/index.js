@@ -7,6 +7,7 @@ import { useImmerReducer } from "use-immer";
 import { auth } from "../src/firebase/Firebase";
 // My Components
 import About from "./components/About";
+import FilteredMovies from "./components/FilteredMovies";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import HomeGuest from "./components/HomeGuest";
@@ -14,6 +15,7 @@ import HomeUser from "./components/HomeUser";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Terms from "./components/Terms";
+import ViewSingleMovie from './components/ViewSingleMovie';
 import DispatchContext from "./DispatchContext";
 import "./scss/style.scss";
 import StateContext from "./StateContext";
@@ -25,7 +27,9 @@ function App() {
 
   const initialState = {
     loggedIn: Boolean(localStorage.getItem("userLoggedIn")),
-    loadingPage: Boolean,
+    guestSessionId: "",
+    loadingPage: false,
+    loadingCard: false,
     filteredMovies: [],
     searchInput: ""
   };
@@ -37,6 +41,9 @@ function App() {
         return;
       case "logout":
         draft.loggedIn = false;
+        return;
+      case "sessionId":
+        draft.guestSessionId = action.value;
         return;
       case "notificationResult":
         notificationResult((action.value), (action.typeMessage), (action.transition));
@@ -52,6 +59,12 @@ function App() {
         return;
       case "loadingPage":
         draft.loadingPage = action.value;
+        return;
+      case "loadingCard":
+        draft.loadingCard = action.value;
+        return;
+      case "clearSerach":
+        draft.searchInput = "";
         return;
       default:
     }
@@ -86,17 +99,26 @@ function App() {
 
 
 
+
+
+
   useEffect(() => {
+
+
     const unsubscribe = auth.onAuthStateChanged((user) => {
       // detaching the listener
       if (user) {
         // ...your code to handle authenticated users.
         localStorage.setItem("userLoggedIn", state.loggedIn);
+
+
+        /* console.log(user.photoURL); */
+
         dispatch({ type: "login" });
       } else {
         // No user is signed in...code to handle unauthenticated users.
         console.log("sorry");
-     
+
         localStorage.removeItem("userLoggedIn");
         localStorage.removeItem('pageNumber');
         localStorage.removeItem('currentMoviesUrl');
@@ -106,7 +128,11 @@ function App() {
     });
     return () => unsubscribe(); // unsubscribing from the listener when the component is unmounting.
 
-  }, [dispatch, state.loggedIn]);
+  }, [dispatch, state.loggedIn, state.guestSessionId]);
+  ;
+
+
+  console.log(state.guestSessionId)
 
   const homeContent = state.loggedIn ? HomeUser : HomeGuest;
 
@@ -118,11 +144,12 @@ function App() {
             <ToastContainer />
             <Header />
             <Switch>
-              <Route exact path="/" component={homeContent} />
+              <Route exact path="/" component={state.searchInput === "" ? homeContent : FilteredMovies} />
               <Route path="/login" component={Login} />
               <Route path="/about-us" component={About} />
               <Route path="/terms" component={Terms} />
               <Route path="/register" component={Register} />
+              <Route path="/movie/:id" component={state.searchInput === "" ? ViewSingleMovie : FilteredMovies} />
             </Switch>
             <Footer />
           </Router>

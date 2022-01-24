@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 import { useImmer } from "use-immer";
 import DispatchContext from "../DispatchContext.js";
 import StateContext from "../StateContext";
-import Loading from "./LoadingPage";
-import Movie from "./Movie";
+import LoadingCard from "./LoadingCard.js";
+import MovieCard from "./MovieCard.js";
 
 function HomeGuest() {
   const appState = useContext(StateContext);
@@ -19,73 +19,70 @@ function HomeGuest() {
   useEffect(() => {
     window.scrollTo(0, 0);
 
+    appDispatch({ type: "loadingCard", value: true })
+
     async function fetchData() {
       try {
-        const responseLatestApi = await Axios.get(
+
+        const response = await Promise.all([Axios.get(
           `https://api.themoviedb.org/3/discover/movie?latest.desc&api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&page=1`
-        );
-        const responsePopularApi = await Axios.get(
+        ), Axios.get(
           `https://api.themoviedb.org/3/movie/popular?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US&page=1`
-        );
+        )])
+        // JavaScript will wait until ALL of the promises have completed
+
         setState((draft) => {
-          draft.latestMovies = responseLatestApi.data.results;
-          draft.popularMovies = responsePopularApi.data.results;
+          draft.latestMovies = response[0].data.results;
+          draft.popularMovies = response[1].data.results;
         });
 
-        appDispatch({ type: "loadingPage", value: false })
+        appDispatch({ type: "loadingCard", value: false })
+
       } catch (e) {
         console.log("There was a problem ");
       }
     }
     fetchData();
+
   }, [setState, appDispatch]);
 
   const [latestMovies, popularMovies] = [
     state.latestMovies
       .slice(0, 4)
-      .map((movie, index) => <Movie movie={movie} key={index} />),
+      .map((movie, index) => <MovieCard movie={movie} key={index} />),
     state.popularMovies
       .slice(4, 8)
-      .map((movie, index) => <Movie movie={movie} key={index} />),
+      .map((movie, index) => <MovieCard movie={movie} key={index} />),
   ];
 
   return (
-    <>
-      {appState.loadingPage ? (
-        <main>
-          <Loading />
-        </main>
-      ) : (
-        <main id="home-guest">
-          <section>
-            <h1 className="section-title">
-              <i className="far fa-star"></i> Latest Movies
-            </h1>
-            <div className="movies">{popularMovies}</div>
-          </section>
+    <main id="home-guest">
+      <section>
+        <h1 className="section-title">
+          <i className="far fa-star"></i> Latest Movies
+        </h1>
+        <div className="container-movie">{appState.loadingCard ? <LoadingCard /> : popularMovies}</div>
+      </section>
 
-          <section>
-            <h1 className="section-title">
-              <i className="far fa-star"></i> Popular Movies
-            </h1>
-            <div className="movies">{latestMovies}</div>
-
-            <div id="section-content">
-              <h2 className="heading-2  tc">Get an account today </h2>
-              <p className="text-muted">
-                Access free content on all of your devices, sync your list and
-                continue watching anywhere.{" "}
-              </p>
-              <Link className="link" to="/register">
-                <button className="register-btn" type="submit">
-                  Register Free
-                </button>
-              </Link>
-            </div>
-          </section>
-        </main>
-      )}
-    </>
+      <section>
+        <h1 className="section-title">
+          <i className="far fa-star"></i> Popular Movies
+        </h1>
+        <div className="container-movie">{appState.loadingCard ? <LoadingCard /> : latestMovies}</div>
+        <div id="section-content">
+          <h2 className="heading-2  tc">Get an account today </h2>
+          <p className="text-muted">
+            Access free content on all of your devices, sync your list and
+            continue watching anywhere.
+          </p>
+          <Link className="link" to="/register">
+            <button className="register-btn" type="submit">
+              Register Free
+            </button>
+          </Link>
+        </div>
+      </section>
+    </main>
   );
 }
 

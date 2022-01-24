@@ -1,6 +1,6 @@
 import { signOut } from "@firebase/auth";
 import React, { useContext } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { Bounce, toast } from 'react-toastify';
 import DispatchContext from "../DispatchContext.js";
 import { auth } from "../firebase/Firebase";
@@ -18,16 +18,9 @@ function HeaderLoggedIn() {
   }
 
   return (
-    <>
-      <div>
-        <i className="far fa-user user-icon"></i>
-      </div>
-      <Link to='/'>
-        <button className="login-btn" type="button" onClick={logout}>
-          Logout
-        </button>
-      </Link>
-    </>
+    <button className="logout-btn" type="button" onClick={logout}>
+      Logout
+    </button>
   );
 }
 

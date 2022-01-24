@@ -17,11 +17,9 @@ function HeaderLoggedOut() {
   }
 
   return (
-    <>
-      <button className="login-btn" type="button" onClick={handleClick}>
-        {currentText}
-      </button>
-    </>
+    <button className="login-btn" type="button" onClick={handleClick}>
+      {currentText}
+    </button>
   );
 }
 
