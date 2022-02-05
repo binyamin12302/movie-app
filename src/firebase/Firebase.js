@@ -1,6 +1,8 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import { getDatabase } from "firebase/database";
+import { getFirestore } from "firebase/firestore";
+import { getStorage, ref } from "firebase/storage";
 
 
 const firebaseConfig = {
@@ -14,11 +16,20 @@ const firebaseConfig = {
 
 
 const app = initializeApp(firebaseConfig);
+const storage = getStorage();
 
+/* 
+export const database = getDatabase() */
+
+export const database = getDatabase(app);
 export const db = getFirestore(app)
 export const auth = getAuth(app);
 export const provider = new GoogleAuthProvider();
 
+export function callRef(uid) {
+  const fileref = ref(storage,`${uid}.png`);
+  return fileref;
+}
 
 
 

@@ -6,16 +6,13 @@ import { Link } from "react-router-dom";
 import { useImmerReducer } from "use-immer";
 import DispatchContext from "../DispatchContext.js";
 import StateContext from "../StateContext";
-import LoadingCard from "./LoadingCard.js";
-import LoadingPage from "./LoadingPage.js";
+import LoadingCard from "./loadingPages/LoadingCard";
 import MovieCard from "./MovieCard.js";
 
 function HomeUser(props) {
   const appState = useContext(StateContext);
   const appDispatch = useContext(DispatchContext);
   const currentClassName = JSON.parse(localStorage.getItem('currentClassName'));
-
-  
 
 
   const initialState = {
@@ -63,7 +60,7 @@ function HomeUser(props) {
         try {
           const response = await Axios.get(`${state.baseUrl + selected}`);
           dispatch({ type: "fetchComplete", value: response.data.results })
-          appDispatch({ type: "loadingCard", value: false })
+          appDispatch({ type: "loadingPage", value: false })
         } catch (e) {
           console.log("There was a problem ww.");
         }
@@ -92,7 +89,7 @@ function HomeUser(props) {
   }
 
   useEffect(() => {
-    appDispatch({ type: "loadingCard", value: true })
+    appDispatch({ type: "loadingPage", value: true })
     getMovies(state.currentPage)
     saveInLocalStorage("totalPages", state.total_pages)
     saveInLocalStorage("currentMoviesUrl", state.baseUrl)
@@ -117,7 +114,7 @@ function HomeUser(props) {
     localStorage.setItem(`${name}`, JSON.stringify(value));
   }
 
-  const content = appState.loadingCard ? <LoadingCard /> : allMovies
+  const content = appState.loadingPage ? <LoadingCard /> : allMovies
 
   return (
     <main id="home-user">
@@ -132,37 +129,32 @@ function HomeUser(props) {
         </nav>
       </div>
       <section >
-        {
-          appState.loadingPage ? <LoadingPage /> :
-            <>
-              <ReactPaginate
-                previousLabel={'Previous'}
-                nextLabel={"Next"}
-                breakClassName={'break-me'}
-                pageCount={state.total_pages}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={5}
-                onPageChange={handlePaginationClick}
-                containerClassName={`pagination ${appState.searchInput !== '' && 'hide-pagination'}`}
-                forcePage={state.currentPage - 1}
-                activeClassName={`active`}
-                disableInitialCallback={true}
-              />
-              <div className="container-movie">
-                {content}
-              </div>
-              <ReactPaginate
-                breakClassName={'break-me'}
-                pageCount={state.total_pages}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={5}
-                onPageChange={handlePaginationClick}
-                containerClassName={`pagination ${appState.searchInput !== '' && 'hide-pagination'}`}
-                activeClassName={`active`}
-                forcePage={state.currentPage - 1}
-              />
-            </>
-        }
+        <ReactPaginate
+          previousLabel={'Previous'}
+          nextLabel={"Next"}
+          breakClassName={'break-me'}
+          pageCount={state.total_pages}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={5}
+          onPageChange={handlePaginationClick}
+          containerClassName={`pagination ${appState.searchInput !== '' && 'hide-pagination'}`}
+          forcePage={state.currentPage - 1}
+          activeClassName={`active`}
+          disableInitialCallback={true}
+        />
+        <div className="container-movie">
+          {content}
+        </div>
+        <ReactPaginate
+          breakClassName={'break-me'}
+          pageCount={state.total_pages}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={5}
+          onPageChange={handlePaginationClick}
+          containerClassName={`pagination ${appState.searchInput !== '' && 'hide-pagination'}`}
+          activeClassName={`active`}
+          forcePage={state.currentPage - 1}
+        />
       </section>
     </main>
   );

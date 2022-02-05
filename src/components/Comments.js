@@ -1,30 +1,36 @@
-import { addDoc, collection, getDocs } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { addDoc, collection, doc, getDocs, updateDoc } from 'firebase/firestore';
 import React, { useContext, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useImmer } from "use-immer";
 import DispatchContext from "../DispatchContext.js";
-import { auth, db } from "../firebase/Firebase";
+import { db } from "../firebase/Firebase";
+import StateContext from "../StateContext";
 
 function Comments({ id }) {
     const appDispatch = useContext(DispatchContext);
+    const appState = useContext(StateContext);
 
     const [state, setState] = useImmer({
         title: "",
         commentText: "",
-        commentList: []
+        commentList: [],
+        idComment: "",
+        arr: [],
+        idUser: ""
     });
 
     const commentsCollectionRef = collection(db, `${id}`)
 
     const createComment = async () => {
-
-        appDispatch({ type: "notificationLoading" })
         try {
-
+            appDispatch({ type: "notificationLoading" })
             await addDoc(commentsCollectionRef, {
+                user: appState.user.uid,
                 title: state.title,
                 comment: state.commentText,
-                author: { name: auth.currentUser.displayName, id: auth.currentUser.uid, image: auth.currentUser.photoURL },
+                image: appState.user.profileImage,
+                name: appState.user.name
             });
 
             setState(draft => {
@@ -42,40 +48,76 @@ function Comments({ id }) {
     }
 
 
-    console.log(auth);
-
     useEffect(() => {
+
+        let active = true;
+
         const getComments = async () => {
             const data = await getDocs(commentsCollectionRef);
             const allComments = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
-            setState(draft => {
-                draft.commentList = allComments
-            });
+            if (active) {
+                setState(draft => {
+                    draft.commentList = allComments
+                });
+            }
         }
-        getComments();
-    }, [commentsCollectionRef, setState])
+
+        getComments()
+
+        return () => {
+            active = false;
+        };
+
+
+    }, [commentsCollectionRef, setState, id,])
+
+
+    async function updateProfileImage(commentId) {
+        const auth = getAuth();
+
+        const washingtonRef = doc(db, `${id}`, `${commentId}`);
+        try {
+            await updateDoc(washingtonRef, {
+                image: appState.user.profileImage,
+                name: auth.currentUser?.displayName
+            });
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+
 
     return (
         <div className="comments">
             <div className='feedbacks'>
-                <h1 className='tc'>Feedbacks</h1>
-                {state.commentList.map((comment) => {
-                    return <div className='post'>
-                        <div className='postHeader'>
-                            <div className='title'>
-                                <h1 className="section-title">{comment.title}</h1>
-                                <p>{comment.comment}</p>
+                <h1 className='tc'>Reviews <i className="far fa-sticky-note"></i></h1>
+                <div className='reviews' >
+                    {state.commentList.map((comment) => {
+
+                        if (comment.user === appState.user.uid) {
+                            updateProfileImage(comment.id)
+                        }
+
+                        return <div className='post' key={comment.id}>
+                            <div className='postHeader'>
+                                <div className='title'>
+                                    <h1 className="section-title">{comment.title}</h1>
+                                    <p>{comment.comment}</p>
+                                </div>
                             </div>
+                            {<img src={comment.image} alt="prs" />}
+                            <div className='postTextContainer'></div>
+                            <h4>@{comment.name}</h4>
                         </div>
-                        <div className='postTextContainer'></div>
-                        <h4>@{comment.author.name}</h4>
-                    </div>
-                })}
+                    })}
+                </div>
             </div>
 
             <div className="create-comment">
+                <h1 className='tc'>Leave a review <i className="far fa-comment"></i></h1>
                 <div className="comment-container">
-                    <h1 className='tc'>Leave a review <i class="far fa-comment"></i></h1>
                     <div className="inputGp">
                         <label>Title:</label>
                         <input value={state.title} placeholder="Title..." onChange={(e) => {

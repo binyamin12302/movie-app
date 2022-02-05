@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import StateContext from "../StateContext";
-import LoadingPage from './LoadingPage.js';
+import LoadingPage from './loadingPages/LoadingPage';
 import MovieCard from "./MovieCard.js";
 import NotFound from "./NotFound.js";
 

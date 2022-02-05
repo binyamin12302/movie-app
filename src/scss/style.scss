@@ -1,5 +1,6 @@
 @import 'config';
 @import 'utilities';
+@import 'loading';
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display=swap');
 
 * {
@@ -16,7 +17,7 @@ html {
 
     #root {
       position: relative;
-      min-height: 100vh;
+      min-height: 110vh;
     }
   }
 }
@@ -24,6 +25,7 @@ html {
 //Header
 #header {
   background-color: $secondary-color;
+  /* border-bottom: 0.4px solid #ffffff57; */
   .container {
     display: flex;
     flex-wrap: wrap;
@@ -141,7 +143,6 @@ html {
   padding-bottom: 5rem;
 
   .nav-home-user {
-    border-top: 0.3px solid #ffffff57;
     background-color: #171939;
 
     .main-nav {
@@ -325,7 +326,7 @@ html {
   background-color: $secondary-color;
   text-align: center;
   padding: 10px;
-  border-top: rgba(255, 255, 255, 0.473) 1px solid;
+ /*  border-top: rgba(255, 255, 255, 0.473) 1px solid; */
   position: absolute;
   right: 0;
   bottom: 0;
@@ -352,12 +353,12 @@ html {
   }
 }
 
+//view single movie
 #single-movie {
   padding-bottom: 10%;
   .content {
     display: flex;
     margin: 2rem;
-    padding: 8px;
     background-color: $alpha-color;
 
     .row {
@@ -370,7 +371,7 @@ html {
       margin-top: 0px;
       display: flex;
       flex-direction: column;
-      flex-basis: 40%;
+      flex-basis: 42%;
       justify-content: space-between;
 
       p {
@@ -393,21 +394,22 @@ html {
         padding: 6px 24px;
         text-decoration: none;
         text-shadow: 0px 1px 0px #ffffff;
-        margin: 1%;
+        margin: 6px;
       }
 
       .video {
         border: none;
         height: 80%;
+        width: 100%;
       }
     }
   }
 
   .column-three {
-    width: 40%;
+    margin-left: 1%;
     .card-container {
       position: relative;
-      margin: 2%;
+      margin: 1%;
     }
 
     .overlay {
@@ -438,6 +440,7 @@ html {
     }
 
     .similar {
+      
       border: 2px solid #f1f1f1;
       cursor: pointer;
     }
@@ -448,20 +451,23 @@ html {
   }
 
   .comments {
-    background-color: $alpha-color;
+    background: $alpha-color;
     margin: 2%;
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    border-radius: 12px;
 
     .feedbacks {
-      margin: 1%;
-      width: 1900px;
-      height: 100vh;
-      padding: 20px;
+      width: 100%;
+      margin: 2%;
       background: $alpha-color;
+      padding: 30px;
       border-radius: 12px;
       overflow-y: auto;
+      max-height: 100vh;
+
+      .reviews {
+        margin-top: 5%;
+      }
       .post {
         width: 600px;
         height: auto;
@@ -486,13 +492,13 @@ html {
 
     .create-comment {
       width: 100%;
+      margin: 2%;
       display: grid;
+      background: $alpha-color;
+      padding: 30px;
+      border-radius: 12px;
 
       .comment-container {
-        margin: 2%;
-        padding: 30px;
-        background: $alpha-color;
-        border-radius: 12px;
         display: flex;
         flex-direction: column;
 
@@ -508,7 +514,6 @@ html {
 
           label {
             font-size: 25px;
-            margin-top: 5px;
           }
 
           input {
@@ -521,7 +526,7 @@ html {
             border: none;
             border-radius: 2px;
             padding: 5px;
-            margin-top: 10px;
+            /* margin-top: 10px; */
             outline: none;
             resize: none;
           }
@@ -692,3 +697,5 @@ html {
     }
   }
 }
+
+

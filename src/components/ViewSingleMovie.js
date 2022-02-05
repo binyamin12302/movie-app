@@ -7,7 +7,7 @@ import DispatchContext from "../DispatchContext.js";
 import image from "../image/image-not-found.png";
 import StateContext from "../StateContext";
 import Comments from "./Comments.js";
-import LoadingPage from "./LoadingPage.js";
+import LoadingSingleMovie from "./loadingPages/LoadingSingleMovie";
 import MovieCard from "./MovieCard";
 import NotFound from "./NotFound.js";
 
@@ -31,7 +31,6 @@ function ViewSingleMovie(props) {
 
         async function fetchData() {
             appDispatch({ type: "loadingPage", value: true })
-            
             try {
                 const response = await Promise.all([Axios.get(
                     `https://api.themoviedb.org/3/movie/${id}?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US`
@@ -111,7 +110,7 @@ function ViewSingleMovie(props) {
 
     return (
         <>
-            {appState.loadingPage ? <LoadingPage /> :
+            {appState.loadingPage ? <LoadingSingleMovie /> :
                 <>
                     <div id="single-movie" >
                         <div className="content">
@@ -148,8 +147,7 @@ function ViewSingleMovie(props) {
                         </div>
                         <Comments id={id} />
                     </div>
-                </>
-            }
+                </>}
         </>
     )
 }

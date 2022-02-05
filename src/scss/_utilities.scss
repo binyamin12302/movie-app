@@ -64,31 +64,7 @@ button {
   color: #0984e3;
 }
 
-.card-loading {
-  .image,
-  h2,
-  p {
-    background: linear-gradient(91deg, #37386a 8%, #404170 18%, #363960 33%);
-    /* border-radius: 5px; */
-    background-size: 200% 100%;
-    height: 40px;
-    animation: 1.5s shine linear infinite;
-  }
 
-  .image {
-    height: 400px;
-  }
-
-  h2 {
-    height: 30px;
-  }
-}
-
-@keyframes shine {
-  to {
-    background-position-x: -200%;
-  }
-}
 
 /* CSS */
 .button-41 {
@@ -251,16 +227,183 @@ hr {
   }
 }
 
-.fields {
-  margin: 50px 0px;
+.edit-profile {
+  margin: 3% auto;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  background-color: $alpha-color;
+  border-radius: 1%;
+  height: 500px;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+
+  .column-one {
+    width: 50%;
+    min-height: 470px;
+    position: relative;
+
+    .profile-image {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+  }
+
+  .vl {
+    border-left: 1px solid #fff;
+    height: 596px;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .column-two {
+    width: 50%;
+    min-height: 400px;
+    font-family: sans-serif;
+
+    .fields {
+      margin: 5%;
+      color: $medium-color;
+      h1 {
+        color: #fff;
+      }
+
+      label {
+        line-height: 25px;
+      }
+      input[type='text'],
+      input[type='password'] {
+        width: 100%;
+        padding: 15px;
+        margin-bottom: 5%;
+        display: inline-block;
+        border: none;
+        background: #f1f1f1;
+      }
+
+      input[type='text']:focus,
+      input[type='password']:focus {
+        background-color: #ddd;
+        outline: none;
+      }
+
+      .btn {
+        margin-top: 5%;
+        background-color: #34495e;
+        width: 100%;
+      }
+
+      .btn:hover {
+        background-color: #30475e;
+      }
+    }
+  }
 }
 
 .avatar {
   vertical-align: middle;
-  width: 80px;
-  height: 80px;
+  width: 40px;
+  height: 40px;
+  margin: 6px;
   border-radius: 50%;
   border-width: 5px;
-  border-color: gray;
-  border-style: outset;
+  border: solid 1px #2c3e50;
+  cursor: pointer;
+}
+
+.avatar-profile {
+  vertical-align: middle;
+  width: 80px;
+  height: 80px;
+  margin: 6px;
+  border-radius: 50%;
+  border-width: 5px;
+}
+
+.avatar:hover {
+  /* animation: moveInLeft 1s ease-out; */
+  opacity: 0.7;
+}
+
+@keyframes moveInLeft {
+  0% {
+    transform: rotate(-65deg);
+  }
+
+  50% {
+    transform: rotate(-45deg);
+  }
+
+  80% {
+    transform: rotate(-10deg);
+  }
+
+  100% {
+    transform: rotate(0);
+  }
+}
+
+.button {
+  background-color: #34495e;
+  border-radius: 10px;
+  display: inline-block;
+  cursor: pointer;
+  color: #ffffff;
+  font-family: Arial;
+  margin-top: 4%;
+  font-size: 15px;
+  width: 190px;
+  padding: 5px 12px;
+  text-decoration: none;
+}
+.button:hover {
+  background-color: #30475e;
+}
+.myButton:active {
+  position: relative;
+  top: 1px;
+}
+
+#upload-photo {
+  opacity: 0;
+  position: absolute;
+  z-index: -1;
+  width: 10%;
+}
+
+.custom-file-input {
+  color: transparent;
+}
+.custom-file-input::-webkit-file-upload-button {
+  visibility: hidden;
+}
+.custom-file-input::before {
+  content: 'Change profile image';
+  color: #ffffff;
+  display: block;
+  background-color: #34495e;
+  border-radius: 10px;
+  margin: 4% auto;
+  font-size: 15px;
+  text-align: center;
+  font-family: Arial;
+  width: 139px;
+  font-size: 15px;
+  padding: 5px 10px;
+  outline: none;
+  text-decoration: none;
+  cursor: pointer;
+}
+.custom-file-input:hover::before {
+  background-color: #30475e;
+}
+.custom-file-input:active {
+  outline: 0;
+}
+.custom-file-input:active::before {
+  background-color: #34495e;
 }

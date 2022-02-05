@@ -17,7 +17,7 @@ function Login() {
     word
       .split("")
       .map(
-        (letter, idx) => (<span style={{ transitionDelay: `${idx * 50}ms` }}>{letter}</span>)
+        (letter, idx) => (<span key={idx} style={{ transitionDelay: `${idx * 50}ms` }}>{letter}</span>)
       );
 
 
@@ -26,9 +26,7 @@ function Login() {
 
 
     appDispatch({ type: "notificationLoading" })
-
     try {
-
       await signInWithEmailAndPassword(
         auth,
         loginEmail,

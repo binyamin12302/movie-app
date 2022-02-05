@@ -1,7 +1,7 @@
 import Axios from "axios";
 import { debounce } from "lodash";
 import React, { useCallback, useContext, useEffect, useMemo } from "react";
-import { useLocation, useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import DispatchContext from "../DispatchContext.js";
 import StateContext from "../StateContext";
 import HeaderLoggedIn from "./HeaderLoggedIn";
@@ -13,8 +13,6 @@ function Header() {
   const appDispatch = useContext(DispatchContext);
   const location = useLocation();
   const history = useHistory();
-
-
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -47,7 +45,6 @@ function Header() {
   );
 
   const headerContent = appState.loggedIn ? <HeaderLoggedIn /> : <HeaderLoggedOut />
-
   return (
     <header>
       <div id="header">
@@ -56,10 +53,11 @@ function Header() {
           {appState.loggedIn &&
             <input type="text" onChange={handleInputChange} value={appState.searchInput} id="search" className="search" placeholder="Search" />
           }
+
           <div id="navigation">
-            {appState.loggedIn &&
-              <img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png" alt='Avatar' className='avatar' />
-            }
+            {appState.loggedIn && appState.user.profileImage !== "" ?
+              <img src={appState.user.profileImage} alt='Avatar' className='avatar' onClick={() => history.push("/profile")} /> :
+              appState.loggedIn && appState.user.profileImage === "" ? <div className="avatar profile-image-loading"></div> : ""}
 
             <button className="home-btn" type="button" onClick={() => history.push("/")}>
               Home

@@ -1,10 +1,9 @@
 import React, { useContext } from "react";
-import StateContext from "../StateContext";
-
+import StateContext from "../../StateContext";
 
 function LoadingCard() {
     const appState = useContext(StateContext);
-
+    
     return (
         <>
             {Array.from(appState.loggedIn ? Array(20) : Array(4), (_, i) =>

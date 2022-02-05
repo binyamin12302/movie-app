@@ -1,0 +1,120 @@
+//loadingSingleMovie
+.loadingSingleMovie {
+    padding-bottom: 10%;
+  
+    .content {
+      margin: 2rem;
+      background-color: $alpha-color;
+      display: flex;
+      flex-direction: row;
+      .container-movie {
+        background: linear-gradient(91deg, #37386a 8%, #404170 18%, #363960 33%);
+        /*  padding: 100px 100px; */
+        margin: 2%;
+        height: 530px;
+        padding: 140px;
+        background-size: 200% 100%;
+        animation: 1.5s shine linear infinite;
+      }
+  
+      .column-two {
+        margin: 1%;
+        flex-basis: 42%;
+  
+        h2,
+        p,
+        .video {
+          background: linear-gradient(
+            91deg,
+            #37386a 8%,
+            #404170 18%,
+            #363960 33%
+          );
+          border-radius: 5px;
+          background-size: 200% 100%;
+          animation: 1.5s shine linear infinite;
+          max-height:  260px;;
+        }
+  
+        h2 {
+          min-height: 30px;
+        }
+  
+        p {
+          min-height: 260px;
+        }
+  
+        .video {
+          min-height: 200px;
+        }
+      }
+  
+      .column-three {
+        margin: 1%;
+        margin-top: 0px;
+        display: flex;
+        flex-direction: column;
+        flex-basis: 12%;
+  
+        .h2 {
+          background: linear-gradient(
+            91deg,
+            #37386a 8%,
+            #404170 18%,
+            #363960 33%
+          );
+          border-radius: 5px;
+          background-size: 200% 100%;
+          animation: 1.5s shine linear infinite;
+        }
+  
+        h2 {
+          height: 30px;
+        }
+      }
+    }
+  
+    .content:nth-child(2) {
+      flex-basis: 10%;
+      justify-content: space-around;
+  
+      p {
+        min-height: 527px;
+      }
+    }
+  }
+  
+  //loading-profile-image
+  .profile-image-loading {
+    background: linear-gradient(91deg, #5e5f9c 8%, #404170 18%, #535781 33%);
+    background-size: 200% 100%;
+    display: inline-block;
+    animation: 1.5s shine linear infinite;
+  }
+  
+  @keyframes shine {
+    to {
+      background-position-x: -200%;
+    }
+  }
+  
+  //loading-card
+  .card-loading {
+    .image,
+    h2,
+    p {
+      background: linear-gradient(91deg, #37386a 8%, #404170 18%, #363960 33%);
+      /* border-radius: 5px; */
+      background-size: 200% 100%;
+      height: 40px;
+      animation: 1.5s shine linear infinite;
+    }
+  
+    .image {
+      height: 400px;
+    }
+  
+    h2 {
+      height: 30px;
+    }
+  }

@@ -6,7 +6,6 @@ import { useImmer } from "use-immer";
 import DispatchContext from "../DispatchContext.js";
 import { auth } from "../firebase/Firebase.js";
 
-
 function Register() {
   const history = useHistory();
   const appDispatch = useContext(DispatchContext);
