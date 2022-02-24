@@ -1,9 +1,9 @@
 import React from "react";
 
-function LoadingPage() {
+function LoadingSniper() {
   return (
     <div id="loader"></div>
   )
 }
 
-export default LoadingPage;
+export default LoadingSniper;

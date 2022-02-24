@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { getDatabase } from "firebase/database";
-import { getFirestore } from "firebase/firestore";
+import { collection, getFirestore } from "firebase/firestore";
 import { getStorage, ref } from "firebase/storage";
 
 
@@ -27,9 +27,11 @@ export const auth = getAuth(app);
 export const provider = new GoogleAuthProvider();
 
 export function callRef(uid) {
-  const fileref = ref(storage,`${uid}.png`);
+  const fileref = ref(storage, `${uid}.png`);
   return fileref;
 }
+
+
 
 
 

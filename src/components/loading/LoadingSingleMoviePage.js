@@ -1,6 +1,6 @@
 import React from 'react';
 
-function LoadingSingleMovie() {
+function LoadingSingleMoviePage() {
     return (
         <>
             <div className="loadingSingleMovie" >
@@ -38,4 +38,4 @@ function LoadingSingleMovie() {
     )
 }
 
-export default LoadingSingleMovie;
+export default LoadingSingleMoviePage;

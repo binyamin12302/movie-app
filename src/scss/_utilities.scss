@@ -64,8 +64,6 @@ button {
   color: #0984e3;
 }
 
-
-
 /* CSS */
 .button-41 {
   background-color: initial;
@@ -104,20 +102,6 @@ textarea {
   margin-top: 5px;
   outline: none;
   resize: none;
-} */
-
-/* .postHeader .deletePost {
-  flex: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-} */
-
-/* .deletePost button {
-  border: none;
-  background: none;
-  font-size: 30px;
-  cursor: pointer;
 } */
 
 //Google-Button
@@ -198,10 +182,10 @@ textarea {
   top: 1px;
 }
 
-hr {
+/* hr {
   border: 0.1px solid #f1f1f1;
-  /*  margin-bottom: 25px; */
-}
+    margin-bottom: 25px; 
+} */
 
 .btn {
   cursor: pointer;
@@ -407,3 +391,18 @@ hr {
 .custom-file-input:active::before {
   background-color: #34495e;
 }
+
+span {
+  color: #6c7174;
+  text-decoration: none;
+}
+
+.like {
+  color: #0984e3;
+}
+
+
+
+
+
+

@@ -9,10 +9,7 @@ function MovieCard({ movie, pathname }) {
   const appDispatch = useContext(DispatchContext);
   let history = useHistory({ forceRefresh: true });
 
-
-
   const imag = "https://image.tmdb.org/t/p/w500";
-
 
   let source = `${imag + movie.poster_path}`;
 
@@ -33,11 +30,11 @@ function MovieCard({ movie, pathname }) {
   return (
     <>
       <div className="movie-card">
-        <img src={source} alt={movie.title} />
+        <img  className={`${pathname !== '/movie/:id' && appState.loggedIn && 'mohov'}`} src={source} alt={movie.title} />
         <div className="movie-info ">
           <div>
             <h3>{movie.title}</h3>
-            <p className="date-movie" >{date.toDateString()}</p>
+            <p className="date-movie">{date.toDateString()}</p>
           </div>
           <span className={getClassByRate(movie.vote_average)}>{movie.vote_average}</span>
         </div>

@@ -4,23 +4,21 @@ import React, { useCallback, useContext, useEffect, useMemo } from "react";
 import ReactPaginate from 'react-paginate';
 import { Link } from "react-router-dom";
 import { useImmerReducer } from "use-immer";
-import DispatchContext from "../DispatchContext.js";
 import StateContext from "../StateContext";
-import LoadingCard from "./loadingPages/LoadingCard";
+import LoadingCard from "./loading/LoadingCard.js";
 import MovieCard from "./MovieCard.js";
 
 function HomeUser(props) {
   const appState = useContext(StateContext);
-  const appDispatch = useContext(DispatchContext);
+  const initialUrl = `https://api.themoviedb.org/3/`
+
   const currentClassName = JSON.parse(localStorage.getItem('currentClassName'));
-
-
   const initialState = {
-    results: [],
+    results: null,
     total_pages: JSON.parse(localStorage.getItem('totalPages')) || 500,
     currentPage: JSON.parse(localStorage.getItem('pageNumber')) || 1,
     baseUrl: JSON.parse(localStorage.getItem('currentMoviesUrl')) ||
-      `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&page=`
+      `${initialUrl}discover/movie?sort_by=popularity.desc&api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&page=`
   }
 
   function ourReducer(draft, action) {
@@ -33,19 +31,19 @@ function HomeUser(props) {
         saveInLocalStorage("pageNumber", action.value)
         return;
       case "POPULAR":
-        draft.baseUrl = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&page=`
+        draft.baseUrl = `${initialUrl}discover/movie?sort_by=popularity.desc&api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&page=`
         draft.total_pages = 500
         return;
       case "TOP-RATED":
-        draft.baseUrl = `https://api.themoviedb.org/3/movie/top_rated?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US&page=`
+        draft.baseUrl = `${initialUrl}movie/top_rated?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US&page=`
         draft.total_pages = 473
         return;
       case "UPCOMING":
-        draft.baseUrl = `https://api.themoviedb.org/3/movie/upcoming?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US&page=`
+        draft.baseUrl = `${initialUrl}movie/upcoming?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US&page=`
         draft.total_pages = 11
         return;
       case "NOW-PLAYING":
-        draft.baseUrl = `https://api.themoviedb.org/3/movie/now_playing?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US&region=DE&page=`
+        draft.baseUrl = `${initialUrl}movie/now_playing?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US&region=DE&page=`
         draft.total_pages = 3
         return;
       default:
@@ -57,15 +55,17 @@ function HomeUser(props) {
   const getMovies = useMemo(
     () =>
       debounce(async function (selected) {
+        dispatch({ type: "fetchComplete", value: null })
         try {
           const response = await Axios.get(`${state.baseUrl + selected}`);
           dispatch({ type: "fetchComplete", value: response.data.results })
-          appDispatch({ type: "loadingPage", value: false })
         } catch (e) {
           console.log("There was a problem ww.");
+          dispatch({ type: "fetchComplete", value: null })
         }
       }, 200)
-    , [appDispatch, state.baseUrl, dispatch]);
+
+    , [state.baseUrl, dispatch]);
 
 
   const handlePaginationClick = useCallback(
@@ -78,22 +78,31 @@ function HomeUser(props) {
     [dispatch]
   );
 
-  const allMovies = state.results.map((movie, index) => {
+  const allMovies = state.results?.map((movie, index) => {
     return <MovieCard movie={movie} key={index} pathname={props.location.pathname} />;
   })
 
   function handleCurrentPage(event) {
     handleClassName(event)
-    dispatch({ type: "selectedPage", value: 1 })
     dispatch({ type: `${event.target.innerText.replace(/\s/g, '-')}` })
+
+    //return to initial pagination
+    dispatch({ type: "selectedPage", value: 1 })
   }
 
   useEffect(() => {
-    appDispatch({ type: "loadingPage", value: true })
-    getMovies(state.currentPage)
+    let active = true;
+    if (active) {
+      getMovies(state.currentPage)
+    }
+
     saveInLocalStorage("totalPages", state.total_pages)
     saveInLocalStorage("currentMoviesUrl", state.baseUrl)
-  }, [state.currentPage, state.total_pages, state.baseUrl, getMovies, appDispatch])
+
+    return () => {
+      active = false;
+    };
+  }, [state.currentPage, state.total_pages, state.baseUrl, getMovies])
 
 
   function handleClassName(event) {
@@ -103,9 +112,8 @@ function HomeUser(props) {
       element.classList.remove('current')
     });
 
-    if (event) {
-      event.target.classList.add('current')
-    }
+    if (event) event.target.classList.add('current')
+
 
     saveInLocalStorage("currentClassName", event.target.innerText)
   }
@@ -114,7 +122,9 @@ function HomeUser(props) {
     localStorage.setItem(`${name}`, JSON.stringify(value));
   }
 
-  const content = appState.loadingPage ? <LoadingCard /> : allMovies
+  const content = !state.results ? <LoadingCard /> : allMovies
+
+  console.log(state.baseUrl)
 
   return (
     <main id="home-user">

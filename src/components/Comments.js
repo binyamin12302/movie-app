@@ -1,11 +1,11 @@
-import { getAuth } from 'firebase/auth';
-import { addDoc, collection, doc, getDocs, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, increment, onSnapshot, query, updateDoc } from 'firebase/firestore';
 import React, { useContext, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useImmer } from "use-immer";
 import DispatchContext from "../DispatchContext.js";
-import { db } from "../firebase/Firebase";
+import { auth, db } from "../firebase/Firebase";
 import StateContext from "../StateContext";
+
 
 function Comments({ id }) {
     const appDispatch = useContext(DispatchContext);
@@ -13,78 +13,114 @@ function Comments({ id }) {
 
     const [state, setState] = useImmer({
         title: "",
-        commentText: "",
-        commentList: [],
-        idComment: "",
-        arr: [],
-        idUser: ""
+        text: "",
+        reviews: [],
+        deleted: false,
+        commentLike: null
     });
 
-    const commentsCollectionRef = collection(db, `${id}`)
+
 
     const createComment = async () => {
+
+
+        const commentsCollectionRef = collection(db, id)
+
+        if (state.title === "" || state.text === "") return appDispatch({
+            type: "notificationError",
+            value: "A required field is missing."
+        });
+
+        if (state.text.replace(/\s/g, '').length < 100) return appDispatch({
+            type: "notificationError",
+            value: "Sorry, your review is too short. It needs to contain at least 100 characters."
+        });
+
+
         try {
-            appDispatch({ type: "notificationLoading" })
-            await addDoc(commentsCollectionRef, {
-                user: appState.user.uid,
-                title: state.title,
-                comment: state.commentText,
-                image: appState.user.profileImage,
-                name: appState.user.name
-            });
-
+            toast.dismiss()
             setState(draft => {
-                draft.commentText = "";
                 draft.title = "";
+                draft.text = ""
+            });
+            await addDoc(commentsCollectionRef, {
+                user: auth.currentUser?.uid,
+                email: auth.currentUser?.email,
+                title: state.title,
+                comment: state.text,
+                name: auth.currentUser?.displayName !== "" ? auth.currentUser?.displayName : null,
+                like: 0,
+                timestamp: new Date()
             });
 
-            appDispatch({ type: "notificationResult", value: "You have successfully submitted the comment.", typeMessage: `${toast.TYPE.SUCCESS}`, autoClose: 3000 })
 
         } catch (error) {
             console.log(error)
-            appDispatch({ type: "notificationResult", value: error.message.split(':')[1], typeMessage: `${toast.TYPE.ERROR}` })
         }
 
     }
 
 
     useEffect(() => {
+        let active = true
+        const q = query(collection(db, id));
 
-        let active = true;
+        onSnapshot(q, (querySnapshot) => {
+            const cities = [];
 
-        const getComments = async () => {
-            const data = await getDocs(commentsCollectionRef);
-            const allComments = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+            querySnapshot.forEach((doc) => {
+                cities.unshift({ ...doc.data(), id: doc.id });
+            });
+
             if (active) {
                 setState(draft => {
-                    draft.commentList = allComments
+                    draft.reviews = cities;
                 });
             }
-        }
 
-        getComments()
+        });
 
         return () => {
-            active = false;
-        };
+            active = false
+        }
+
+    }, [id, setState])
 
 
-    }, [commentsCollectionRef, setState, id,])
 
-
-    async function updateProfileImage(commentId) {
-        const auth = getAuth();
-
-        const washingtonRef = doc(db, `${id}`, `${commentId}`);
+    async function deletePost(idUs) {
         try {
-            await updateDoc(washingtonRef, {
-                image: appState.user.profileImage,
-                name: auth.currentUser?.displayName
+            let confirm = window.confirm("Are you sure you want to delete your review?");
+            if (confirm === true) await deleteDoc(doc(db, `${id}`, idUs));
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+
+    async function handleLike(commentId) {
+        const washingtonRef = doc(db, id, commentId);
+        try {
+            setState(draft => {
+                draft.commentLike = !state.commentLike;
             });
+
+            if (state.commentLike) {
+                await updateDoc(washingtonRef, {
+                    like: increment(-1)
+                })
+            } else {
+                await updateDoc(washingtonRef, {
+                    like: increment(1)
+                })
+            }
+
 
         } catch (error) {
             console.log(error)
         }
+
     }
 
 
@@ -94,22 +130,31 @@ function Comments({ id }) {
             <div className='feedbacks'>
                 <h1 className='tc'>Reviews <i className="far fa-sticky-note"></i></h1>
                 <div className='reviews' >
-                    {state.commentList.map((comment) => {
-
-                        if (comment.user === appState.user.uid) {
-                            updateProfileImage(comment.id)
-                        }
-
-                        return <div className='post' key={comment.id}>
+                    {state.reviews?.map((comment) => {
+                        console.log(comment)
+                        return <div className="post" key={comment.id}>
                             <div className='postHeader'>
-                                <div className='title'>
-                                    <h1 className="section-title">{comment.title}</h1>
-                                    <p>{comment.comment}</p>
+                                <div className='postTitle'>
+                                    <h4>{comment.title}</h4>
+                                    {appState.loggedIn && comment.user === auth.currentUser.uid && (
+                                        <button className="fas fa-trash-alt" onClick={() => {
+                                            deletePost(comment.id);
+                                        }}></button>
+                                    )}
+                                </div>
+                                <p>{comment.comment}</p>
+                            </div>
+                            <hr />
+                            <div className='postTextContainer'>
+                                <div className='av-info'>
+                                    <p><span>Reviewed by </span> {`${comment.name || comment.email}`}</p>
+                                </div>
+                                <div className='li-info'>
+                                    {comment.like} : <i className="fa fa-thumbs-up" onClick={() => {
+                                        handleLike(comment.id)
+                                    }}></i>
                                 </div>
                             </div>
-                            {<img src={comment.image} alt="prs" />}
-                            <div className='postTextContainer'></div>
-                            <h4>@{comment.name}</h4>
                         </div>
                     })}
                 </div>
@@ -127,11 +172,13 @@ function Comments({ id }) {
                         }} />
                     </div>
 
+
                     <div className="inputGp">
                         <label> Review:</label>
-                        <textarea value={state.commentText} placeholder="Comment..." onChange={(e) => {
+                        <textarea value={state.text} placeholder="Comment..." onChange={(e) => {
                             setState(draft => {
-                                draft.commentText = e.target.value;
+                                draft.text = e.target.value;
+                                draft.minLength = e.target.minLength;
                             });
                         }} />
                     </div>

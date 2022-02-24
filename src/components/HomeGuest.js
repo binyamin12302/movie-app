@@ -3,24 +3,19 @@ import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useImmer } from "use-immer";
 import DispatchContext from "../DispatchContext.js";
-import StateContext from "../StateContext";
-import LoadingCard from "./loadingPages/LoadingCard";
+import LoadingCard from "./loading/LoadingCard";
 import MovieCard from "./MovieCard.js";
 
 function HomeGuest() {
-  const appState = useContext(StateContext);
   const appDispatch = useContext(DispatchContext);
 
   const [state, setState] = useImmer({
-    latestMovies: [],
-    popularMovies: [],
+    latestMovies: null,
+    popularMovies: null,
   });
 
   useEffect(() => {
     window.scrollTo(0, 0);
-
-    appDispatch({ type: "loadingPage", value: true })
-
     async function fetchData() {
       try {
 
@@ -36,10 +31,14 @@ function HomeGuest() {
           draft.popularMovies = response[1].data.results;
         });
 
-        appDispatch({ type: "loadingPage", value: false })
 
       } catch (e) {
         console.log("There was a problem ");
+        setState(draft => {
+          draft.latestMovies = null;
+          draft.popularMovies = null;
+        });
+
       }
     }
     fetchData();
@@ -47,11 +46,9 @@ function HomeGuest() {
   }, [setState, appDispatch]);
 
   const [latestMovies, popularMovies] = [
-    state.latestMovies
-      .slice(0, 4)
+    state.latestMovies?.slice(0, 4)
       .map((movie, index) => <MovieCard movie={movie} key={index} />),
-    state.popularMovies
-      .slice(4, 8)
+    state.popularMovies?.slice(4, 8)
       .map((movie, index) => <MovieCard movie={movie} key={index} />),
   ];
 
@@ -61,14 +58,14 @@ function HomeGuest() {
         <h1 className="section-title">
           <i className="far fa-star"></i> Latest Movies
         </h1>
-        <div className="container-movie">{appState.loadingPage ? <LoadingCard /> : popularMovies}</div>
+        <div className="container-movie">{!state.popularMovies ? <LoadingCard /> : popularMovies}</div>
       </section>
 
       <section>
         <h1 className="section-title">
           <i className="far fa-star"></i> Popular Movies
         </h1>
-        <div className="container-movie">{appState.loadingPage ? <LoadingCard /> : latestMovies}</div>
+        <div className="container-movie">{!state.latestMovies ? <LoadingCard /> : latestMovies}</div>
         <div id="section-content">
           <h2 className="heading-2  tc">Get an account today </h2>
           <p className="text-muted">

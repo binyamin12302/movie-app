@@ -23,31 +23,34 @@ function Profile() {
     })
 
     useEffect(() => {
-        if (state.image) {
-            handleSubmit()
-        }
+        let active = true
         async function handleSubmit() {
-            appDispatch({ type: "notificationLoading" })
-            try {
-                await uploadBytes(callRef(appState.user.uid), state.image)
-                const url = await getDownloadURL(callRef(appState.user.uid))
-                if (url) {
-                    setState(draft => {
-                        draft.url = url;
-                    });
-                    appDispatch({ type: "changeProfileImage", value: url });
-                    appDispatch({ type: "notificationResult", value: "Profile picture changed successfully.", typeMessage: `${toast.TYPE.SUCCESS}`, autoClose: 2000 })
-                }
 
+            try {
+                await uploadBytes(callRef(auth.currentUser?.uid), state.image)
+                const url = await getDownloadURL(callRef(auth.currentUser?.uid))
+                appDispatch({ type: "userProfile", value: url })
+                console.log(url, "url")
             } catch (error) {
                 console.log(error.message, "error")
-                appDispatch({ type: "notificationResult", value: error.message.split(':')[1], typeMessage: `${toast.TYPE.ERROR}` })
             }
         }
-    }, [appDispatch, setState, state.image, appState.user.uid])
+
+        if (state.image && active) {
+            handleSubmit()
+        }
+
+        return () => {
+            active = false
+        }
+
+    }, [appDispatch, setState, state.image, auth.currentUser?.photoURL, auth?.currentUser])
+
 
     function handleImageClick(e) {
+
         if (e.target.files[0]) {
+            appDispatch({ type: "userProfile", profileImage: null });
             setState(draft => {
                 draft.image = e.target.files[0];
             });
@@ -55,38 +58,49 @@ function Profile() {
     }
 
 
-
-    async function saveChangesInformation() {
-
+    console.log(auth.currentUser?.uid)
+    async function saveChangesInformation(e) {
         appDispatch({ type: "notificationLoading" })
 
-        if (state.newPassword !== state.repeatPassword) {
-            return appDispatch({ type: "notificationResult", value: "The repeat password does not match", typeMessage: `${toast.TYPE.ERROR}` })
-        }
+        if (state.newPassword !== state.repeatPassword)
+            return appDispatch({
+                type: "notificationResult",
+                value: "The repeat password does not match",
+                typeMessage: `${toast.TYPE.ERROR}`
+            })
 
 
-        if (state.newPassword === "" && state.repeatPassword === "" && state.email === "" && state.name === "") {
-            return appDispatch({ type: "notificationResult", value: "The fields are empty", typeMessage: `${toast.TYPE.ERROR}` })
-        }
+        if (state.newPassword === "" && state.repeatPassword === "" && state.email === "" && state.name === "")
+            return appDispatch({
+                type: "notificationResult",
+                value: "The fields are empty",
+                typeMessage: `${toast.TYPE.ERROR}`
+            })
+
 
         try {
             state.name !== "" && await updateProfile(auth?.currentUser, { displayName: state.name })
             state.newPassword !== "" && await updatePassword(auth?.currentUser, state.newPassword)
             state.email !== "" && await updateEmail(auth?.currentUser, state.email)
-            appDispatch({ type: "notificationResult", value: "The changes have been saved", typeMessage: `${toast.TYPE.SUCCESS}`, autoClose: 2000 })
+            appDispatch({
+                type: "notificationResult",
+                value: "The changes have been saved",
+                typeMessage: `${toast.TYPE.SUCCESS}`,
+                autoClose: 2000
+            })
         } catch (error) {
             console.log(error)
             appDispatch({ type: "notificationResult", value: error.message.split(':')[1], typeMessage: `${toast.TYPE.ERROR}` })
         }
-
     }
 
     return (
         <div className='edit-profile wrap-form'>
             <div className='column-one'>
                 <div className='profile-image'>
-                    {appState.user.profileImage === "" ? <div className="avatar-profile profile-image-loading"></div> :
-                        <img src={appState.user.profileImage} alt='Avatar' className='avatar-profile' />}
+                    {appState.userProfile ? <img src={appState?.userProfile} alt='Avatar' className='avatar-profile' /> :
+                        <div className="avatar-profile profile-image-loading"></div>
+                    }
                     <input type="file" name="photo" className='custom-file-input' onChange={handleImageClick} />
                 </div>
             </div>
@@ -142,4 +156,4 @@ function Profile() {
     )
 }
 
-export default Profile
+export default Profile;

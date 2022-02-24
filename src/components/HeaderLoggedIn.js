@@ -18,9 +18,11 @@ function HeaderLoggedIn() {
   }
 
   return (
-    <button className="logout-btn" type="button" onClick={logout}>
-      Logout
-    </button>
+    <>
+      <button className="logout-btn" type="button" onClick={logout}>
+        Logout
+      </button>
+    </>
   );
 }
 

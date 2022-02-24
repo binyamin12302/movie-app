@@ -20,7 +20,6 @@ function Login() {
         (letter, idx) => (<span key={idx} style={{ transitionDelay: `${idx * 50}ms` }}>{letter}</span>)
       );
 
-
   const login = async (e) => {
     e.preventDefault();
 

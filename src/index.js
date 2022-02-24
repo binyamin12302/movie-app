@@ -23,23 +23,18 @@ import "./scss/style.scss";
 import StateContext from "./StateContext";
 
 
-
 function App() {
   const customId = "custom-id-yes";
   let toastId = null;
 
   const initialState = {
     loggedIn: Boolean(localStorage.getItem("userLoggedIn")),
-    user: {
-      uid: "",
-      name: "",
-      email: "",
-      profileImage: ""
-    },
-    loadingPage: false,
-    filteredMovies: [],
+    userUid: null,
+    userProfile: null,
+    filteredMovies: null,
     searchInput: ""
   };
+
 
   /*  https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png */
 
@@ -47,18 +42,12 @@ function App() {
     switch (action.type) {
       case "login":
         draft.loggedIn = true;
-        draft.user.uid = action.uid;
-        draft.user.name = action.name;
-        draft.user.email = action.email;
+        draft.userUid = action.value
         return;
       case "logout":
         draft.loggedIn = false;
-        draft.user = {
-          uid: "",
-          name: "",
-          email: "",
-          profileImage: ""
-        }
+        draft.userUid = null;
+        draft.userProfile = null;
         return;
       case "notificationResult":
         notificationResult((action.value), (action.typeMessage), (action.transition));
@@ -72,14 +61,14 @@ function App() {
       case "setFilteredMovies":
         draft.filteredMovies = action.value;
         return;
-      case "loadingPage":
-        draft.loadingPage = action.value;
-        return;
       case "clearSerach":
         draft.searchInput = "";
         return;
-      case "changeProfileImage":
-        draft.user.profileImage = action.value;
+      case "notificationError":
+        notificationError(action.value)
+        return;
+      case "userProfile":
+        draft.userProfile = action.value
         return;
       default:
     }
@@ -109,6 +98,12 @@ function App() {
     })
   }
 
+  function notificationError(value) {
+    toast.error(value, {
+      toastId: customId,
+      position: toast.POSITION.TOP_CENTER,
+    });
+  }
 
   const [state, dispatch] = useImmerReducer(ourReducer, initialState);
 
@@ -119,10 +114,8 @@ function App() {
         // ...your code to handle authenticated users.
 
         localStorage.setItem("userLoggedIn", state.loggedIn);
-        dispatch({ type: "login", uid: user.uid, name: user.displayName, email: user.email });
-
+        dispatch({ type: "login", value: user.uid });
         /* "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png" */
-        /*  dispatch({ type: "changeProfileImage", value: user.photoURL }); */
       } else {
         // No user is signed in...code to handle unauthenticated users.
         console.log("sorry");
@@ -136,28 +129,28 @@ function App() {
     });
     return () => unsubscribe(); // unsubscribing from the listener when the component is unmounting.
 
-  }, [dispatch, state.loggedIn, state.guestSessionId, state.user.profileImage]);
-  ;
+  }, [dispatch, state.loggedIn]);
 
 
 
   useEffect(() => {
 
-    if (state.loggedIn && state.user.uid) {
-      getImageProfile()
-    }
-    
     async function getImageProfile() {
       try {
-        const url = await getDownloadURL(callRef(state.user.uid))
-        dispatch({ type: "changeProfileImage", value: url });
+        const url = await getDownloadURL(callRef(state.userUid))
+        dispatch({ type: "userProfile", value: url });
       } catch (error) {
         console.log(error)
-        dispatch({ type: "changeProfileImage", value: "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png" });
+        dispatch({ type: "userProfile", value: auth.currentUser?.photoURL || "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png" });
       }
     }
 
-  }, [dispatch, state.user.uid, state.loggedIn]);
+    if (state?.userUid) {
+      getImageProfile()
+    }
+
+  }, [dispatch, state.userUid]);
+
 
   const homeContent = state.loggedIn ? HomeUser : HomeGuest;
 
@@ -165,6 +158,7 @@ function App() {
     <>
       <StateContext.Provider value={state}>
         <DispatchContext.Provider value={dispatch}>
+
           <Router>
             <ToastContainer />
             <Header />
@@ -174,7 +168,7 @@ function App() {
               <Route path="/about-us" component={About} />
               <Route path="/terms" component={Terms} />
               <Route path="/register" component={Register} />
-              <Route path="/profile" component={Profile} />
+              <Route path="/profile" component={state.searchInput === "" ? Profile : FilteredMovies} />
               <Route path="/movie/:id" component={state.searchInput === "" ? ViewSingleMovie : FilteredMovies} />
             </Switch>
             <Footer />
@@ -184,7 +178,5 @@ function App() {
     </>
   );
 }
-
-
 
 ReactDOM.render(<App />, document.getElementById("root"));
