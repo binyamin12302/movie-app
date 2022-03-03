@@ -18,7 +18,7 @@ function Footer() {
         </Link>
       </p>
       <p className="copyright-footer">
-        Copyright &copy; 2021 &nbsp;
+        Copyright &copy; {new Date().getFullYear()} &nbsp;
         <Link to="/">MovieApp</Link>. All rights reserved.
       </p>
     </footer>

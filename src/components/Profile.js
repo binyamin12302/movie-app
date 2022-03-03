@@ -7,11 +7,11 @@ import DispatchContext from "../DispatchContext.js";
 import { callRef } from '../firebase/Firebase';
 import StateContext from "../StateContext";
 
-
 function Profile() {
     const appState = useContext(StateContext);
     const appDispatch = useContext(DispatchContext);
     const auth = getAuth();
+    // const isMounted = React.useRef(true);
 
     const [state, setState] = useImmer({
         image: null,
@@ -23,34 +23,31 @@ function Profile() {
     })
 
     useEffect(() => {
-        let active = true
-        async function handleSubmit() {
-
+        let active = true;
+        const handleSubmit = async () => {
             try {
                 await uploadBytes(callRef(auth.currentUser?.uid), state.image)
                 const url = await getDownloadURL(callRef(auth.currentUser?.uid))
-                appDispatch({ type: "userProfile", value: url })
-                console.log(url, "url")
+                await updateProfile(auth?.currentUser, { photoURL: url })
+                if (active) appDispatch({ type: "userProfile", value: url })
             } catch (error) {
                 console.log(error.message, "error")
             }
         }
 
-        if (state.image && active) {
+        if (state.image) {
             handleSubmit()
         }
 
         return () => {
             active = false
         }
-
-    }, [appDispatch, setState, state.image, auth.currentUser?.photoURL, auth?.currentUser])
+    }, [appDispatch, state.image, auth.currentUser])
 
 
     function handleImageClick(e) {
-
         if (e.target.files[0]) {
-            appDispatch({ type: "userProfile", profileImage: null });
+            appDispatch({ type: "userProfile", value: null })
             setState(draft => {
                 draft.image = e.target.files[0];
             });
@@ -58,10 +55,7 @@ function Profile() {
     }
 
 
-    console.log(auth.currentUser?.uid)
-    async function saveChangesInformation(e) {
-        appDispatch({ type: "notificationLoading" })
-
+    async function saveChangesInformation() {
         if (state.newPassword !== state.repeatPassword)
             return appDispatch({
                 type: "notificationResult",
@@ -77,7 +71,7 @@ function Profile() {
                 typeMessage: `${toast.TYPE.ERROR}`
             })
 
-
+        appDispatch({ type: "notificationLoading" })
         try {
             state.name !== "" && await updateProfile(auth?.currentUser, { displayName: state.name })
             state.newPassword !== "" && await updatePassword(auth?.currentUser, state.newPassword)
@@ -94,14 +88,15 @@ function Profile() {
         }
     }
 
+
     return (
         <div className='edit-profile wrap-form'>
             <div className='column-one'>
                 <div className='profile-image'>
-                    {appState.userProfile ? <img src={appState?.userProfile} alt='Avatar' className='avatar-profile' /> :
+                    {appState.userProfile ? <img src={appState.userProfile} alt='Avatar' className='avatar-profile' /> :
                         <div className="avatar-profile profile-image-loading"></div>
                     }
-                    <input type="file" name="photo" className='custom-file-input' onChange={handleImageClick} />
+                    <input accept="image/*,image/heif,image/heic" type="file" name="photo" className='custom-file-input' onChange={handleImageClick} />
                 </div>
             </div>
             <div className="vl"></div>

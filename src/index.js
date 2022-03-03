@@ -2,6 +2,7 @@ import { getDownloadURL } from "firebase/storage";
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 import { Flip, toast, ToastContainer, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useImmerReducer } from "use-immer";
@@ -14,6 +15,7 @@ import Header from "./components/Header";
 import HomeGuest from "./components/HomeGuest";
 import HomeUser from "./components/HomeUser";
 import Login from "./components/Login";
+import NotFound from "./components/NotFound";
 import Profile from './components/Profile';
 import Register from "./components/Register";
 import Terms from "./components/Terms";
@@ -64,29 +66,10 @@ function App() {
       case "clearSerach":
         draft.searchInput = "";
         return;
-      case "notificationError":
-        notificationError(action.value)
-        return;
       case "userProfile":
-        draft.userProfile = action.value
+        draft.userProfile = action.value;
         return;
       default:
-    }
-  }
-
-
-  function notificationResult(value, message, transion, autoclose) {
-    if (!toast.isActive(toastId)) {
-      toastId = toast.update(customId, {
-        render: value,
-        position: toast.POSITION.TOP_CENTER,
-        toastId: customId,
-        draggable: true,
-        type: message,
-        autoClose: autoclose || 3000,
-        transition: transion || Flip,
-        isLoading: false,
-      })
     }
   }
 
@@ -98,12 +81,29 @@ function App() {
     })
   }
 
-  function notificationError(value) {
+  function notificationResult(value, message, transion, autoclose) {
+    if (!toast.isActive(toastId)) {
+      toastId = toast.update(customId, {
+        render: value,
+        toastId: customId,
+        draggable: true,
+        type: message,
+        autoClose: 3000,
+        transition: transion || Flip,
+        isLoading: false,
+      })
+    }
+
     toast.error(value, {
       toastId: customId,
       position: toast.POSITION.TOP_CENTER,
+      transition: Zoom
     });
   }
+
+ 
+
+
 
   const [state, dispatch] = useImmerReducer(ourReducer, initialState);
 
@@ -115,7 +115,9 @@ function App() {
 
         localStorage.setItem("userLoggedIn", state.loggedIn);
         dispatch({ type: "login", value: user.uid });
+        dispatch({ type: "userProfile", value: user.photoURL });
         /* "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png" */
+        // "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
       } else {
         // No user is signed in...code to handle unauthenticated users.
         console.log("sorry");
@@ -133,43 +135,48 @@ function App() {
 
 
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   let active = true;
 
-    async function getImageProfile() {
-      try {
-        const url = await getDownloadURL(callRef(state.userUid))
-        dispatch({ type: "userProfile", value: url });
-      } catch (error) {
-        console.log(error)
-        dispatch({ type: "userProfile", value: auth.currentUser?.photoURL || "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png" });
-      }
-    }
+  //   async function getImageProfile() {
+  //     try {
+  //       const url = await getDownloadURL(callRef(state.userUid))
+  //       if (active) dispatch({ type: "userProfile", value: url });
+  //     } catch (error) {
+  //       if (active) dispatch({
+  //         type: "userProfile", value: auth.currentUser?.photoURL
+  //           || "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
+  //       });
+  //     }
+  //   }
 
-    if (state?.userUid) {
-      getImageProfile()
-    }
+  //   if (state?.userUid) getImageProfile()
 
-  }, [dispatch, state.userUid]);
+  //   return () => {
+  //     active = false;
+  //   };
 
+  // }, [dispatch, state.userUid]);
 
   const homeContent = state.loggedIn ? HomeUser : HomeGuest;
 
+  // console.log(auth?.currentUser)
   return (
     <>
       <StateContext.Provider value={state}>
         <DispatchContext.Provider value={dispatch}>
-
           <Router>
             <ToastContainer />
             <Header />
             <Switch>
               <Route exact path="/" component={state.searchInput === "" ? homeContent : FilteredMovies} />
+              <Route path="/profile" component={state.searchInput === "" ? Profile : FilteredMovies} />
+              {state.loggedIn ? <Redirect from="/login" to={"/"} /> || <Redirect from="/register" to={"/"} /> : null}
               <Route path="/login" component={Login} />
+              <Route path="/register" component={Register} />
+              <Route exact path="/movie/:id" component={state.searchInput === "" ? ViewSingleMovie : FilteredMovies} />
               <Route path="/about-us" component={About} />
               <Route path="/terms" component={Terms} />
-              <Route path="/register" component={Register} />
-              <Route path="/profile" component={state.searchInput === "" ? Profile : FilteredMovies} />
-              <Route path="/movie/:id" component={state.searchInput === "" ? ViewSingleMovie : FilteredMovies} />
             </Switch>
             <Footer />
           </Router>

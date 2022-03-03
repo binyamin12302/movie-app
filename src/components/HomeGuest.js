@@ -8,7 +8,7 @@ import MovieCard from "./MovieCard.js";
 
 function HomeGuest() {
   const appDispatch = useContext(DispatchContext);
-
+  
   const [state, setState] = useImmer({
     latestMovies: null,
     popularMovies: null,
@@ -16,9 +16,9 @@ function HomeGuest() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    let active = true;
     async function fetchData() {
       try {
-
         const response = await Promise.all([Axios.get(
           `https://api.themoviedb.org/3/discover/movie?latest.desc&api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&page=1`
         ), Axios.get(
@@ -26,11 +26,12 @@ function HomeGuest() {
         )])
         // JavaScript will wait until ALL of the promises have completed
 
-        setState((draft) => {
-          draft.latestMovies = response[0].data.results;
-          draft.popularMovies = response[1].data.results;
-        });
-
+        if (active) {
+          setState((draft) => {
+            draft.latestMovies = response[0].data.results;
+            draft.popularMovies = response[1].data.results;
+          });
+        }
 
       } catch (e) {
         console.log("There was a problem ");
@@ -41,7 +42,12 @@ function HomeGuest() {
 
       }
     }
+
     fetchData();
+
+    return () => {
+      active = false;
+    };
 
   }, [setState, appDispatch]);
 

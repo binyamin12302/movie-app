@@ -1,13 +1,13 @@
 import { signInWithPopup } from 'firebase/auth';
 import React, { useContext } from 'react';
-import { useHistory } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import DispatchContext from "../DispatchContext.js";
 import { auth, provider } from "../firebase/Firebase.js";
 
 function GoogleButton() {
-    const history = useHistory();
     const appDispatch = useContext(DispatchContext);
+    const history = useHistory();
 
     const signInWithGoogle = async () => {
         appDispatch({ type: "notificationLoading" })
@@ -15,12 +15,21 @@ function GoogleButton() {
             await signInWithPopup(
                 auth,
                 provider
-            )
-            history.push("/");
-            appDispatch({ type: "notificationResult", value: "You have successfully logged in.", typeMessage: `${toast.TYPE.SUCCESS}` })
+            );
+
+
+            appDispatch({
+                type: "notificationResult",
+                value: "You have successfully logged in.",
+                typeMessage: `${toast.TYPE.SUCCESS}`
+            })
         } catch (error) {
             console.log(error);
-            appDispatch({ type: "notificationResult", value: error.message.split(':')[1], typeMessage: `${toast.TYPE.ERROR}` })
+            appDispatch({
+                type: "notificationResult",
+                value: error.message.split(':')[1],
+                typeMessage: `${toast.TYPE.ERROR}`
+            })
         }
     }
 
@@ -31,4 +40,4 @@ function GoogleButton() {
     )
 }
 
-export default GoogleButton
+export default GoogleButton;

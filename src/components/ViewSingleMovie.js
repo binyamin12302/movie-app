@@ -13,7 +13,6 @@ function ViewSingleMovie(props) {
     const { id } = useParams();
     const history = useHistory();
     const appDispatch = useContext(DispatchContext);
-    /* const appState = useContext(StateContext); */
 
     const [state, setState] = useImmer({
         movieData: null,
@@ -27,8 +26,8 @@ function ViewSingleMovie(props) {
 
     useEffect(() => {
         let active = true;
-        async function fetchData() {
 
+        const fetchData = async () => {
             try {
                 const response = await Promise.all([Axios.get(
                     `https://api.themoviedb.org/3/movie/${id}?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US`
@@ -42,47 +41,48 @@ function ViewSingleMovie(props) {
                 )
                 ])
 
-
-
-                setState(draft => {
-                    draft.movieData = response[0].data
-                    draft.hasError = false
-                    draft.cast = response[2].data.cast
-                    draft.genres = response[0].data.genres
-                    draft.similar = response[3].data.results
-                });
-
-
-
-
-                if (response[1].data.results.length === 0) {
+                if (active) {
                     setState(draft => {
-                        draft.videoKey = ""
+                        draft.movieData = response[0].data
+                        draft.hasError = false
+                        draft.cast = response[2].data.cast
+                        draft.genres = response[0].data.genres
+                        draft.similar = response[3].data.results
                     });
-                } else {
-                    setState(draft => {
-                        draft.videoKey = response[1].data.results[0].key
-                    });
+
+                    if (response[1].data.results.length === 0) {
+                        setState(draft => {
+                            draft.videoKey = ""
+                        });
+                    } else {
+                        setState(draft => {
+                            draft.videoKey = response[1].data.results[0].key
+                        });
+                    }
+
                 }
+
+             
+
             } catch (e) {
                 console.log("There was a problem ");
+                if(active){ 
                 setState(draft => {
                     draft.hasError = true
                 });
+
+            }
+
             }
         }
 
-        if (active) {
-            fetchData();
-        }
-
-
-
+        fetchData();
 
         return () => {
             active = false;
         };
-    }, [id, setState, appDispatch, state.hasError])
+
+    }, [id, setState])
 
 
     if (state.hasError) {
@@ -128,7 +128,7 @@ function ViewSingleMovie(props) {
 
                         <div className="content">
                             <div className="column-one  container-movie">
-                                <MovieCard  movie={state?.movieData} pathname={props.match.path} />
+                                <MovieCard movie={state?.movieData} pathname={props.match.path} />
                             </div>
                             <div className="column-two">
 
@@ -160,8 +160,7 @@ function ViewSingleMovie(props) {
                                 </div>
                             </div>
                         </div>
-
-                        <Comments id={id} />
+                        <Comments />
                     </div>
                 </>}
         </>

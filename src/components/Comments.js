@@ -1,39 +1,40 @@
-import { addDoc, collection, deleteDoc, doc, increment, onSnapshot, query, updateDoc } from 'firebase/firestore';
+import {
+    addDoc, collection, deleteDoc, doc, getDocs,
+    increment, onSnapshot, query, setDoc, updateDoc, where
+} from 'firebase/firestore';
 import React, { useContext, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useImmer } from "use-immer";
 import DispatchContext from "../DispatchContext.js";
 import { auth, db } from "../firebase/Firebase";
 import StateContext from "../StateContext";
 
-
-function Comments({ id }) {
+function Comments() {
     const appDispatch = useContext(DispatchContext);
     const appState = useContext(StateContext);
+    const { id } = useParams();
 
     const [state, setState] = useImmer({
         title: "",
         text: "",
-        reviews: [],
-        deleted: false,
-        commentLike: null
+        reviews: []
     });
 
-
-
     const createComment = async () => {
-
-
         const commentsCollectionRef = collection(db, id)
+        // appDispatch({ type: "notificationLoading" })
 
         if (state.title === "" || state.text === "") return appDispatch({
-            type: "notificationError",
-            value: "A required field is missing."
+            type: "notificationResult",
+            value: "A required field is missing.",
+            typeMessage: `${toast.TYPE.ERROR}`
         });
 
         if (state.text.replace(/\s/g, '').length < 100) return appDispatch({
-            type: "notificationError",
-            value: "Sorry, your review is too short. It needs to contain at least 100 characters."
+            type: "notificationResult",
+            value: "Sorry, your review is too short. It needs to contain at least 100 characters.",
+            typeMessage: `${toast.TYPE.ERROR}`
         });
 
 
@@ -53,7 +54,6 @@ function Comments({ id }) {
                 timestamp: new Date()
             });
 
-
         } catch (error) {
             console.log(error)
         }
@@ -65,6 +65,7 @@ function Comments({ id }) {
         let active = true
         const q = query(collection(db, id));
 
+
         onSnapshot(q, (querySnapshot) => {
             const cities = [];
 
@@ -72,11 +73,7 @@ function Comments({ id }) {
                 cities.unshift({ ...doc.data(), id: doc.id });
             });
 
-            if (active) {
-                setState(draft => {
-                    draft.reviews = cities;
-                });
-            }
+            if (active) setState(draft => { draft.reviews = cities; });
 
         });
 
@@ -87,42 +84,64 @@ function Comments({ id }) {
     }, [id, setState])
 
 
-
     async function deletePost(idUs) {
         try {
             let confirm = window.confirm("Are you sure you want to delete your review?");
-            if (confirm === true) await deleteDoc(doc(db, `${id}`, idUs));
+            if (confirm) {
+                await deleteDoc(doc(db, `likeState-${id}`, `${auth.currentUser?.uid}`));
+                await deleteDoc(doc(db, `${id}`, idUs))
+            }
         } catch (error) {
             console.log(error)
         }
-
     }
 
-
-    async function handleLike(commentId) {
+    async function handleLikeUser(commentId) {
         const washingtonRef = doc(db, id, commentId);
-        try {
-            setState(draft => {
-                draft.commentLike = !state.commentLike;
+        const collectionRefLike = query(collection(db, `likeState-${id}`),
+            where("user", "==", `${auth.currentUser?.uid}`));
+
+        const getTheLikesOftheMovie = await getDocs(collectionRefLike)
+
+        if (getTheLikesOftheMovie.docs.length === 0) return setALike()
+        else getTheLikesOftheMovie.docs.map((doc) => {
+            if ({ ...doc.data() }.like) return setALike()
+            else return setAnUnlike()
+        })
+
+
+        async function setALike() {
+            await setDoc(doc(db, `likeState-${id}`, `${auth.currentUser?.uid}`), {
+                user: auth.currentUser?.uid,
+                like: false,
             });
 
-            if (state.commentLike) {
-                await updateDoc(washingtonRef, {
-                    like: increment(-1)
-                })
-            } else {
-                await updateDoc(washingtonRef, {
-                    like: increment(1)
-                })
-            }
+            incrementALike()
+        }
+
+        async function setAnUnlike() {
+            await setDoc(doc(db, `likeState-${id}`, `${auth.currentUser?.uid}`), {
+                user: auth.currentUser?.uid,
+                like: true,
+            });
+
+            decrementAlike()
+        }
 
 
-        } catch (error) {
-            console.log(error)
+        async function incrementALike() {
+            await updateDoc(washingtonRef, {
+                like: increment(1),
+            });
+        }
+
+        async function decrementAlike() {
+            await updateDoc(washingtonRef, {
+                like: increment(-1),
+            });
         }
 
     }
-
 
 
     return (
@@ -150,8 +169,8 @@ function Comments({ id }) {
                                     <p><span>Reviewed by </span> {`${comment.name || comment.email}`}</p>
                                 </div>
                                 <div className='li-info'>
-                                    {comment.like} : <i className="fa fa-thumbs-up" onClick={() => {
-                                        handleLike(comment.id)
+                                    {comment.like} : <i className="fa fa-thumbs-up" onClick={(e) => {
+                                        handleLikeUser(comment.id)
                                     }}></i>
                                 </div>
                             </div>
@@ -189,4 +208,4 @@ function Comments({ id }) {
     )
 }
 
-export default Comments
+export default Comments;

@@ -1,6 +1,6 @@
 import Axios from "axios";
 import { debounce } from "lodash";
-import React, { useCallback, useContext, useEffect, useMemo } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useRef } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import DispatchContext from "../DispatchContext.js";
 import { auth } from "../firebase/Firebase.js";
@@ -14,16 +14,14 @@ function Header() {
   const appDispatch = useContext(DispatchContext);
   const location = useLocation();
   const history = useHistory();
+  const mounted = useRef(false);
 
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [location.pathname])
+
 
   const searchMovie = useMemo(
     () =>
       debounce(async function (e) { // @TODO: check if the debounce is working with arrow function
         try {
-
           const response = await Axios.get(`https://api.themoviedb.org/3/search/movie?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&query="${e}"`);
           appDispatch({ type: "setFilteredMovies", value: response.data.results }); // success data can be [] or [<movie>]
           /* appDispatch({ type: "loadingFilteredMovies", value: false }); */
@@ -43,14 +41,12 @@ function Header() {
       appDispatch({ type: "setFilteredMovies", value: null });
       searchMovie(e.target.value)
     },
+    [appDispatch, searchMovie]);
 
-    [appDispatch, searchMovie]
-  );
-
-
-  
 
   const headerContent = appState.loggedIn ? <HeaderLoggedIn /> : <HeaderLoggedOut />
+
+
   return (
     <header>
       <div id="header">
@@ -69,9 +65,9 @@ function Header() {
 
           <div id="navigation">
             {appState.loggedIn && <>
-              {appState?.userProfile ?
+              {auth.currentUser?.photoURL  ?
                 <img
-                  src={appState?.userProfile}
+                  src={auth.currentUser?.photoURL}
                   alt='Avatar'
                   className='avatar'
                   onClick={() => history.push("/profile")}

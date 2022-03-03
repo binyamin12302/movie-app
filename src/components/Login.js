@@ -6,7 +6,7 @@ import DispatchContext from "../DispatchContext.js";
 import { auth } from "../firebase/Firebase.js";
 import GoogleButton from "./GoogleButton.js";
 
-function Login() {
+function Login(props) {
   const history = useHistory();
   const appDispatch = useContext(DispatchContext);
   const [loginEmail, setLoginEmail] = useState("");
@@ -22,8 +22,6 @@ function Login() {
 
   const login = async (e) => {
     e.preventDefault();
-
-
     appDispatch({ type: "notificationLoading" })
     try {
       await signInWithEmailAndPassword(
@@ -31,15 +29,18 @@ function Login() {
         loginEmail,
         loginPassword
       );
-      history.push("/");
 
-      appDispatch({ type: "notificationResult", value: "You have successfully logged in.", typeMessage: `${toast.TYPE.SUCCESS}`, autoClose: 3000 })
+      return appDispatch({
+        type: "notificationResult",
+        value: "You have successfully logged in.",
+        typeMessage: `${toast.TYPE.SUCCESS}`,
+        autoClose: 3000
+      })
     } catch (error) {
       appDispatch({ type: "notificationResult", value: error.message.split(':')[1], typeMessage: `${toast.TYPE.ERROR}` })
     }
 
   };
-
 
 
   return (

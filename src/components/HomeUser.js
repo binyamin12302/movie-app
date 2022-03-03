@@ -8,11 +8,13 @@ import StateContext from "../StateContext";
 import LoadingCard from "./loading/LoadingCard.js";
 import MovieCard from "./MovieCard.js";
 
-function HomeUser(props) {
+function HomeUser({ location }) {
   const appState = useContext(StateContext);
-  const initialUrl = `https://api.themoviedb.org/3/`
+  const initialUrl = `https://api.themoviedb.org/3/`;
+  const isMounted = React.useRef(true);
 
   const currentClassName = JSON.parse(localStorage.getItem('currentClassName'));
+
   const initialState = {
     results: null,
     total_pages: JSON.parse(localStorage.getItem('totalPages')) || 500,
@@ -54,7 +56,7 @@ function HomeUser(props) {
 
   const getMovies = useMemo(
     () =>
-      debounce(async function (selected) {
+      async function (selected) {
         dispatch({ type: "fetchComplete", value: null })
         try {
           const response = await Axios.get(`${state.baseUrl + selected}`);
@@ -63,7 +65,7 @@ function HomeUser(props) {
           console.log("There was a problem ww.");
           dispatch({ type: "fetchComplete", value: null })
         }
-      }, 200)
+      }
 
     , [state.baseUrl, dispatch]);
 
@@ -79,7 +81,7 @@ function HomeUser(props) {
   );
 
   const allMovies = state.results?.map((movie, index) => {
-    return <MovieCard movie={movie} key={index} pathname={props.location.pathname} />;
+    return <MovieCard movie={movie} key={index} pathname={location.pathname} />;
   })
 
   function handleCurrentPage(event) {
@@ -90,19 +92,22 @@ function HomeUser(props) {
     dispatch({ type: "selectedPage", value: 1 })
   }
 
+
   useEffect(() => {
-    let active = true;
-    if (active) {
+    if (isMounted) {
+      dispatch({ type: "fetchComplete", value: null })
       getMovies(state.currentPage)
+      saveInLocalStorage("totalPages", state.total_pages)
+      saveInLocalStorage("currentMoviesUrl", state.baseUrl)
     }
 
-    saveInLocalStorage("totalPages", state.total_pages)
-    saveInLocalStorage("currentMoviesUrl", state.baseUrl)
-
     return () => {
-      active = false;
+      isMounted.current = false;
     };
-  }, [state.currentPage, state.total_pages, state.baseUrl, getMovies])
+
+  }, [state.currentPage, state.total_pages, state.baseUrl, getMovies, dispatch])
+
+
 
 
   function handleClassName(event) {
@@ -123,8 +128,6 @@ function HomeUser(props) {
   }
 
   const content = !state.results ? <LoadingCard /> : allMovies
-
-  console.log(state.baseUrl)
 
   return (
     <main id="home-user">

@@ -1,13 +1,12 @@
 import { createUserWithEmailAndPassword } from "@firebase/auth";
 import React, { useContext } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Bounce, toast } from 'react-toastify';
 import { useImmer } from "use-immer";
 import DispatchContext from "../DispatchContext.js";
 import { auth } from "../firebase/Firebase.js";
 
 function Register() {
-  const history = useHistory();
   const appDispatch = useContext(DispatchContext);
   const [state, setState] = useImmer({
     registerEmail: "",
@@ -21,7 +20,11 @@ function Register() {
     appDispatch({ type: "notificationLoading" })
 
     if (state.registerPassword !== state.confirmPassword) {
-      return appDispatch({ type: "notificationResult", value: "The password confirmation does not match", typeMessage: `${toast.TYPE.ERROR}` })
+      return appDispatch({
+        type: "notificationResult",
+        value: "The password confirmation does not match",
+        typeMessage: `${toast.TYPE.ERROR}`
+      })
     }
 
     try {
@@ -30,12 +33,21 @@ function Register() {
         state.registerEmail,
         state.registerPassword
       );
-      history.push("/");
-      appDispatch({ type: "notificationResult", value: "You have successfully logged in.", typeMessage: `${toast.TYPE.SUCCESS}`, autoClose: 2000, })
+
+      appDispatch({
+        type: "notificationResult",
+        value: "You have successfully logged in.",
+        typeMessage: `${toast.TYPE.SUCCESS}`,
+        autoClose: 2000,
+      })
 
     } catch (error) {
       console.log(error)
-      appDispatch({ type: "notificationResult", value: error.message.split(':')[1], typeMessage: `${toast.TYPE.ERROR}`, transition: Bounce })
+      appDispatch({
+        type: "notificationResult",
+        value: error.message.split(':')[1],
+        typeMessage: `${toast.TYPE.ERROR}`, transition: Bounce
+      })
     }
   };
 

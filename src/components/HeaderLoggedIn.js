@@ -12,17 +12,15 @@ function HeaderLoggedIn() {
 
   const logout = async () => {
     appDispatch({ type: "notificationLoading" })
-    await signOut(auth)
-    history.push("/");
+    history.push('/')
+    await signOut(auth);
     appDispatch({ type: "notificationResult", value: "You have successfully logged out.", typeMessage: `${toast.TYPE.SUCCESS}`, transition: Bounce, autoClose: 2000 })
   }
 
   return (
-    <>
-      <button className="logout-btn" type="button" onClick={logout}>
-        Logout
-      </button>
-    </>
+    <button className="logout-btn" type="button" onClick={logout}>
+      Logout
+    </button>
   );
 }
 
