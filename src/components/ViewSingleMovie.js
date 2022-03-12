@@ -1,6 +1,6 @@
 import Axios from "axios";
 import debounce from 'debounce';
-import React, { useMemo } from 'react';
+import React, { useMemo,useContext } from 'react';
 import Iframe from 'react-iframe';
 import { useHistory, useParams } from "react-router-dom";
 import { useImmer } from "use-immer";
@@ -8,16 +8,18 @@ import Comments from "./Comments.js";
 import LoadingSingleMovie from "./loading/LoadingSingleMoviePage";
 import MovieCard from "./MovieCard";
 import NotFound from "./NotFound.js";
+import StateContext from "../StateContext";
 
 function ViewSingleMovie(props) {
     const { id } = useParams();
     const history = useHistory();
+    const appState = useContext(StateContext)
 
     const initialUrl = `https://api.themoviedb.org/3/movie/`;
-    const movieCardUrl = `${initialUrl}${id}?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US`;
-    const videoUrl = `${initialUrl}${id}/videos?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language&language=en-US`;
-    const creditsUrl = `${initialUrl}${id}/credits?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language&language=en-US`;
-    const similarMoviesUrl = `${initialUrl}${id}/similar?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language&language&language=en-US&page=1`
+    const movieCardUrl = `${initialUrl}${id}?api_key=${appState.apiKey}&language=en-US`;
+    const videoUrl = `${initialUrl}${id}/videos?api_key=${appState.apiKey}&language&language=en-US`;
+    const creditsUrl = `${initialUrl}${id}/credits?api_key=${appState.apiKey}&language&language=en-US`;
+    const similarMoviesUrl = `${initialUrl}${id}/similar?api_key=${appState.apiKey}&language&language&language=en-US&page=1`
 
     const [state, setState] = useImmer({
         movieData: null,
@@ -55,9 +57,6 @@ function ViewSingleMovie(props) {
                 setState(draft => {
                     draft.videoKey = findTrialerMovie?.key || ""
                 });
-
-
-
             } catch (e) {
                 console.log("There was a problem ");
                 setState(draft => {

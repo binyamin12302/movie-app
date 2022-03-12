@@ -18,7 +18,7 @@ function FilteredMovies() {
         <div id='search-filter'>
             {
                 !appState.filteredMovies ? <LoadingSniper /> :
-                    <div className="container-movie  user-movies"> {filteredMoviesResults} </div>
+                    <div className="container-movie" id='filter-movie'> {filteredMoviesResults} </div>
             }
         </div>
     )

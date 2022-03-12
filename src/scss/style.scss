@@ -26,6 +26,7 @@ html {
 #header {
   background-color: $secondary-color;
   /* border-bottom: 0.4px solid #ffffff57; */
+
   .container {
     display: flex;
     justify-content: space-between;
@@ -54,13 +55,6 @@ html {
       &::placeholder {
         color: #7378c5;
       }
-    }
-
-    #search-filter {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      padding-bottom: 9.5rem;
     }
 
     button {
@@ -135,6 +129,18 @@ html {
         background-color: $bg-secondary;
       }
     }
+  }
+}
+
+//result after search
+#search-filter {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-bottom: 9.5rem;
+
+  .filter-movie {
+    padding-bottom: 122px;
   }
 }
 

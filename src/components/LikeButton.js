@@ -18,11 +18,10 @@ function Like({ like, id, commentId }) {
 
         const docSnap = await getDoc(docRef);
 
-        const newDoc = (val, color) => {
+        const newDoc = (val) => {
             setDoc(docRef, {
                 user: auth.currentUser?.uid,
                 like: val,
-                color,
                 commentId,
             }, { merge: true });
         }
@@ -51,7 +50,7 @@ function Like({ like, id, commentId }) {
                 });
 
             } else {
-                newDoc(true, "#0984e3");
+                newDoc(true);
                 incrementLike();
                 setState(draft => {
                     draft.colorLikeButton = "#0984e3";
@@ -59,7 +58,7 @@ function Like({ like, id, commentId }) {
             }
         } else {
             // doc.data() will be undefined in this case
-            newDoc(true, "#0984e3");
+            newDoc(true);
             incrementLike();
         }
 
@@ -76,11 +75,12 @@ function Like({ like, id, commentId }) {
 
         onSnapshot(b, (querySnapshot) => {
             querySnapshot.forEach((doc) => {
-                if (doc.exists())
-                    if (active) setState(draft => {
-                        draft.colorLikeButton = "#0984e3";
-                    });
+
+                if (active) setState(draft => {
+                    draft.colorLikeButton = "#0984e3";
+                });
             });
+
         });
 
 
@@ -90,8 +90,6 @@ function Like({ like, id, commentId }) {
 
     }, [id, appState?.userUid, setState, commentId])
 
-
-    console.log(state.colorLikeButton)
 
     return (
         <>

@@ -1,5 +1,5 @@
 import {
-    addDoc, collection, deleteDoc, doc, increment, onSnapshot, orderBy, query, where
+    addDoc, collection, deleteDoc, doc, increment, onSnapshot, orderBy, query, updateDoc, where
 } from 'firebase/firestore';
 import React, { useContext, useEffect } from 'react';
 import { toast } from 'react-toastify';
@@ -59,15 +59,29 @@ function Comments({ id }) {
         const q = query(collection(db, id), orderBy("timestamp", "desc"));
 
 
+        const updateName = async (docId) => {
+            console.log(docId, id)
+            const coRef = doc(db, id, docId);
+            await updateDoc(coRef, {
+                name: auth.currentUser?.displayName,
+            });
+        }
+
         onSnapshot(q, (querySnapshot) => {
             const docs = [];
 
             querySnapshot.forEach((doc) => {
                 docs.push({ ...doc.data(), id: doc.id });
+                console.log()
+                if (doc.data().user === auth.currentUser?.uid && doc.data().name !== auth.currentUser?.name)
+                    updateName(doc.id);
             });
 
             if (active) setState(draft => { draft.reviews = docs; });
         });
+
+
+
 
 
         return () => {

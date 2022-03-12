@@ -13,6 +13,7 @@ import Header from "./components/Header";
 import HomeGuest from "./components/HomeGuest";
 import HomeUser from "./components/HomeUser";
 import Login from "./components/Login";
+import NotFound from "./components/NotFound";
 import Profile from './components/Profile';
 import Register from "./components/Register";
 import Terms from "./components/Terms";
@@ -26,6 +27,7 @@ function App() {
   const customId = "custom-id-yes";
 
   const initialState = {
+    apiKey: process.env?.REACT_APP_THEMOVIEDB_API_KEY,
     loggedIn: Boolean(localStorage.getItem("userLoggedIn")),
     userUid: null,
     userProfile: null,
@@ -157,6 +159,7 @@ function App() {
               {viewSingleMovie}
               <Route path="/about-us" component={About} />
               <Route path="/terms" component={Terms} />
+              <Route component={NotFound} />
             </Switch>
             <Footer />
           </Router>

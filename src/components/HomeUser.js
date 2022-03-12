@@ -19,14 +19,12 @@ function HomeUser({ location }) {
     total_pages: JSON.parse(localStorage.getItem('totalPages')) || 500,
     currentPage: JSON.parse(localStorage.getItem('pageNumber')) || 1,
     baseUrl: JSON.parse(localStorage.getItem('currentMoviesUrl')) ||
-      `${initialUrl}discover/movie?sort_by=popularity.desc&api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&page=`
+      `${initialUrl}discover/movie?sort_by=popularity.desc&api_key=${appState.apiKey}&page=`
   }
-
 
   const saveInLocalStorage = (name, value) => {
     localStorage.setItem(`${name}`, JSON.stringify(value));
   }
-
 
   function ourReducer(draft, action) {
     switch (action.type) {
@@ -38,19 +36,19 @@ function HomeUser({ location }) {
         saveInLocalStorage("pageNumber", action.value)
         return;
       case "POPULAR":
-        draft.baseUrl = `${initialUrl}discover/movie?sort_by=popularity.desc&api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&page=`
+        draft.baseUrl = `${initialUrl}discover/movie?sort_by=popularity.desc&api_key=${appState.apiKey}&page=`
         draft.total_pages = 500
         return;
       case "TOP-RATED":
-        draft.baseUrl = `${initialUrl}movie/top_rated?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US&page=`
+        draft.baseUrl = `${initialUrl}movie/top_rated?api_key=${appState.apiKey}&language=en-US&page=`
         draft.total_pages = 473
         return;
       case "UPCOMING":
-        draft.baseUrl = `${initialUrl}movie/upcoming?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US&page=`
+        draft.baseUrl = `${initialUrl}movie/upcoming?api_key=${appState.apiKey}&language=en-US&page=`
         draft.total_pages = 11
         return;
       case "NOW-PLAYING":
-        draft.baseUrl = `${initialUrl}movie/now_playing?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US&region=DE&page=`
+        draft.baseUrl = `${initialUrl}movie/now_playing?api_key=${appState.apiKey}&language=en-US&region=DE&page=`
         draft.total_pages = 3
         return;
       default:
@@ -61,7 +59,6 @@ function HomeUser({ location }) {
 
   const getMovies = useMemo(
     () => async (selected) => {
-      dispatch({ type: "fetch", value: null })
       try {
         const response = await Axios.get(`${state.baseUrl + selected}`);
         dispatch({ type: "fetch", value: response.data.results })
@@ -98,6 +95,7 @@ function HomeUser({ location }) {
 
   useEffect(() => {
     if (isMounted) {
+      dispatch({ type: "fetch", value: null })
       getMovies(state.currentPage)
     }
 
@@ -108,7 +106,7 @@ function HomeUser({ location }) {
       isMounted.current = false;
     };
 
-  }, [state.currentPage, state.total_pages, state.baseUrl, getMovies])
+  }, [state.currentPage, state.total_pages, state.baseUrl, getMovies, dispatch])
 
 
 

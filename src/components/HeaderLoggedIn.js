@@ -18,21 +18,20 @@ function HeaderLoggedIn() {
     appState.notificationLoading();
     history.push('/')
     await signOut(auth);
-    appState.notification("You have successfully logged out.", `${toast.TYPE.SUCCESS}`, Bounce)
+    appState.notification("You have successfully logged out.", `${toast.TYPE.SUCCESS}`, Bounce);
   }
 
   const searchMovie = useMemo(
     () =>
       debounce(async (e) => {
         try {
-          const response = await Axios.get(`https://api.themoviedb.org/3/search/movie?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&query="${e}"`);
+          const response = await Axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${appState.apiKey}&query="${e}"`);
           appDispatch({ type: "setFilteredMovies", value: response.data.results });
         } catch (error) {
           console.log("There was a problem.");
-          appDispatch({ type: "setFilteredMovies", value: null });
         }
       }, 750),
-    [appDispatch]
+    [appDispatch, appState.apiKey]
   );
 
 

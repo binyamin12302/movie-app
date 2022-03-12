@@ -5,9 +5,11 @@ import { useImmer } from "use-immer";
 import DispatchContext from "../DispatchContext.js";
 import LoadingCard from "./loading/LoadingCard";
 import MovieCard from "./MovieCard.js";
+import StateContext from "../StateContext";
 
 function HomeGuest() {
   const appDispatch = useContext(DispatchContext);
+  const appState = useContext(StateContext)
   const history = useHistory();
 
   const [state, setState] = useImmer({
@@ -23,9 +25,9 @@ function HomeGuest() {
     const fetchData = async () => {
       try {
         const response = await Promise.all([Axios.get(
-          `https://api.themoviedb.org/3/discover/movie?latest.desc&api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&page=1`
+          `https://api.themoviedb.org/3/discover/movie?latest.desc&api_key=${appState.apiKey}&page=1`
         ), Axios.get(
-          `https://api.themoviedb.org/3/movie/popular?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US&page=1`
+          `https://api.themoviedb.org/3/movie/popular?api_key=${appState.apiKey}&language=en-US&page=1`
         )])
 
         if (active && response) setState((draft) => {
@@ -49,7 +51,7 @@ function HomeGuest() {
       active = false;
     };
 
-  }, [setState, appDispatch]);
+  }, [setState, appDispatch, appState.apiKey]);
 
   const [latestMovies, popularMovies] = [
     state.latestMovies?.slice(0, 4)
