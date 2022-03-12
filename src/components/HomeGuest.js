@@ -1,6 +1,6 @@
 import Axios from "axios";
 import React, { useContext, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useImmer } from "use-immer";
 import DispatchContext from "../DispatchContext.js";
 import LoadingCard from "./loading/LoadingCard";
@@ -8,7 +8,8 @@ import MovieCard from "./MovieCard.js";
 
 function HomeGuest() {
   const appDispatch = useContext(DispatchContext);
-  
+  const history = useHistory();
+
   const [state, setState] = useImmer({
     latestMovies: null,
     popularMovies: null,
@@ -17,29 +18,28 @@ function HomeGuest() {
   useEffect(() => {
     window.scrollTo(0, 0);
     let active = true;
-    async function fetchData() {
+
+
+    const fetchData = async () => {
       try {
         const response = await Promise.all([Axios.get(
           `https://api.themoviedb.org/3/discover/movie?latest.desc&api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&page=1`
         ), Axios.get(
           `https://api.themoviedb.org/3/movie/popular?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US&page=1`
         )])
-        // JavaScript will wait until ALL of the promises have completed
 
-        if (active) {
-          setState((draft) => {
-            draft.latestMovies = response[0].data.results;
-            draft.popularMovies = response[1].data.results;
-          });
-        }
+        if (active && response) setState((draft) => {
+          draft.latestMovies = response[0].data.results;
+          draft.popularMovies = response[1].data.results;
+        });
+
 
       } catch (e) {
         console.log("There was a problem ");
-        setState(draft => {
+        if (active) setState(draft => {
           draft.latestMovies = null;
           draft.popularMovies = null;
         });
-
       }
     }
 
@@ -78,11 +78,9 @@ function HomeGuest() {
             Access free content on all of your devices, sync your list and
             continue watching anywhere.
           </p>
-          <Link className="link" to="/register">
-            <button className="register-btn" type="submit">
-              Register Free
-            </button>
-          </Link>
+          <button className="register-btn" onClick={() => history.push("/register")}>
+            Register Free
+          </button>
         </div>
       </section>
     </main>

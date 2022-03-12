@@ -1,35 +1,23 @@
 import { signInWithPopup } from 'firebase/auth';
 import React, { useContext } from 'react';
-import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import DispatchContext from "../DispatchContext.js";
 import { auth, provider } from "../firebase/Firebase.js";
+import StateContext from "../StateContext";
 
 function GoogleButton() {
-    const appDispatch = useContext(DispatchContext);
-    const history = useHistory();
+    const appState = useContext(StateContext);
 
     const signInWithGoogle = async () => {
-        appDispatch({ type: "notificationLoading" })
+        appState.notificationLoading();
         try {
             await signInWithPopup(
                 auth,
                 provider
             );
-
-
-            appDispatch({
-                type: "notificationResult",
-                value: "You have successfully logged in.",
-                typeMessage: `${toast.TYPE.SUCCESS}`
-            })
+            appState.notification("You have successfully logged in.", `${toast.TYPE.SUCCESS}`)
         } catch (error) {
             console.log(error);
-            appDispatch({
-                type: "notificationResult",
-                value: error.message.split(':')[1],
-                typeMessage: `${toast.TYPE.ERROR}`
-            })
+            appState.notification(error.message.split(':')[1], `${toast.TYPE.ERROR}`)
         }
     }
 

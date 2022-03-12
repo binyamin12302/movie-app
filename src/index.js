@@ -1,12 +1,10 @@
-import { getDownloadURL } from "firebase/storage";
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
-import { Flip, toast, ToastContainer, Zoom } from 'react-toastify';
+import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
+import { toast, ToastContainer, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useImmerReducer } from "use-immer";
-import { auth, callRef } from "../src/firebase/Firebase";
+import { auth } from "../src/firebase/Firebase";
 // My Components  
 import About from "./components/About";
 import FilteredMovies from "./components/FilteredMovies";
@@ -15,7 +13,6 @@ import Header from "./components/Header";
 import HomeGuest from "./components/HomeGuest";
 import HomeUser from "./components/HomeUser";
 import Login from "./components/Login";
-import NotFound from "./components/NotFound";
 import Profile from './components/Profile';
 import Register from "./components/Register";
 import Terms from "./components/Terms";
@@ -27,16 +24,16 @@ import StateContext from "./StateContext";
 
 function App() {
   const customId = "custom-id-yes";
-  let toastId = null;
 
   const initialState = {
     loggedIn: Boolean(localStorage.getItem("userLoggedIn")),
     userUid: null,
     userProfile: null,
     filteredMovies: null,
-    searchInput: ""
+    searchInput: "",
+    notification,
+    notificationLoading
   };
-
 
   /*  https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png */
 
@@ -50,12 +47,6 @@ function App() {
         draft.loggedIn = false;
         draft.userUid = null;
         draft.userProfile = null;
-        return;
-      case "notificationResult":
-        notificationResult((action.value), (action.typeMessage), (action.transition));
-        return;
-      case "notificationLoading":
-        loadingAuthentication();
         return;
       case "searchInput":
         draft.searchInput = action.value;
@@ -73,7 +64,10 @@ function App() {
     }
   }
 
-  function loadingAuthentication() {
+
+  const [state, dispatch] = useImmerReducer(ourReducer, initialState);
+
+  function notificationLoading() {
     toast.loading("Please wait...", {
       toastId: customId,
       position: toast.POSITION.TOP_CENTER,
@@ -81,42 +75,39 @@ function App() {
     })
   }
 
-  function notificationResult(value, message, transion, autoclose) {
-    if (!toast.isActive(toastId)) {
-      toastId = toast.update(customId, {
-        render: value,
-        toastId: customId,
-        draggable: true,
-        type: message,
-        autoClose: 3000,
-        transition: transion || Flip,
-        isLoading: false,
-      })
-    }
-
-    toast.error(value, {
+  function notification(value, message, transition, autoclose) {
+    toast(value, {
       toastId: customId,
       position: toast.POSITION.TOP_CENTER,
-      transition: Zoom
+      type: message,
+      autoClose: 2000,
+      transition: transition || Zoom,
+      isLoading: false
     });
+
+    toast.update(customId, {
+      render: value,
+      toastId: customId,
+      draggable: true,
+      type: message,
+      transition: transition || Zoom,
+      autoClose: 2000,
+      isLoading: false,
+    })
   }
 
- 
-
-
-
-  const [state, dispatch] = useImmerReducer(ourReducer, initialState);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      // detaching the listener
-      if (user) {
-        // ...your code to handle authenticated users.
 
+      if (user) {
         localStorage.setItem("userLoggedIn", state.loggedIn);
         dispatch({ type: "login", value: user.uid });
-        dispatch({ type: "userProfile", value: user.photoURL });
-        /* "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png" */
+        dispatch({
+          type: "userProfile",
+          value: user.photoURL || 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png'
+        });
+
         // "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
       } else {
         // No user is signed in...code to handle unauthenticated users.
@@ -129,38 +120,28 @@ function App() {
         dispatch({ type: "logout" });
       }
     });
-    return () => unsubscribe(); // unsubscribing from the listener when the component is unmounting.
+    return () => unsubscribe();
 
   }, [dispatch, state.loggedIn]);
 
 
+  const isUserSearchingForMovies = state.searchInput === "" ? HomeUser : FilteredMovies
+  const homeContent = state.loggedIn ? isUserSearchingForMovies : HomeGuest;
 
-  // useEffect(() => {
-  //   let active = true;
+  const login = !state.loggedIn ?
+    <Route path="/login" component={Login} /> : <Redirect from="/login" to={"/"} />;
 
-  //   async function getImageProfile() {
-  //     try {
-  //       const url = await getDownloadURL(callRef(state.userUid))
-  //       if (active) dispatch({ type: "userProfile", value: url });
-  //     } catch (error) {
-  //       if (active) dispatch({
-  //         type: "userProfile", value: auth.currentUser?.photoURL
-  //           || "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
-  //       });
-  //     }
-  //   }
+  const register = !state.loggedIn ?
+    <Route path="/register" component={Register} /> : <Redirect from="/register" to={"/"} />;
 
-  //   if (state?.userUid) getImageProfile()
+  const viewSingleMovie = state.loggedIn ?
+    <Route exact path="/movie/:id" component={state.searchInput === "" ? ViewSingleMovie : FilteredMovies} /> :
+    <Redirect from="/movie/:id" to={"/"} />;
 
-  //   return () => {
-  //     active = false;
-  //   };
+  const profile = state.loggedIn ?
+    <Route path="/profile" component={state.searchInput === "" ? Profile : FilteredMovies} /> :
+    <Redirect from="/profile" to={"/"} />;
 
-  // }, [dispatch, state.userUid]);
-
-  const homeContent = state.loggedIn ? HomeUser : HomeGuest;
-
-  // console.log(auth?.currentUser)
   return (
     <>
       <StateContext.Provider value={state}>
@@ -169,12 +150,11 @@ function App() {
             <ToastContainer />
             <Header />
             <Switch>
-              <Route exact path="/" component={state.searchInput === "" ? homeContent : FilteredMovies} />
-              <Route path="/profile" component={state.searchInput === "" ? Profile : FilteredMovies} />
-              {state.loggedIn ? <Redirect from="/login" to={"/"} /> || <Redirect from="/register" to={"/"} /> : null}
-              <Route path="/login" component={Login} />
-              <Route path="/register" component={Register} />
-              <Route exact path="/movie/:id" component={state.searchInput === "" ? ViewSingleMovie : FilteredMovies} />
+              <Route exact path="/" component={homeContent} />
+              {profile}
+              {register}
+              {login}
+              {viewSingleMovie}
               <Route path="/about-us" component={About} />
               <Route path="/terms" component={Terms} />
             </Switch>

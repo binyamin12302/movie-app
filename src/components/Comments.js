@@ -1,19 +1,15 @@
 import {
-    addDoc, collection, deleteDoc, doc, getDocs,
-    increment, onSnapshot, query, setDoc, updateDoc, where
+    addDoc, collection, deleteDoc, doc, increment, onSnapshot, orderBy, query, where
 } from 'firebase/firestore';
 import React, { useContext, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useImmer } from "use-immer";
-import DispatchContext from "../DispatchContext.js";
 import { auth, db } from "../firebase/Firebase";
 import StateContext from "../StateContext";
+import Like from './LikeButton.js';
 
-function Comments() {
-    const appDispatch = useContext(DispatchContext);
+function Comments({ id }) {
     const appState = useContext(StateContext);
-    const { id } = useParams();
 
     const [state, setState] = useImmer({
         title: "",
@@ -21,22 +17,17 @@ function Comments() {
         reviews: []
     });
 
+
     const createComment = async () => {
         const commentsCollectionRef = collection(db, id)
-        // appDispatch({ type: "notificationLoading" })
 
-        if (state.title === "" || state.text === "") return appDispatch({
-            type: "notificationResult",
-            value: "A required field is missing.",
-            typeMessage: `${toast.TYPE.ERROR}`
-        });
 
-        if (state.text.replace(/\s/g, '').length < 100) return appDispatch({
-            type: "notificationResult",
-            value: "Sorry, your review is too short. It needs to contain at least 100 characters.",
-            typeMessage: `${toast.TYPE.ERROR}`
-        });
+        if (state.title === "" || state.text === "")
+            return appState.notification("A required field is missing.", `${toast.TYPE.ERROR}`)
 
+        if (state.text.replace(/\s/g, '').length < 100)
+            return appState.notification("Sorry, your review is too short. It needs to contain at least 100 characters.",
+                `${toast.TYPE.ERROR}`)
 
         try {
             toast.dismiss()
@@ -44,13 +35,14 @@ function Comments() {
                 draft.title = "";
                 draft.text = ""
             });
+
             await addDoc(commentsCollectionRef, {
                 user: auth.currentUser?.uid,
                 email: auth.currentUser?.email,
                 title: state.title,
                 comment: state.text,
                 name: auth.currentUser?.displayName !== "" ? auth.currentUser?.displayName : null,
-                like: 0,
+                like: increment(0),
                 timestamp: new Date()
             });
 
@@ -61,86 +53,49 @@ function Comments() {
     }
 
 
+
     useEffect(() => {
         let active = true
-        const q = query(collection(db, id));
+        const q = query(collection(db, id), orderBy("timestamp", "desc"));
 
 
         onSnapshot(q, (querySnapshot) => {
-            const cities = [];
+            const docs = [];
 
             querySnapshot.forEach((doc) => {
-                cities.unshift({ ...doc.data(), id: doc.id });
+                docs.push({ ...doc.data(), id: doc.id });
             });
 
-            if (active) setState(draft => { draft.reviews = cities; });
-
+            if (active) setState(draft => { draft.reviews = docs; });
         });
+
 
         return () => {
             active = false
         }
-
     }, [id, setState])
 
 
-    async function deletePost(idUs) {
+    async function deletePost(commentId) {
+        const q = query(collection(db, `likeState-${id}`), where("commentId", "==", `${commentId}`));
         try {
             let confirm = window.confirm("Are you sure you want to delete your review?");
             if (confirm) {
-                await deleteDoc(doc(db, `likeState-${id}`, `${auth.currentUser?.uid}`));
-                await deleteDoc(doc(db, `${id}`, idUs))
+                await deleteDoc(doc(db, `${id}`, commentId))
+                onSnapshot(q, (querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        deleteEachLikeState({ ...doc.data() }.commentId, { ...doc.data() }.user)
+                    });
+                });
             }
+
+            const deleteEachLikeState = async (commentId, user) => {
+                await deleteDoc(doc(db, `likeState-${id}`, `${user + commentId}`));
+            }
+
         } catch (error) {
             console.log(error)
         }
-    }
-
-    async function handleLikeUser(commentId) {
-        const washingtonRef = doc(db, id, commentId);
-        const collectionRefLike = query(collection(db, `likeState-${id}`),
-            where("user", "==", `${auth.currentUser?.uid}`));
-
-        const getTheLikesOftheMovie = await getDocs(collectionRefLike)
-
-        if (getTheLikesOftheMovie.docs.length === 0) return setALike()
-        else getTheLikesOftheMovie.docs.map((doc) => {
-            if ({ ...doc.data() }.like) return setALike()
-            else return setAnUnlike()
-        })
-
-
-        async function setALike() {
-            await setDoc(doc(db, `likeState-${id}`, `${auth.currentUser?.uid}`), {
-                user: auth.currentUser?.uid,
-                like: false,
-            });
-
-            incrementALike()
-        }
-
-        async function setAnUnlike() {
-            await setDoc(doc(db, `likeState-${id}`, `${auth.currentUser?.uid}`), {
-                user: auth.currentUser?.uid,
-                like: true,
-            });
-
-            decrementAlike()
-        }
-
-
-        async function incrementALike() {
-            await updateDoc(washingtonRef, {
-                like: increment(1),
-            });
-        }
-
-        async function decrementAlike() {
-            await updateDoc(washingtonRef, {
-                like: increment(-1),
-            });
-        }
-
     }
 
 
@@ -166,12 +121,10 @@ function Comments() {
                             <hr />
                             <div className='postTextContainer'>
                                 <div className='av-info'>
-                                    <p><span>Reviewed by </span> {`${comment.name || comment.email}`}</p>
+                                    <p><span>Reviewed by </span> {`${comment.name || 'anonymous'}`}</p>
                                 </div>
                                 <div className='li-info'>
-                                    {comment.like} : <i className="fa fa-thumbs-up" onClick={(e) => {
-                                        handleLikeUser(comment.id)
-                                    }}></i>
+                                    <Like id={id} commentId={comment.id} like={comment.like} />
                                 </div>
                             </div>
                         </div>
@@ -190,8 +143,6 @@ function Comments() {
                             });
                         }} />
                     </div>
-
-
                     <div className="inputGp">
                         <label> Review:</label>
                         <textarea value={state.text} placeholder="Comment..." onChange={(e) => {

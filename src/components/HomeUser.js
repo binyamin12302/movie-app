@@ -1,5 +1,4 @@
 import Axios from "axios";
-import { debounce } from "lodash";
 import React, { useCallback, useContext, useEffect, useMemo } from "react";
 import ReactPaginate from 'react-paginate';
 import { Link } from "react-router-dom";
@@ -23,9 +22,15 @@ function HomeUser({ location }) {
       `${initialUrl}discover/movie?sort_by=popularity.desc&api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&page=`
   }
 
+
+  const saveInLocalStorage = (name, value) => {
+    localStorage.setItem(`${name}`, JSON.stringify(value));
+  }
+
+
   function ourReducer(draft, action) {
     switch (action.type) {
-      case "fetchComplete":
+      case "fetch":
         draft.results = action.value
         return;
       case "selectedPage":
@@ -55,18 +60,16 @@ function HomeUser({ location }) {
   const [state, dispatch] = useImmerReducer(ourReducer, initialState);
 
   const getMovies = useMemo(
-    () =>
-      async function (selected) {
-        dispatch({ type: "fetchComplete", value: null })
-        try {
-          const response = await Axios.get(`${state.baseUrl + selected}`);
-          dispatch({ type: "fetchComplete", value: response.data.results })
-        } catch (e) {
-          console.log("There was a problem ww.");
-          dispatch({ type: "fetchComplete", value: null })
-        }
+    () => async (selected) => {
+      dispatch({ type: "fetch", value: null })
+      try {
+        const response = await Axios.get(`${state.baseUrl + selected}`);
+        dispatch({ type: "fetch", value: response.data.results })
+      } catch (e) {
+        console.log("There was a problem ww.");
+        dispatch({ type: "fetch", value: null })
       }
-
+    }
     , [state.baseUrl, dispatch]);
 
 
@@ -95,17 +98,17 @@ function HomeUser({ location }) {
 
   useEffect(() => {
     if (isMounted) {
-      dispatch({ type: "fetchComplete", value: null })
       getMovies(state.currentPage)
-      saveInLocalStorage("totalPages", state.total_pages)
-      saveInLocalStorage("currentMoviesUrl", state.baseUrl)
     }
+
+    saveInLocalStorage("totalPages", state.total_pages)
+    saveInLocalStorage("currentMoviesUrl", state.baseUrl)
 
     return () => {
       isMounted.current = false;
     };
 
-  }, [state.currentPage, state.total_pages, state.baseUrl, getMovies, dispatch])
+  }, [state.currentPage, state.total_pages, state.baseUrl, getMovies])
 
 
 
@@ -118,26 +121,43 @@ function HomeUser({ location }) {
     });
 
     if (event) event.target.classList.add('current')
-
-
-    saveInLocalStorage("currentClassName", event.target.innerText)
+    saveInLocalStorage("currentClassName", event.target.innerText);
   }
 
-  function saveInLocalStorage(name, value) {
-    localStorage.setItem(`${name}`, JSON.stringify(value));
-  }
 
-  const content = !state.results ? <LoadingCard /> : allMovies
+
+  const content = !state.results ? <LoadingCard /> : allMovies;
 
   return (
     <main id="home-user">
       <div className="nav-home-user" >
         <nav className="main-nav">
           <ul>
-            <li><Link to="/" className={!currentClassName || currentClassName === 'POPULAR' ? 'current' : ''} onClick={handleCurrentPage}>Popular</Link></li>
-            <li><Link to="#top-rated" className={currentClassName === 'TOP RATED' ? 'current' : ''} onClick={handleCurrentPage}>Top Rated</Link></li>
-            <li><Link to="#upcoming" className={currentClassName === 'UPCOMING' ? 'current' : ''} onClick={handleCurrentPage}>Upcoming</Link></li>
-            <li><Link to="#now-playing" className={currentClassName === 'NOW PLAYING' ? 'current' : ''} onClick={handleCurrentPage}>Now Playing</Link></li>
+            <li>
+              <Link to="/"
+                className={!currentClassName || currentClassName === 'POPULAR' ? 'current' : ''}
+                onClick={handleCurrentPage}>
+                Popular
+              </Link>
+            </li>
+            <li>
+              <Link to="#top-rated"
+                className={currentClassName === 'TOP RATED' ? 'current' : ''} onClick={handleCurrentPage}>
+                Top Rated
+              </Link>
+            </li>
+            <li>
+              <Link to="#upcoming"
+                className={currentClassName === 'UPCOMING' ? 'current' : ''} onClick={handleCurrentPage}>
+                Upcoming
+              </Link>
+            </li>
+            <li>
+              <Link to="#now-playing"
+                className={currentClassName === 'NOW PLAYING' ? 'current' : ''} onClick={handleCurrentPage}>
+                Now Playing
+              </Link>
+            </li>
           </ul>
         </nav>
       </div>
