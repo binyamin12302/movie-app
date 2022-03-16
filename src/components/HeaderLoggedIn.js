@@ -66,7 +66,7 @@ function HeaderLoggedIn() {
         }
         <button className="home-btn" onClick={() => {
           history.push("/")
-          appDispatch({ type: "clearSerach" })
+          appDispatch({ type: "clearSearch" })
         }}>
           Home
         </button>

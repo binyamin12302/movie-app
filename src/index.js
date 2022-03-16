@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import { toast, ToastContainer, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useImmerReducer } from "use-immer";
@@ -13,7 +13,7 @@ import Header from "./components/Header";
 import HomeGuest from "./components/HomeGuest";
 import HomeUser from "./components/HomeUser";
 import Login from "./components/Login";
-import NotFound from "./components/NotFound";
+import NotFoundPage from "./components/NotFoundPage";
 import Profile from './components/Profile';
 import Register from "./components/Register";
 import Terms from "./components/Terms";
@@ -25,6 +25,7 @@ import StateContext from "./StateContext";
 
 function App() {
   const customId = "custom-id-yes";
+
 
   const initialState = {
     apiKey: process.env?.REACT_APP_THEMOVIEDB_API_KEY,
@@ -56,7 +57,7 @@ function App() {
       case "setFilteredMovies":
         draft.filteredMovies = action.value;
         return;
-      case "clearSerach":
+      case "clearSearch":
         draft.searchInput = "";
         return;
       case "userProfile":
@@ -87,15 +88,17 @@ function App() {
       isLoading: false
     });
 
-    toast.update(customId, {
-      render: value,
-      toastId: customId,
-      draggable: true,
-      type: message,
-      transition: transition || Zoom,
-      autoClose: 2000,
-      isLoading: false,
-    })
+    if (toast.isActive(customId))
+      toast.update(customId, {
+        render: value,
+        toastId: customId,
+        draggable: true,
+        type: message,
+        transition: transition || Zoom,
+        autoClose: 2000,
+        isLoading: false,
+      })
+
   }
 
 
@@ -159,7 +162,7 @@ function App() {
               {viewSingleMovie}
               <Route path="/about-us" component={About} />
               <Route path="/terms" component={Terms} />
-              <Route component={NotFound} />
+              <Route component={NotFoundPage} />
             </Switch>
             <Footer />
           </Router>

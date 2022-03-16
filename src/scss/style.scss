@@ -1,6 +1,7 @@
 @import 'config';
 @import 'utilities';
 @import 'loading';
+// @import 'media';
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display=swap');
 
 * {
@@ -14,10 +15,9 @@ html {
     margin: 0;
     background-color: $primary-color;
     color: #dcdde1c9;
-
     #root {
       position: relative;
-      min-height: 110vh;
+      max-height: 920vh;
     }
   }
 }
@@ -89,8 +89,9 @@ html {
 
 // #Home-Page
 #home-guest {
-  padding-bottom: 9rem;
+  max-height: 420vh;
   section {
+    
     .section-title {
       color: #f9fafdcc;
       font-weight: 300;
@@ -102,6 +103,8 @@ html {
     }
 
     #section-content {
+      // padding-bottom: 10%;
+      padding-bottom: 10%;
       .text-muted {
         font-size: 18px;
         font-weight: 400;

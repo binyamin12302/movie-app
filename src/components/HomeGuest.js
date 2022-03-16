@@ -3,9 +3,9 @@ import React, { useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { useImmer } from "use-immer";
 import DispatchContext from "../DispatchContext.js";
+import StateContext from "../StateContext";
 import LoadingCard from "./loading/LoadingCard";
 import MovieCard from "./MovieCard.js";
-import StateContext from "../StateContext";
 
 function HomeGuest() {
   const appDispatch = useContext(DispatchContext);

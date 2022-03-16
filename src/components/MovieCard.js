@@ -39,7 +39,7 @@ function MovieCard({ movie, pathname }) {
         <div className="view-details">
           <button className="button-41" onClick={(e) => {
             history.push(`/movie/${movie.id}`);
-            appDispatch({ type: "clearSerach" })
+            appDispatch({ type: "clearSearch" })
           }
           }>View Details</button>
         </div>}
