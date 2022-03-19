@@ -64,7 +64,7 @@ function HomeGuest() {
     <main id="home-guest">
       <section>
         <h1 className="section-title">
-          <i className="far fa-star"></i> Latest Movies! sd
+          <i className="far fa-star"></i> Latest Movies! 
         </h1>
         <div className="container-movie">{!state.popularMovies ? <LoadingCard /> : popularMovies}</div>
       </section>
