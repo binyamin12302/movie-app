@@ -62,6 +62,7 @@ function HomeGuest() {
 
   return (
     <main id="home-guest">
+      <h1>Hedaer</h1>
       <section>
         <h1 className="section-title">
           <i className="far fa-star"></i> Latest Movies
