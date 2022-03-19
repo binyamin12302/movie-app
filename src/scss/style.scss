@@ -1,6 +1,7 @@
 @import 'config';
 @import 'utilities';
 @import 'loading';
+// @import 'media';
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display=swap');
 
 * {
@@ -14,10 +15,9 @@ html {
     margin: 0;
     background-color: $primary-color;
     color: #dcdde1c9;
-
+    position: relative;
     #root {
-      position: relative;
-      min-height: 110vh;
+      max-height: 920vh;
     }
   }
 }
@@ -26,9 +26,9 @@ html {
 #header {
   background-color: $secondary-color;
   /* border-bottom: 0.4px solid #ffffff57; */
+
   .container {
     display: flex;
-    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
 
@@ -36,69 +36,60 @@ html {
       color: #8088a0;
       font-family: 'Londrina Shadow', cursive;
       text-align: center;
+      cursor: pointer;
     }
 
     .search {
       background-color: $primary-color;
       border: 2px solid $primary-color;
+      width: 30%;
       border-radius: 50px;
       font-size: 1rem;
       padding: 0.5rem 1rem;
       color: #fff;
-      width: 30%;
+      // justify-self: center;
+      margin-left: 100px;
+      &:focus {
+        outline: none;
+      }
+      &::placeholder {
+        color: #7378c5;
+      }
     }
 
-    .search::placeholder {
-      color: #7378c5;
+    button {
+      padding: 6px 10px;
+      margin-right: 16px;
     }
 
-    .search:focus {
-      outline: none;
+    .home-btn {
+      background-color: $bg-secondary;
+
+      .home-link {
+        text-decoration: none;
+        color: #fff;
+      }
     }
 
-    //Navigation
-    #navigation {
-      button {
-        padding: 6px 10px;
-        margin-right: 16px;
-      }
+    .home-btn:hover {
+      background-color: #48488f;
+    }
 
-      .home-btn {
-        background-color: $bg-secondary;
+    .login-btn,
+    .logout-btn {
+      background-color: $bg-primary;
+    }
 
-        .home-link {
-          text-decoration: none;
-          color: #fff;
-        }
-      }
-
-      .home-btn:hover {
-        background-color: #48488f;
-      }
-
-      .login-btn,
-      .logout-btn {
-        background-color: $bg-primary;
-      }
-
-      .login-btn:hover,
-      .logout-btn:hover {
-        background-color: $bg-primary-hover;
-      }
+    .login-btn:hover,
+    .logout-btn:hover {
+      background-color: $bg-primary-hover;
     }
   }
 }
 
-#search-filter {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  padding-bottom: 9.5rem;
-}
-
 // #Home-Page
 #home-guest {
-  padding-bottom: 9rem;
+  max-height: 420vh;
   section {
     .section-title {
       color: #f9fafdcc;
@@ -111,6 +102,8 @@ html {
     }
 
     #section-content {
+      // padding-bottom: 10%;
+      padding-bottom: 3%;
       .text-muted {
         font-size: 18px;
         font-weight: 400;
@@ -141,10 +134,20 @@ html {
   }
 }
 
+//result after search
+#search-filter {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-bottom: 9.5rem;
+
+  .filter-movie {
+    padding-bottom: 122px;
+  }
+}
+
 //Home-User
 #home-user {
-  padding-bottom: 5rem;
-
   .nav-home-user {
     background-color: #171939;
 
@@ -332,7 +335,7 @@ html {
   /*  border-top: rgba(255, 255, 255, 0.473) 1px solid; */
   position: absolute;
   right: 0;
-  bottom: 0;
+  // bottom: 0;
   left: 0;
   /*  transform: translateY(190%);  */
   .link-footer {
@@ -641,7 +644,6 @@ html {
 
             .fa-thumbs-up {
               margin-left: auto;
-              color: #586774;
               font-size: 24px;
               cursor: pointer;
             }

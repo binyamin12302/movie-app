@@ -1,13 +1,14 @@
 import { createUserWithEmailAndPassword } from "@firebase/auth";
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import { Bounce, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { useImmer } from "use-immer";
-import DispatchContext from "../DispatchContext.js";
 import { auth } from "../firebase/Firebase.js";
+import StateContext from "../StateContext";
 
 function Register() {
-  const appDispatch = useContext(DispatchContext);
+  const appState = useContext(StateContext);
+
   const [state, setState] = useImmer({
     registerEmail: "",
     registerPassword: "",
@@ -17,37 +18,22 @@ function Register() {
   const register = async (e) => {
     e.preventDefault();
 
-    appDispatch({ type: "notificationLoading" })
 
-    if (state.registerPassword !== state.confirmPassword) {
-      return appDispatch({
-        type: "notificationResult",
-        value: "The password confirmation does not match",
-        typeMessage: `${toast.TYPE.ERROR}`
-      })
-    }
-
+    if (state.registerPassword !== state.confirmPassword)
+      return appState.notification("The password confirmation does not match", `${toast.TYPE.ERROR}`);
     try {
+      
+    appState.notificationLoading();
       await createUserWithEmailAndPassword(
         auth,
         state.registerEmail,
         state.registerPassword
       );
 
-      appDispatch({
-        type: "notificationResult",
-        value: "You have successfully logged in.",
-        typeMessage: `${toast.TYPE.SUCCESS}`,
-        autoClose: 2000,
-      })
-
+      appState.notification("Congrats! Welcome to your new account.", `${toast.TYPE.SUCCESS}`);
     } catch (error) {
       console.log(error)
-      appDispatch({
-        type: "notificationResult",
-        value: error.message.split(':')[1],
-        typeMessage: `${toast.TYPE.ERROR}`, transition: Bounce
-      })
+      appState.notification(error.message.split(':')[1], `${toast.TYPE.ERROR}`);
     }
   };
 

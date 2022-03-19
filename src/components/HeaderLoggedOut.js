@@ -17,9 +17,16 @@ function HeaderLoggedOut() {
   }
 
   return (
-    <button className="login-btn" type="button" onClick={handleClick}>
-      {currentText}
-    </button>
+    <>
+      <div className="navigation">
+        <button className="home-btn" onClick={() => history.push("/")}>
+          Home
+        </button>
+        <button className="login-btn" type="button" onClick={handleClick}>
+          {currentText}
+        </button>
+      </div>
+    </>
   );
 }
 

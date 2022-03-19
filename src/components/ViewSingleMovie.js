@@ -1,18 +1,25 @@
 import Axios from "axios";
-import React, { useContext, useEffect } from 'react';
+import debounce from 'debounce';
+import React, { useMemo,useContext } from 'react';
 import Iframe from 'react-iframe';
 import { useHistory, useParams } from "react-router-dom";
 import { useImmer } from "use-immer";
-import DispatchContext from "../DispatchContext.js";
 import Comments from "./Comments.js";
 import LoadingSingleMovie from "./loading/LoadingSingleMoviePage";
 import MovieCard from "./MovieCard";
 import NotFound from "./NotFound.js";
+import StateContext from "../StateContext";
 
 function ViewSingleMovie(props) {
     const { id } = useParams();
     const history = useHistory();
-    const appDispatch = useContext(DispatchContext);
+    const appState = useContext(StateContext)
+
+    const initialUrl = `https://api.themoviedb.org/3/movie/`;
+    const movieCardUrl = `${initialUrl}${id}?api_key=${appState.apiKey}&language=en-US`;
+    const videoUrl = `${initialUrl}${id}/videos?api_key=${appState.apiKey}&language&language=en-US`;
+    const creditsUrl = `${initialUrl}${id}/credits?api_key=${appState.apiKey}&language&language=en-US`;
+    const similarMoviesUrl = `${initialUrl}${id}/similar?api_key=${appState.apiKey}&language&language&language=en-US&page=1`
 
     const [state, setState] = useImmer({
         movieData: null,
@@ -24,65 +31,49 @@ function ViewSingleMovie(props) {
     })
 
 
-    useEffect(() => {
-        let active = true;
+    useMemo(() => {
 
-        const fetchData = async () => {
+        const fetchData = debounce(async () => {
             try {
-                const response = await Promise.all([Axios.get(
-                    `https://api.themoviedb.org/3/movie/${id}?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US`
-                ), Axios.get(
-                    `https://api.themoviedb.org/3/movie/${id}/videos?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language&language=en-US`
-                ), Axios.get(
-                    `https://api.themoviedb.org/3/movie/${id}/credits?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language&language=en-US`
-                ),
-                Axios.get(
-                    `https://api.themoviedb.org/3/movie/${id}/similar?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language&language&language=en-US&page=1`
-                )
-                ])
+                const response = await Promise.all([
+                    Axios.get(movieCardUrl),
+                    Axios.get(videoUrl),
+                    Axios.get(creditsUrl),
+                    Axios.get(similarMoviesUrl)
+                ]);
 
-                if (active) {
-                    setState(draft => {
-                        draft.movieData = response[0].data
-                        draft.hasError = false
-                        draft.cast = response[2].data.cast
-                        draft.genres = response[0].data.genres
-                        draft.similar = response[3].data.results
-                    });
+                const findTrialerMovie = response[1].data
+                    .results.find(i => i.name.includes("Trailer") || i.name.includes("TRAILER"))
 
-                    if (response[1].data.results.length === 0) {
-                        setState(draft => {
-                            draft.videoKey = ""
-                        });
-                    } else {
-                        setState(draft => {
-                            draft.videoKey = response[1].data.results[0].key
-                        });
-                    }
 
-                }
+                setState(draft => {
+                    draft.movieData = response[0].data
+                    draft.hasError = false
+                    draft.cast = response[2].data.cast
+                    draft.genres = response[0].data.genres
+                    draft.similar = response[3].data.results
+                });
 
-             
-
+                setState(draft => {
+                    draft.videoKey = findTrialerMovie?.key || ""
+                });
             } catch (e) {
                 console.log("There was a problem ");
-                if(active){ 
                 setState(draft => {
                     draft.hasError = true
                 });
-
             }
 
-            }
-        }
+
+        }, 200)
 
         fetchData();
 
         return () => {
-            active = false;
+            fetchData().cancel()
         };
 
-    }, [id, setState])
+    }, [creditsUrl, movieCardUrl, setState, similarMoviesUrl, videoUrl])
 
 
     if (state.hasError) {
@@ -108,17 +99,22 @@ function ViewSingleMovie(props) {
         .map((movie, i) =>
             <div className="card-container" key={i} onClick={() => handleClickSimilarMovie(movie.id)}>
                 <img className="cardImage similar" src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} alt="Avatar" />
-                {/*   <div className="overlay">{movie.title}</div>  */}
             </div>
         ),
     state.cast?.slice(0, 4).map((actor, i) =>
         <div className="card-container" key={i}>
-            {actor.profile_path === null ? <img className="not-available-image" src={"http://www.pardes.co.il/pics/contrib764.jpg"} alt="Avatar" /> :
-                <img className="cardImage cast" src={`https://image.tmdb.org/t/p/w500/${actor.profile_path}`} alt={actor.name} />}
+            {actor.profile_path === null ?
+                <img className="not-available-image"
+                    src={"http://www.pardes.co.il/pics/contrib764.jpg"}
+                    alt="Avatar" /> :
+                <img className="cardImage cast"
+                    src={`https://image.tmdb.org/t/p/w500/${actor.profile_path}`}
+                    alt={actor.name} />}
             <div className="overlay">{actor.name}</div>
         </div>
     ), state.genres?.map((genre) => <h6 className="genre" key={genre.id} >{genre.name}</h6>)
     ]
+
 
     return (
         <>
@@ -152,15 +148,21 @@ function ViewSingleMovie(props) {
                                     {cast}
                                 </div>
                                 <hr />
-                                <div className="sim">
-                                    <h2 className="heading-2">Similar Movies</h2>
-                                    <div className="row ">
-                                        {similar}
-                                    </div>
-                                </div>
+
+                                {similar?.length !== 0 &&
+                                    <>
+                                        <div className="sim">
+                                            <h2 className="heading-2">Similar Movies</h2>
+                                            <div className="row ">
+                                                {similar}
+                                            </div>
+                                        </div>
+                                    </>
+                                }
+
                             </div>
                         </div>
-                        <Comments />
+                        <Comments id={id} />
                     </div>
                 </>}
         </>

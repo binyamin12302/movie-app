@@ -1,17 +1,14 @@
 import { signInWithEmailAndPassword } from "@firebase/auth";
-import React, { useContext, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import React, { useContext } from "react";
+import { Link } from "react-router-dom";
 import { toast } from 'react-toastify';
-import DispatchContext from "../DispatchContext.js";
+import { useImmer } from "use-immer";
 import { auth } from "../firebase/Firebase.js";
+import StateContext from "../StateContext";
 import GoogleButton from "./GoogleButton.js";
 
-function Login(props) {
-  const history = useHistory();
-  const appDispatch = useContext(DispatchContext);
-  const [loginEmail, setLoginEmail] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
-
+function Login() {
+  const appState = useContext(StateContext);
 
   const splitLetters = (word) =>
     word
@@ -20,28 +17,27 @@ function Login(props) {
         (letter, idx) => (<span key={idx} style={{ transitionDelay: `${idx * 50}ms` }}>{letter}</span>)
       );
 
+
+  const [state, setState] = useImmer({
+    loginEmail: '',
+    loginPassword: ''
+  })
+
+
   const login = async (e) => {
     e.preventDefault();
-    appDispatch({ type: "notificationLoading" })
+    appState.notificationLoading();
     try {
       await signInWithEmailAndPassword(
         auth,
-        loginEmail,
-        loginPassword
+        state.loginEmail,
+        state.loginPassword
       );
-
-      return appDispatch({
-        type: "notificationResult",
-        value: "You have successfully logged in.",
-        typeMessage: `${toast.TYPE.SUCCESS}`,
-        autoClose: 3000
-      })
+      appState.notification("You have successfully logged in.", `${toast.TYPE.SUCCESS}`)
     } catch (error) {
-      appDispatch({ type: "notificationResult", value: error.message.split(':')[1], typeMessage: `${toast.TYPE.ERROR}` })
+      appState.notification(error.message.split(':')[1], `${toast.TYPE.ERROR}`)
     }
-
   };
-
 
   return (
     <div id="login-page">
@@ -50,16 +46,20 @@ function Login(props) {
           <i className="fas fa-user"></i>
           <h1>Please Login</h1>
           <div className="form-control">
-            <input type="text" required onChange={(e) => {
-              setLoginEmail(e.target.value);
+            <input type="email" required onChange={(e) => {
+              setState(draft => {
+                draft.loginEmail = e.target.value;
+              });
             }} />
             <label>{splitLetters("Email")}</label>
           </div>
           <div className="form-control">
-            <input type="password" required autoComplete="new-password" onChange={(e) => {
-              setLoginPassword(e.target.value);
+            <input type="password" autoComplete="new-password" required onChange={(e) => {
+              setState(draft => {
+                draft.loginPassword = e.target.value;
+              });
             }} />
-            <label >{splitLetters("Password")}</label>
+            <label>{splitLetters("Password")}</label>
           </div>
           <button className="btn">Login</button>
           <GoogleButton />

@@ -1,6 +1,6 @@
 import { getAuth, updateEmail, updatePassword, updateProfile } from "firebase/auth";
 import { getDownloadURL, uploadBytes } from "firebase/storage";
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { toast } from 'react-toastify';
 import { useImmer } from "use-immer";
 import DispatchContext from "../DispatchContext.js";
@@ -11,112 +11,94 @@ function Profile() {
     const appState = useContext(StateContext);
     const appDispatch = useContext(DispatchContext);
     const auth = getAuth();
-    // const isMounted = React.useRef(true);
 
     const [state, setState] = useImmer({
-        image: null,
-        url: null,
         name: "",
         email: "",
         newPassword: "",
         repeatPassword: ""
     })
 
-    useEffect(() => {
-        let active = true;
-        const handleSubmit = async () => {
-            try {
-                await uploadBytes(callRef(auth.currentUser?.uid), state.image)
-                const url = await getDownloadURL(callRef(auth.currentUser?.uid))
-                await updateProfile(auth?.currentUser, { photoURL: url })
-                if (active) appDispatch({ type: "userProfile", value: url })
-            } catch (error) {
-                console.log(error.message, "error")
-            }
-        }
 
-        if (state.image) {
-            handleSubmit()
-        }
-
-        return () => {
-            active = false
-        }
-    }, [appDispatch, state.image, auth.currentUser])
-
-
-    function handleImageClick(e) {
-        if (e.target.files[0]) {
-            appDispatch({ type: "userProfile", value: null })
-            setState(draft => {
-                draft.image = e.target.files[0];
-            });
+    const handleImageSelected = async (img) => {
+        appDispatch({ type: "userProfile", value: null })
+        try {
+            await uploadBytes(callRef(auth.currentUser?.uid), img)
+            const url = await getDownloadURL(callRef(auth.currentUser?.uid))
+            await updateProfile(auth?.currentUser, { photoURL: url })
+            appDispatch({ type: "userProfile", value: url })
+        } catch (error) {
+            console.log(error.message, "error")
         }
     }
 
 
-    async function saveChangesInformation() {
-        if (state.newPassword !== state.repeatPassword)
-            return appDispatch({
-                type: "notificationResult",
-                value: "The repeat password does not match",
-                typeMessage: `${toast.TYPE.ERROR}`
-            })
+    const handleImageChange = (e) => {
+        if (e.target.files[0]) {
+            handleImageSelected(e.target.files[0])
+        }
+    }
 
+
+    const saveChangesInformation = async () => {
+        if (state.newPassword !== state.repeatPassword)
+            return appState.notification("The repeat password does not match", `${toast.TYPE.ERROR}`);
 
         if (state.newPassword === "" && state.repeatPassword === "" && state.email === "" && state.name === "")
-            return appDispatch({
-                type: "notificationResult",
-                value: "The fields are empty",
-                typeMessage: `${toast.TYPE.ERROR}`
-            })
+            return appState.notification("The fields are empty", `${toast.TYPE.ERROR}`);
 
-        appDispatch({ type: "notificationLoading" })
+        appState.notificationLoading();
         try {
             state.name !== "" && await updateProfile(auth?.currentUser, { displayName: state.name })
             state.newPassword !== "" && await updatePassword(auth?.currentUser, state.newPassword)
             state.email !== "" && await updateEmail(auth?.currentUser, state.email)
-            appDispatch({
-                type: "notificationResult",
-                value: "The changes have been saved",
-                typeMessage: `${toast.TYPE.SUCCESS}`,
-                autoClose: 2000
+            appState.notification("The changes have been saved", `${toast.TYPE.SUCCESS}`)
+            setState(draft => {
+                draft.email = "";
+                draft.newPassword = "";
+                draft.repeatPassword = "";
+                draft.name = "";
             })
         } catch (error) {
             console.log(error)
-            appDispatch({ type: "notificationResult", value: error.message.split(':')[1], typeMessage: `${toast.TYPE.ERROR}` })
+            appState.notification(error.message.split(':')[1], `${toast.TYPE.ERROR}`)
         }
     }
-
 
     return (
         <div className='edit-profile wrap-form'>
             <div className='column-one'>
                 <div className='profile-image'>
-                    {appState.userProfile ? <img src={appState.userProfile} alt='Avatar' className='avatar-profile' /> :
+                    {appState.userProfile ?
+                        <img src={appState.userProfile} alt='Avatar' className='avatar-profile' /> :
                         <div className="avatar-profile profile-image-loading"></div>
                     }
-                    <input accept="image/*,image/heif,image/heic" type="file" name="photo" className='custom-file-input' onChange={handleImageClick} />
+                    <input accept="image/*,image/heif,image/heic" type="file"
+                        name="photo"
+                        className='custom-file-input'
+                        onChange={handleImageChange} />
                 </div>
             </div>
             <div className="vl"></div>
             <div className='column-two'>
                 <div className='fields'>
                     <h1 className='tc'>Personal info</h1>
-                    <label htmlFor="email">Email</label>
+                    <label >Email</label>
                     <input
                         type="text"
                         placeholder={`${auth.currentUser?.email || ""}`}
+                        value={state.email}
                         onChange={(e) => {
                             setState(draft => {
                                 draft.email = e.target.value;
                             });
                         }}
                     />
-                    <label htmlFor="email">New Password</label>
+                    <label>New Password</label>
                     <input
                         type="password"
                         placeholder="New Password"
+                        value={state.newPassword}
                         autoComplete="new-password"
                         onChange={(e) => {
                             setState(draft => {
@@ -124,9 +106,10 @@ function Profile() {
                             });
                         }}
                     />
-                    <label htmlFor="email">Repeat password</label>
+                    <label >Repeat password</label>
                     <input
                         type="password"
+                        value={state.repeatPassword}
                         placeholder="Repeat password"
                         onChange={(e) => {
                             setState(draft => {
@@ -134,9 +117,10 @@ function Profile() {
                             });
                         }}
                     />
-                    <label htmlFor="email">Name</label>
+                    <label >Name</label>
                     <input
                         type="text"
+                        value={state.name}
                         placeholder={`${auth.currentUser?.displayName || ""}`}
                         onChange={(e) => {
                             setState(draft => {

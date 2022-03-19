@@ -1,5 +1,4 @@
 import Axios from "axios";
-import { debounce } from "lodash";
 import React, { useCallback, useContext, useEffect, useMemo } from "react";
 import ReactPaginate from 'react-paginate';
 import { Link } from "react-router-dom";
@@ -20,12 +19,16 @@ function HomeUser({ location }) {
     total_pages: JSON.parse(localStorage.getItem('totalPages')) || 500,
     currentPage: JSON.parse(localStorage.getItem('pageNumber')) || 1,
     baseUrl: JSON.parse(localStorage.getItem('currentMoviesUrl')) ||
-      `${initialUrl}discover/movie?sort_by=popularity.desc&api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&page=`
+      `${initialUrl}discover/movie?sort_by=popularity.desc&api_key=${appState.apiKey}&page=`
+  }
+
+  const saveInLocalStorage = (name, value) => {
+    localStorage.setItem(`${name}`, JSON.stringify(value));
   }
 
   function ourReducer(draft, action) {
     switch (action.type) {
-      case "fetchComplete":
+      case "fetch":
         draft.results = action.value
         return;
       case "selectedPage":
@@ -33,19 +36,19 @@ function HomeUser({ location }) {
         saveInLocalStorage("pageNumber", action.value)
         return;
       case "POPULAR":
-        draft.baseUrl = `${initialUrl}discover/movie?sort_by=popularity.desc&api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&page=`
+        draft.baseUrl = `${initialUrl}discover/movie?sort_by=popularity.desc&api_key=${appState.apiKey}&page=`
         draft.total_pages = 500
         return;
       case "TOP-RATED":
-        draft.baseUrl = `${initialUrl}movie/top_rated?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US&page=`
+        draft.baseUrl = `${initialUrl}movie/top_rated?api_key=${appState.apiKey}&language=en-US&page=`
         draft.total_pages = 473
         return;
       case "UPCOMING":
-        draft.baseUrl = `${initialUrl}movie/upcoming?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US&page=`
+        draft.baseUrl = `${initialUrl}movie/upcoming?api_key=${appState.apiKey}&language=en-US&page=`
         draft.total_pages = 11
         return;
       case "NOW-PLAYING":
-        draft.baseUrl = `${initialUrl}movie/now_playing?api_key=fc974e5e89d3cfba7e0fee335ffc7bfa&language=en-US&region=DE&page=`
+        draft.baseUrl = `${initialUrl}movie/now_playing?api_key=${appState.apiKey}&language=en-US&region=DE&page=`
         draft.total_pages = 3
         return;
       default:
@@ -55,18 +58,15 @@ function HomeUser({ location }) {
   const [state, dispatch] = useImmerReducer(ourReducer, initialState);
 
   const getMovies = useMemo(
-    () =>
-      async function (selected) {
-        dispatch({ type: "fetchComplete", value: null })
-        try {
-          const response = await Axios.get(`${state.baseUrl + selected}`);
-          dispatch({ type: "fetchComplete", value: response.data.results })
-        } catch (e) {
-          console.log("There was a problem ww.");
-          dispatch({ type: "fetchComplete", value: null })
-        }
+    () => async (selected) => {
+      try {
+        const response = await Axios.get(`${state.baseUrl + selected}`);
+        dispatch({ type: "fetch", value: response.data.results })
+      } catch (e) {
+        console.log("There was a problem ww.");
+        dispatch({ type: "fetch", value: null })
       }
-
+    }
     , [state.baseUrl, dispatch]);
 
 
@@ -95,11 +95,12 @@ function HomeUser({ location }) {
 
   useEffect(() => {
     if (isMounted) {
-      dispatch({ type: "fetchComplete", value: null })
+      dispatch({ type: "fetch", value: null })
       getMovies(state.currentPage)
-      saveInLocalStorage("totalPages", state.total_pages)
-      saveInLocalStorage("currentMoviesUrl", state.baseUrl)
     }
+
+    saveInLocalStorage("totalPages", state.total_pages)
+    saveInLocalStorage("currentMoviesUrl", state.baseUrl)
 
     return () => {
       isMounted.current = false;
@@ -118,26 +119,43 @@ function HomeUser({ location }) {
     });
 
     if (event) event.target.classList.add('current')
-
-
-    saveInLocalStorage("currentClassName", event.target.innerText)
+    saveInLocalStorage("currentClassName", event.target.innerText);
   }
 
-  function saveInLocalStorage(name, value) {
-    localStorage.setItem(`${name}`, JSON.stringify(value));
-  }
 
-  const content = !state.results ? <LoadingCard /> : allMovies
+
+  const content = !state.results ? <LoadingCard /> : allMovies;
 
   return (
     <main id="home-user">
       <div className="nav-home-user" >
         <nav className="main-nav">
           <ul>
-            <li><Link to="/" className={!currentClassName || currentClassName === 'POPULAR' ? 'current' : ''} onClick={handleCurrentPage}>Popular</Link></li>
-            <li><Link to="#top-rated" className={currentClassName === 'TOP RATED' ? 'current' : ''} onClick={handleCurrentPage}>Top Rated</Link></li>
-            <li><Link to="#upcoming" className={currentClassName === 'UPCOMING' ? 'current' : ''} onClick={handleCurrentPage}>Upcoming</Link></li>
-            <li><Link to="#now-playing" className={currentClassName === 'NOW PLAYING' ? 'current' : ''} onClick={handleCurrentPage}>Now Playing</Link></li>
+            <li>
+              <Link to="/"
+                className={!currentClassName || currentClassName === 'POPULAR' ? 'current' : ''}
+                onClick={handleCurrentPage}>
+                Popular
+              </Link>
+            </li>
+            <li>
+              <Link to="#top-rated"
+                className={currentClassName === 'TOP RATED' ? 'current' : ''} onClick={handleCurrentPage}>
+                Top Rated
+              </Link>
+            </li>
+            <li>
+              <Link to="#upcoming"
+                className={currentClassName === 'UPCOMING' ? 'current' : ''} onClick={handleCurrentPage}>
+                Upcoming
+              </Link>
+            </li>
+            <li>
+              <Link to="#now-playing"
+                className={currentClassName === 'NOW PLAYING' ? 'current' : ''} onClick={handleCurrentPage}>
+                Now Playing
+              </Link>
+            </li>
           </ul>
         </nav>
       </div>

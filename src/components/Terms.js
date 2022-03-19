@@ -2,7 +2,7 @@ import React from "react";
 
 function Terms() {
   return (
-    <div className="container">
+    <div  className="container info">
       <h2 className="heading-2  tc">Our Terms &amp; Conditions</h2>
       <p className="text">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis
@@ -32,7 +32,7 @@ function Terms() {
         aspernatur aliquam nisi sed harum laborum, nemo odio animi officia
         quisquam. Veniam, natus reprehenderit.
       </p>
-    </div>
+    </div >
   );
 }
 
