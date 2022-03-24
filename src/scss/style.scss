@@ -1,7 +1,7 @@
 @import 'config';
 @import 'utilities';
 @import 'loading';
-// @import 'media';
+@import 'media';
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display=swap');
 
 * {
@@ -10,14 +10,21 @@
 }
 
 html {
+  // min-height: 383vh;
+  height: 100%;
+  width: 100%;
   body {
     font-family: 'Poppins', sans-serif;
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
     margin: 0;
     background-color: $primary-color;
     color: #dcdde1c9;
     #root {
-      position: relative;
-      min-height: 110vh;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
   }
 }
@@ -89,9 +96,7 @@ html {
 
 // #Home-Page
 #home-guest {
-  max-height: 420vh;
   section {
-    
     .section-title {
       color: #f9fafdcc;
       font-weight: 300;
@@ -103,8 +108,7 @@ html {
     }
 
     #section-content {
-      // padding-bottom: 10%;
-      padding-bottom: 10%;
+      margin: 15px;
       .text-muted {
         font-size: 18px;
         font-weight: 400;
@@ -135,12 +139,18 @@ html {
   }
 }
 
+.sniper {
+  display: flex;
+  height: 50vh;
+  align-items: center;
+  justify-content: center;
+}
+
 //result after search
 #search-filter {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  padding-bottom: 9.5rem;
 
   .filter-movie {
     padding-bottom: 122px;
@@ -149,8 +159,7 @@ html {
 
 //Home-User
 #home-user {
-  padding-bottom: 5rem;
-
+  // padding-bottom: 5rem;
   .nav-home-user {
     background-color: #171939;
 
@@ -190,19 +199,20 @@ html {
       }
     }
   }
-
-  section {
-    padding-bottom: 5rem;
-  }
 }
 
 //Login-Page
 #login-page {
-  padding-bottom: 9rem;
+  margin: auto;
+  width: 32%;
+  // margin: 5%;
   .wrap-form {
     padding: 2em 2em;
     border-radius: 5px;
-    width: 30%;
+    margin: 5%;
+    // width: 70%;
+    color: $light-color;
+    font-family: 'Muli', sans-serif;
     background-color: $alpha-color;
     .fa-user {
       font-size: 100px;
@@ -219,7 +229,7 @@ html {
       .form-control {
         position: relative;
         margin: 20px 0 40px;
-        width: 100%;
+        // width: 100%;
 
         input {
           background-color: transparent;
@@ -286,47 +296,53 @@ html {
 }
 
 //Register-Page
-#register-page {
-  background-color: $alpha-color;
+.reg {
   margin: auto;
-  padding-left: 30px;
-  padding-right: 30px;
-  color: #fff;
   font-family: 'Muli', sans-serif;
-  overflow: hidden;
-  border-radius: 4px;
+  #register-page {
+    background-color: $alpha-color;
+    margin: 5%;
+    // width: 70%;
 
-  input[type='text'],
-  input[type='password'] {
-    width: 100%;
-    padding: 15px;
-    margin: 5px 0 22px 0;
-    display: inline-block;
-    border: none;
-    background: #f1f1f1;
-  }
+    padding-left: 30px;
+    padding-right: 30px;
+    color: #fff;
+    font-family: 'Muli', sans-serif;
+    overflow: hidden;
+    border-radius: 4px;
 
-  input[type='text']:focus,
-  input[type='password']:focus {
-    background-color: #ddd;
-    outline: none;
-  }
+    input[type='text'],
+    input[type='password'] {
+      width: 100%;
+      padding: 15px;
+      margin: 5px 0 22px 0;
+      display: inline-block;
+      border: none;
+      background: #f1f1f1;
+    }
 
-  /* Set a style for the submit button */
-  .register-btn-form {
-    background-color: $bg-primary;
-    color: white;
-    padding: 16px 20px;
-    margin: 8px 0;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-    opacity: 0.9;
-    outline: none;
-  }
+    input[type='text']:focus,
+    input[type='password']:focus {
+      background-color: #ddd;
+      outline: none;
+    }
 
-  .register-btn-form:hover {
-    background: $bg-primary-hover;
+    /* Set a style for the submit button */
+    .register-btn-form {
+      background-color: $bg-primary;
+      color: white;
+      padding: 16px 20px;
+      margin: 8px 0;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      opacity: 0.9;
+      outline: none;
+    }
+
+    .register-btn-form:hover {
+      background: $bg-primary-hover;
+    }
   }
 }
 
@@ -335,12 +351,7 @@ html {
   background-color: $secondary-color;
   text-align: center;
   padding: 10px;
-  /*  border-top: rgba(255, 255, 255, 0.473) 1px solid; */
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  /*  transform: translateY(190%);  */
+  margin-top: auto;
   .link-footer {
     color: #f1f2f6;
     text-decoration: none;
@@ -368,12 +379,12 @@ html {
   flex-wrap: wrap;
   flex-direction: row;
   justify-content: center;
-  margin: 0 5% 0 5%;
+  // margin: 0 3%;
 
   .movie-card {
     // flex-grow: 1;
-    flex: 1 1 15%;
-    width: 250px;
+    // flex: 1 1 15%;
+    width: 243px;
     max-height: 630px;
     margin: 1rem;
     background-color: $secondary-color;
@@ -389,7 +400,7 @@ html {
       opacity: 1;
       display: block;
       height: auto;
-      transition: 0.5s ease;
+      // transition: 0.5s ease;
       backface-visibility: hidden;
     }
     .movie-info {
@@ -453,19 +464,19 @@ html {
 
 //view single movie
 #single-movie {
-  padding-bottom: 10%;
   .content {
     display: flex;
     margin: 1%;
     background-color: $alpha-color;
     position: relative;
+    min-height: 75vh;
 
     .container-movie {
       margin: 0;
 
       .movie-card {
         min-height: 530px;
-        flex: 1%;
+        // flex: 1%;
       }
     }
 
@@ -510,24 +521,34 @@ html {
 
       .video {
         border: none;
-        width: 100%;
-        height: 60%;
+        margin-top: auto;
+        height: 100%;
       }
     }
   }
 
   .column-three {
-    margin-left: 1%;
-    margin-right: 1%;
+    // margin-left: 1%;
+    // margin-right: 1%;
+
+    .row:first-child {
+      .card-container {
+        position: relative;
+        .cardImage {
+          position: absolute;
+        }
+      }
+    }
 
     .card-container {
-      position: relative;
       margin: 1% 2%;
+      position: relative;
     }
 
     .overlay {
       position: absolute;
       bottom: 0;
+      // bottom: 0;
       background: rgba(17, 17, 17, 0.5);
       width: 100%;
       border-radius: 6%;
@@ -556,6 +577,8 @@ html {
 
     .cast {
       border-radius: 10%;
+      object-fit: cover, contain;
+      min-width: 50%;
     }
 
     hr {
@@ -571,7 +594,8 @@ html {
 
       .similar {
         border: 1px ridge #fff;
-        width: fit-content;
+        object-fit: cover, contain;
+        min-width: 50%;
       }
 
       .similar:hover {
@@ -586,8 +610,8 @@ html {
     display: flex;
 
     .feedbacks {
-      width: 100%;
       margin: 2%;
+      min-width: 45%;
       background: $alpha-color;
       padding: 30px;
       border-radius: 12px;
@@ -656,11 +680,12 @@ html {
     }
 
     .create-comment {
-      width: 100%;
+      min-width: 48%;
       margin: 2%;
-      display: grid;
+      // display: grid;
       background: $alpha-color;
       padding: 30px;
+
       border-radius: 12px;
 
       .comment-container {
@@ -769,10 +794,14 @@ html {
   -webkit-animation: spin 2s linear infinite;
   /* Safari */
   animation: spin 2s linear infinite;
-  position: absolute;
-  top: 40%;
-  left: 45%;
-  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+
+  // position: absolute;
+  // top: 36%;
+  // /* left: 40%; */
+  // // margin: auto;
+  // transform: translate(-50%, -50%);
 
   @keyframes spin {
     0% {

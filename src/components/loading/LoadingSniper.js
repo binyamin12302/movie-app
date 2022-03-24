@@ -2,7 +2,9 @@ import React from "react";
 
 function LoadingSniper() {
   return (
-    <div id="loader"></div>
+    <div className="sniper">
+      <div id="loader"></div>
+    </div>
   )
 }
 

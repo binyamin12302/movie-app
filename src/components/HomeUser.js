@@ -125,6 +125,7 @@ function HomeUser({ location }) {
 
 
   const content = !state.results ? <LoadingCard /> : allMovies;
+  
 
   return (
     <main id="home-user">

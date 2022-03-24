@@ -1,0 +1,346 @@
+@media screen and (max-width: 540px) {
+  #header {
+    .container {
+      display: flex;
+      /* justify-content: space-between; */
+      align-items: center;
+      flex-direction: column;
+      padding: 10px;
+
+      .search {
+        min-width: 60%;
+        margin-right: 93px;
+      }
+    }
+  }
+
+  #search-filter {
+    align-items: baseline;
+    .container-movie {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+
+      .movie-card {
+        flex: 1;
+      }
+    }
+  }
+
+  #home-guest {
+    margin: auto;
+
+    section {
+      .container-movie {
+        display: flex;
+        flex-direction: column;
+        align-content: center;
+      }
+    }
+  }
+
+  #login-page {
+    min-width: 86%;
+  }
+
+  #home-user {
+    display: flex;
+    flex-direction: column;
+
+    .nav-home-user {
+      width: 100%;
+      .main-nav {
+        ul {
+          display: flex;
+          flex-direction: column;
+          flex-wrap: wrap;
+          align-items: center;
+        }
+      }
+    }
+
+    .pagination {
+      li {
+        display: none;
+      }
+      .break-me {
+        display: block;
+      }
+      .next {
+        display: block;
+      }
+
+      .previous {
+        display: block;
+      }
+
+      .active {
+        display: block;
+      }
+    }
+
+    .container-movie {
+      display: flex;
+      flex-direction: column;
+      .movie-card {
+        align-self: center;
+        box-shadow: 0 20px 28px 0 rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+
+  .edit-profile {
+    width: 94%;
+
+    .custom-file-input::before {
+      width: 144px;
+      font-size: 15px;
+      padding: 4px 2px;
+    }
+  }
+}
+
+// @media (max-width: 271px){
+
+// }
+
+// ipad air 820,ipad mini 768,surface pro 7 912, nest hub 1024, nest hub max 1280
+//single movie
+
+@media (min-width: 768px) and (max-width: 913px) {
+  //   body {
+  //     width: calc(200vw / 2);
+  //   }
+
+  #single-movie,
+  .loadingSingleMovie {
+    // width: 95%;
+    margin: auto;
+    .content {
+      // .column-two {
+
+      // }
+
+      .column-three {
+        .sim {
+          position: static;
+          //פה שיניתי
+          height: 13vh;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 913px) {
+  html,
+  body {
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  #single-movie,
+  .loadingSingleMovie {
+    margin: 5px;
+
+    .content {
+      display: flex;
+      padding: 1px 7px;
+
+      flex-direction: column;
+      flex-wrap: wrap;
+      .column-one {
+        display: block;
+        flex-direction: column;
+        .movie-card {
+          margin: 15px auto;
+        }
+      }
+
+      .column-two {
+        width: 98%;
+
+        .video {
+          min-height: 40vh;
+        }
+      }
+
+      .column-three {
+        .heading-2 {
+          text-align: center;
+        }
+
+        .row {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+
+          .card-container {
+            width: 36%;
+            .cardImage {
+              width: 100%;
+            }
+          }
+        }
+
+        hr {
+          min-width: 93%;
+        }
+
+        .sim {
+          position: static;
+        }
+      }
+    }
+
+    .comments {
+      display: flex;
+      flex-direction: column;
+      .reviews {
+        display: flex;
+      }
+
+      .create-comment {
+        width: 95%;
+      }
+    }
+  }
+}
+
+
+
+@media screen and (min-width: 1024px) and (max-width: 1281px) {
+  #single-movie,
+  .loadingSingleMovie {
+    .content {
+      flex-wrap: wrap;
+      // width: 100%;
+
+      .column-one {
+        .movie-card {
+          width: 37%;
+          box-shadow: 0 20px 28px 0 rgba(0, 0, 0, 0.2);
+          width: 57%;
+        }
+      }
+
+      .column-two {
+        flex: 1;
+      }
+
+      .column-three {
+        .row {
+          flex-wrap: wrap;
+          // flex-direction: row;
+          width: 100%;
+        }
+        .sim {
+          display: flex;
+          flex-direction: column;
+          /* margin-top: 38%; */
+          justify-content: flex-end;
+          padding-left: 52%;
+        }
+        hr {
+          display: none;
+        }
+
+        .ca {
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          padding-right: 22%;
+          .cast {
+            max-width: 100%;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 1023px) and (max-width: 1025px) {
+  .heading-2 {
+    // text-align: center;
+  }
+
+  #single-movie {
+    .column-three {
+      .card-container {
+        margin: 1% 6%;
+      }
+    }
+  }
+}
+
+// @media screen and (min-width: 915px) and (max-width: 1025px) {
+//   .row {
+//     flex-wrap: wrap;
+//   }
+// }
+
+@media screen and (min-width: 542px) and (max-width: 840px) {
+  #header {
+    .container {
+      .secnav {
+        display: contents;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 542px) and (max-width: 840px) {
+  #header {
+    .container {
+      .secnav {
+        display: contents;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 912px) {
+  #single-movie {
+    .content {
+      .column-three {
+        .row {
+          width: 80%;
+          display: flex;
+          flex-direction: row;
+          flex-wrap: nowrap;
+          margin: auto;
+        }
+      }
+    }
+  }
+}
+
+// padding-bottom: 20%;
+
+@media screen and (min-width: 800px) and (max-width: 999px) {
+  #single-movie {
+    .content {
+      .column-three {
+        padding-bottom: 26%;
+      }
+    }
+  }
+}
+
+
+@media screen and (min-width: 912px) and (max-width: 913px) {
+  #single-movie,
+  .loadingSingleMovie {
+    // width: 95%;
+    .content {
+      .column-three {
+        padding-bottom: 10%;
+      }
+    }
+    .movie-card {
+      width: 37%;
+      box-shadow: 0 20px 28px 0 rgba(0, 0, 0, 0.2);
+    }
+  }
+}

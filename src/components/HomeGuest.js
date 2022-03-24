@@ -61,10 +61,10 @@ function HomeGuest() {
   ];
 
   return (
-    <main id="home-guest">
+    <div id="home-guest">
       <section>
         <h1 className="section-title">
-          <i className="far fa-star"></i> Latest Movies! 
+          <i className="far fa-star"></i> Latest Movies
         </h1>
         <div className="container-movie">{!state.popularMovies ? <LoadingCard /> : popularMovies}</div>
       </section>
@@ -85,7 +85,7 @@ function HomeGuest() {
           </button>
         </div>
       </section>
-    </main>
+    </div>
   );
 }
 

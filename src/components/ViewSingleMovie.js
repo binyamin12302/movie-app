@@ -1,6 +1,6 @@
 import Axios from "axios";
 import debounce from 'debounce';
-import React, { useMemo,useContext } from 'react';
+import React, { useMemo, useContext } from 'react';
 import Iframe from 'react-iframe';
 import { useHistory, useParams } from "react-router-dom";
 import { useImmer } from "use-immer";
@@ -103,13 +103,16 @@ function ViewSingleMovie(props) {
         ),
     state.cast?.slice(0, 4).map((actor, i) =>
         <div className="card-container" key={i}>
+            
             {actor.profile_path === null ?
-                <img className="not-available-image"
+                <img className="cardImag not-available-image"
                     src={"http://www.pardes.co.il/pics/contrib764.jpg"}
                     alt="Avatar" /> :
-                <img className="cardImage cast"
-                    src={`https://image.tmdb.org/t/p/w500/${actor.profile_path}`}
-                    alt={actor.name} />}
+                <>
+                    <img className="cardImage cast"
+                        src={`https://image.tmdb.org/t/p/w500/${actor.profile_path}`}
+                        alt={actor.name} ></img>  </>}
+
             <div className="overlay">{actor.name}</div>
         </div>
     ), state.genres?.map((genre) => <h6 className="genre" key={genre.id} >{genre.name}</h6>)
@@ -123,11 +126,11 @@ function ViewSingleMovie(props) {
                     <div id="single-movie" >
 
                         <div className="content">
+
                             <div className="column-one  container-movie">
                                 <MovieCard movie={state?.movieData} pathname={props.match.path} />
                             </div>
                             <div className="column-two">
-
                                 <h2 className="heading-2" >Overview</h2>
                                 <p className="text">{state.movieData?.overview === "" ?
                                     'There is no overview for this movie yet.'
@@ -142,13 +145,18 @@ function ViewSingleMovie(props) {
                                     className="video"
                                     allow="fullscreen" />
                             </div>
-                            <div className="column-three" >
-                                <h2 className="heading-2" >Photos acteurs</h2>
-                                <div className="row">
-                                    {cast}
-                                </div>
-                                <hr />
 
+                            <div className="column-three" >
+
+                                <div>
+                                    <h2 className="heading-2" >Photos acteurs</h2>
+                                    <div className="row">
+                                        {cast}
+                                    </div>
+                                </div>
+
+
+                                <hr />
                                 {similar?.length !== 0 &&
                                     <>
                                         <div className="sim">

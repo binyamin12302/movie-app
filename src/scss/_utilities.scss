@@ -41,17 +41,17 @@ button {
   font-weight: 400;
 }
 
-.wrap-form {
-  color: $light-color;
-  font-family: 'Muli', sans-serif;
-  overflow: hidden;
-  width: 40%;
-  margin: auto;
-  padding-bottom: 9.5rem;
-  margin-top: 3%;
-}
+// .wrap-form {
+ 
+//   font-family: 'Muli', sans-serif;
+//   overflow: hidden;
+//   // width: 40%;
+//   margin: auto;
+//   // padding-bottom: 9.5rem;
+//   margin-top: 3%;
+// }
 
-.wrap-form .nav-link {
+.nav-link {
   text-decoration: none;
   color: lightblue;
 }
@@ -213,18 +213,20 @@ textarea {
 
 .edit-profile {
   margin: 3% auto;
+  min-width: 50%;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   background-color: $alpha-color;
+  width: 10%;
   border-radius: 1%;
   height: 500px;
   position: relative;
   display: flex;
-  justify-content: space-between;
 
   .column-one {
     width: 50%;
-    min-height: 470px;
+    // min-height: 470px;
     position: relative;
+    // min-width: 50%;
 
     .profile-image {
       position: absolute;
@@ -235,22 +237,25 @@ textarea {
     }
   }
 
-  .vl {
-    border-left: 1px solid #fff;
-    height: 596px;
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
+  // .vl {
+  //   border-left: 1px solid #fff;
+  //   // height: 596px;
+  //   position: absolute;
+  //   height: 20%;
+  //   // top: 40%;
+  //   // left: 50%;
+  //   transform: translate(-50%, -50%);
+  // }
+  
 
   .column-two {
-    width: 50%;
-    min-height: 400px;
+    width: 45%;
+    padding: 5px;
+    // min-height: 200px;
     font-family: sans-serif;
 
     .fields {
-      margin: 5%;
+      // margin: 5%;
       color: $medium-color;
       h1 {
         color: #fff;
@@ -262,7 +267,7 @@ textarea {
       input[type='text'],
       input[type='password'] {
         width: 100%;
-        padding: 15px;
+        padding: 12px;
         margin-bottom: 5%;
         display: inline-block;
         border: none;
@@ -287,6 +292,16 @@ textarea {
     }
   }
 }
+
+.edit-profile:after { content: '';
+  position: absolute;
+  border-right: 1px rgb(252, 252, 252) solid;
+  height: 500px;
+  width: 97%;
+  // margin: auto;
+  transform: translateX(-50%);
+}
+
 
 .avatar {
   vertical-align: middle;

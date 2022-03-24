@@ -54,7 +54,7 @@ function HeaderLoggedIn() {
         className="search"
         placeholder="Search"
       />
-      <div>
+      <div className="secnav">
         {appState.userProfile ?
           <img
             src={appState.userProfile}
