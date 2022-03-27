@@ -2,7 +2,6 @@
   #header {
     .container {
       display: flex;
-      /* justify-content: space-between; */
       align-items: center;
       flex-direction: column;
       padding: 10px;
@@ -98,41 +97,15 @@
       padding: 4px 2px;
     }
   }
-}
 
-// @media (max-width: 271px){
-
-// }
-
-// ipad air 820,ipad mini 768,surface pro 7 912, nest hub 1024, nest hub max 1280
-//single movie
-
-@media (min-width: 768px) and (max-width: 913px) {
-  //   body {
-  //     width: calc(200vw / 2);
-  //   }
-
-  #single-movie,
-  .loadingSingleMovie {
-    // width: 95%;
-    margin: auto;
-    .content {
-      // .column-two {
-
-      // }
-
-      .column-three {
-        .sim {
-          position: static;
-          //פה שיניתי
-          height: 13vh;
-        }
-      }
+  .column-two {
+    .video{
+      min-height: 50vh;
     }
   }
 }
 
-@media screen and (max-width: 913px) {
+@media screen and (max-width: 1284px) {
   html,
   body {
     height: 100%;
@@ -140,33 +113,57 @@
     overflow-x: hidden;
   }
 
+  .pagination {
+    li:nth-child(5),
+    li:nth-child(6),
+    li:nth-child(9) {
+      display: none;
+    }
+
+    .break-me {
+      display: none;
+    }
+    .next {
+      display: block;
+    }
+
+    .previous {
+      display: block;
+    }
+
+    .active {
+      display: block;
+    }
+  }
+
   #single-movie,
   .loadingSingleMovie {
-    margin: 5px;
-
+    margin: 1%;
     .content {
-      display: flex;
-      padding: 1px 7px;
+      padding: 3%;
+      display: block;
 
-      flex-direction: column;
       flex-wrap: wrap;
       .column-one {
-        display: block;
-        flex-direction: column;
-        .movie-card {
-          margin: 15px auto;
-        }
+        margin: 2%;
       }
 
       .column-two {
-        width: 98%;
+        flex: 1;
 
         .video {
-          min-height: 40vh;
+          width: 100%;
+          padding-bottom: 1%;
+          // height: 274px;
         }
       }
 
       .column-three {
+        min-width: 20%;
+
+        div {
+          display: block;
+        }
         .heading-2 {
           text-align: center;
         }
@@ -174,18 +171,15 @@
         .row {
           display: flex;
           flex-wrap: wrap;
+          flex-direction: row;
           justify-content: center;
 
           .card-container {
-            width: 36%;
+            width: 40%;
             .cardImage {
               width: 100%;
             }
           }
-        }
-
-        hr {
-          min-width: 93%;
         }
 
         .sim {
@@ -206,86 +200,31 @@
       }
     }
   }
-}
 
-
-
-@media screen and (min-width: 1024px) and (max-width: 1281px) {
-  #single-movie,
-  .loadingSingleMovie {
-    .content {
-      flex-wrap: wrap;
-      // width: 100%;
-
-      .column-one {
-        .movie-card {
-          width: 37%;
-          box-shadow: 0 20px 28px 0 rgba(0, 0, 0, 0.2);
-          width: 57%;
-        }
-      }
-
-      .column-two {
-        flex: 1;
-      }
-
-      .column-three {
-        .row {
-          flex-wrap: wrap;
-          // flex-direction: row;
-          width: 100%;
-        }
-        .sim {
-          display: flex;
-          flex-direction: column;
-          /* margin-top: 38%; */
-          justify-content: flex-end;
-          padding-left: 52%;
-        }
-        hr {
-          display: none;
-        }
-
-        .ca {
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-end;
-          padding-right: 22%;
-          .cast {
-            max-width: 100%;
-          }
-        }
-      }
-    }
+  .li-info {
+    display: none;
   }
 }
 
-@media screen and (min-width: 1023px) and (max-width: 1025px) {
-  .heading-2 {
-    // text-align: center;
-  }
-
+@media screen and (max-width: 541px) {
   #single-movie {
-    .column-three {
-      .card-container {
-        margin: 1% 6%;
+    .content {
+      .container-movie {
+        flex-basis: 100%;
       }
     }
   }
 }
 
-// @media screen and (min-width: 915px) and (max-width: 1025px) {
-//   .row {
-//     flex-wrap: wrap;
-//   }
-// }
-
-@media screen and (min-width: 542px) and (max-width: 840px) {
-  #header {
-    .container {
-      .secnav {
-        display: contents;
-      }
+@media screen and (min-width: 1025px) and (max-width: 1285px) {
+  .column-three {
+    display: flex;
+    text-decoration: underline 2px;
+    justify-content: space-between;
+    flex-direction: row;
+    margin: 1%;
+    hr {
+      display: none;
     }
   }
 }
@@ -300,12 +239,11 @@
   }
 }
 
-@media screen and (min-width: 768px) and (max-width: 912px) {
+@media screen and (min-width: 768px) {
   #single-movie {
     .content {
       .column-three {
         .row {
-          width: 80%;
           display: flex;
           flex-direction: row;
           flex-wrap: nowrap;
@@ -316,31 +254,9 @@
   }
 }
 
-// padding-bottom: 20%;
-
-@media screen and (min-width: 800px) and (max-width: 999px) {
-  #single-movie {
-    .content {
-      .column-three {
-        padding-bottom: 26%;
-      }
-    }
-  }
-}
-
-
-@media screen and (min-width: 912px) and (max-width: 913px) {
-  #single-movie,
-  .loadingSingleMovie {
-    // width: 95%;
-    .content {
-      .column-three {
-        padding-bottom: 10%;
-      }
-    }
-    .movie-card {
-      width: 37%;
-      box-shadow: 0 20px 28px 0 rgba(0, 0, 0, 0.2);
-    }
+@media screen and (min-width: 670px) {
+  #login-page {
+    margin: auto;
+    min-width: 50%;
   }
 }

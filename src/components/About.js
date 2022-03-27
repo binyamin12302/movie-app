@@ -29,10 +29,6 @@ function About() {
         molestias est earum? Blanditiis dolore labore laborum nostrum
         laudantium, sit est dolor iste delectus, ab voluptates placeat,
         asperiores corporis reprehenderit inventore.
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla ducimus voluptatem sint voluptates adipisci,
-        accusamus soluta? Veniam, animi voluptate,
-        ut voluptatem odio corrupti nesciunt nostrum error soluta odit vel qui eveniet neque maxime minima tempora saepe,
-        consequatur dignissimos? Ratione blanditiis aut iusto at doloribus, fugiat quidem suscipit? Corporis vel voluptatem quod iure. Repellendus debitis error eveniet saepe aut exercitationem sit doloribus consectetur labore aliquam hic sequi expedita assumenda omnis, itaque odit autem nam quasi tempore amet impedit rerum voluptate. Odio laudantium vero placeat consequuntur perferendis facere at, commodi architecto molestiae natus eius, quasi officia quibusdam! Totam harum velit sit ea.
       </p>
     </div>
   );

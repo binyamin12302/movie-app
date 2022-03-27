@@ -59,10 +59,10 @@ function HeaderLoggedIn() {
           <img
             src={appState.userProfile}
             alt='Avatar'
-            className='avatar'
+            className='con-image'
             onClick={() => history.push("/profile")}
           /> :
-          <div className="avatar profile-image-loading"></div>
+          <div className="con-image"></div>
         }
         <button className="home-btn" onClick={() => {
           history.push("/")

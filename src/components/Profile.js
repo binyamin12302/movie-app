@@ -70,8 +70,8 @@ function Profile() {
             <div className='column-one'>
                 <div className='profile-image'>
                     {appState.userProfile ?
-                        <img src={appState.userProfile} alt='Avatar' className='avatar-profile' /> :
-                        <div className="avatar-profile profile-image-loading"></div>
+                        <img src={appState.userProfile} alt='Avatar' className='con-image' /> :
+                        <div className="con-image"></div>
                     }
                     <input accept="image/*,image/heif,image/heic" type="file"
                         name="photo"

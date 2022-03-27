@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-d
 import { toast, ToastContainer, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useImmerReducer } from "use-immer";
+import ScrollToTop from 'react-router-scroll-top';
 import { auth } from "../src/firebase/Firebase";
 // My Components  
 import About from "./components/About";
@@ -26,6 +27,10 @@ import StateContext from "./StateContext";
 function App() {
   const customId = "custom-id-yes";
 
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const initialState = {
     apiKey: process.env?.REACT_APP_THEMOVIEDB_API_KEY,
@@ -154,6 +159,7 @@ function App() {
           <Router>
             <ToastContainer />
             <Header />
+            <ScrollToTop />
             <Switch>
               <Route exact path="/" component={homeContent} />
               {profile}

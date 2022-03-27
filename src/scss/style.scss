@@ -47,20 +47,29 @@ html {
     }
 
     .search {
+      margin: auto;
       background-color: $primary-color;
       border: 2px solid $primary-color;
-      width: 30%;
+      min-width: 30%;
       border-radius: 50px;
       font-size: 1rem;
       padding: 0.5rem 1rem;
       color: #fff;
-      // justify-self: center;
-      margin-left: 100px;
+      // margin-left: 100px;
       &:focus {
         outline: none;
       }
       &::placeholder {
         color: #7378c5;
+      }
+    }
+
+    .secnav {
+      .pro {
+        border-radius: 50%;
+        border-width: 5px;
+        border: solid 1px #2c3e50;
+        cursor: pointer;
       }
     }
 
@@ -204,7 +213,7 @@ html {
 //Login-Page
 #login-page {
   margin: auto;
-  width: 32%;
+  min-width: 32%;
   // margin: 5%;
   .wrap-form {
     padding: 2em 2em;
@@ -379,14 +388,15 @@ html {
   flex-wrap: wrap;
   flex-direction: row;
   justify-content: center;
-  // margin: 0 3%;
+  margin: 1%;
 
   .movie-card {
     // flex-grow: 1;
     // flex: 1 1 15%;
+    margin: 1%;
     width: 243px;
     max-height: 630px;
-    margin: 1rem;
+    // margin: 1rem;
     background-color: $secondary-color;
     box-shadow: 0 4px 5px rgba(0, 0, 0, 0.2);
     position: relative;
@@ -472,11 +482,8 @@ html {
     min-height: 75vh;
 
     .container-movie {
-      margin: 0;
-
       .movie-card {
         min-height: 530px;
-        // flex: 1%;
       }
     }
 
@@ -487,10 +494,10 @@ html {
 
     .column-two {
       margin: 1%;
-      /*   margin-top: 0px; */
+
       display: flex;
       flex-direction: column;
-      flex-basis: 39%;
+      width: 100%;
 
       p {
         font-size: 90%;
@@ -530,7 +537,7 @@ html {
   .column-three {
     // margin-left: 1%;
     // margin-right: 1%;
-
+    width: 100%;
     .row:first-child {
       .card-container {
         position: relative;
@@ -572,19 +579,20 @@ html {
 
     .not-available-image {
       border-radius: 10%;
-      width: 125px;
+      // width: 125px;
+      width: 100%;
     }
 
     .cast {
       border-radius: 10%;
       object-fit: cover, contain;
-      min-width: 50%;
+      // min-width: 50%;
     }
 
     hr {
-      position: absolute;
+      // position: absolute;
       border: 0.1px solid #f5ededd2;
-      min-width: 38%;
+      width: 100%;
     }
 
     .sim {
@@ -595,7 +603,7 @@ html {
       .similar {
         border: 1px ridge #fff;
         object-fit: cover, contain;
-        min-width: 50%;
+        // min-width: 50%;
       }
 
       .similar:hover {

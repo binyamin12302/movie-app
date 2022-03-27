@@ -42,7 +42,7 @@ button {
 }
 
 // .wrap-form {
- 
+
 //   font-family: 'Muli', sans-serif;
 //   overflow: hidden;
 //   // width: 40%;
@@ -237,17 +237,6 @@ textarea {
     }
   }
 
-  // .vl {
-  //   border-left: 1px solid #fff;
-  //   // height: 596px;
-  //   position: absolute;
-  //   height: 20%;
-  //   // top: 40%;
-  //   // left: 50%;
-  //   transform: translate(-50%, -50%);
-  // }
-  
-
   .column-two {
     width: 45%;
     padding: 5px;
@@ -293,7 +282,8 @@ textarea {
   }
 }
 
-.edit-profile:after { content: '';
+.edit-profile::before {
+  content: '';
   position: absolute;
   border-right: 1px rgb(252, 252, 252) solid;
   height: 500px;
@@ -303,24 +293,28 @@ textarea {
 }
 
 
-.avatar {
-  vertical-align: middle;
-  width: 40px;
-  height: 40px;
-  margin: 6px;
-  border-radius: 50%;
-  border-width: 5px;
-  border: solid 1px #2c3e50;
-  cursor: pointer;
+.profile-image {
+  .con-image {
+    border-radius: 100%;
+    height: 100px;
+    width: 100px;
+  }
 }
 
-.avatar-profile {
-  vertical-align: middle;
-  width: 80px;
-  height: 80px;
-  margin: 6px;
-  border-radius: 50%;
-  border-width: 5px;
+.secnav {
+  .con-image {
+    vertical-align: middle;
+    width: 40px;
+    height: 40px;
+    margin: 6px;
+    border-radius: 50%;
+    border-width: 5px;
+    border: solid 1px #2c3e50;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.7;
+    }
+  }
 }
 
 .avatar:hover {
@@ -378,7 +372,8 @@ textarea {
   color: transparent;
 }
 .custom-file-input::-webkit-file-upload-button {
-  visibility: hidden;
+  // visibility: hidden;
+  display: none;
 }
 .custom-file-input::before {
   content: 'Change profile image';
@@ -411,11 +406,3 @@ span {
   color: #6c7174;
   text-decoration: none;
 }
-
-
-
-
-
-
-
-

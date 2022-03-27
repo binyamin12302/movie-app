@@ -1,14 +1,14 @@
 import Axios from "axios";
 import debounce from 'debounce';
-import React, { useMemo, useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import Iframe from 'react-iframe';
 import { useHistory, useParams } from "react-router-dom";
 import { useImmer } from "use-immer";
+import StateContext from "../StateContext";
 import Comments from "./Comments.js";
 import LoadingSingleMovie from "./loading/LoadingSingleMoviePage";
 import MovieCard from "./MovieCard";
 import NotFound from "./NotFound.js";
-import StateContext from "../StateContext";
 
 function ViewSingleMovie(props) {
     const { id } = useParams();
@@ -30,6 +30,8 @@ function ViewSingleMovie(props) {
         similar: null
     })
 
+
+  
 
     useMemo(() => {
 
@@ -103,7 +105,7 @@ function ViewSingleMovie(props) {
         ),
     state.cast?.slice(0, 4).map((actor, i) =>
         <div className="card-container" key={i}>
-            
+
             {actor.profile_path === null ?
                 <img className="cardImag not-available-image"
                     src={"http://www.pardes.co.il/pics/contrib764.jpg"}
@@ -121,6 +123,7 @@ function ViewSingleMovie(props) {
 
     return (
         <>
+        
             {!state.cast || !state.genres || !state.similar ? <LoadingSingleMovie /> :
                 <>
                     <div id="single-movie" >
@@ -131,12 +134,14 @@ function ViewSingleMovie(props) {
                                 <MovieCard movie={state?.movieData} pathname={props.match.path} />
                             </div>
                             <div className="column-two">
-                                <h2 className="heading-2" >Overview</h2>
-                                <p className="text">{state.movieData?.overview === "" ?
-                                    'There is no overview for this movie yet.'
-                                    : state.movieData?.overview}</p>
-                                <div className="row ge">
-                                    {genres}
+                                <div className="ove">
+                                    <h2 className="heading-2" >Overview</h2>
+                                    <p className="text">{state.movieData?.overview === "" ?
+                                        'There is no overview for this movie yet.'
+                                        : state.movieData?.overview}</p>
+                                    <div className="row ge">
+                                        {genres}
+                                    </div>
                                 </div>
 
                                 <h2 className="heading-2" >Video</h2>
@@ -147,15 +152,12 @@ function ViewSingleMovie(props) {
                             </div>
 
                             <div className="column-three" >
-
                                 <div>
                                     <h2 className="heading-2" >Photos acteurs</h2>
                                     <div className="row">
                                         {cast}
                                     </div>
                                 </div>
-
-
                                 <hr />
                                 {similar?.length !== 0 &&
                                     <>
