@@ -28,10 +28,6 @@ function App() {
   const customId = "custom-id-yes";
 
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   const initialState = {
     apiKey: process.env?.REACT_APP_THEMOVIEDB_API_KEY,
     loggedIn: Boolean(localStorage.getItem("userLoggedIn")),
@@ -72,38 +68,27 @@ function App() {
     }
   }
 
-
   const [state, dispatch] = useImmerReducer(ourReducer, initialState);
 
+
   function notificationLoading() {
-    toast.loading("Please wait...", {
+    return toast.loading("Please wait...", {
       toastId: customId,
       position: toast.POSITION.TOP_CENTER,
       transition: Zoom
     })
   }
 
-  function notification(value, message, transition, autoclose) {
-    toast(value, {
+  function notification(value, message) {
+    toast.update(customId, {
+      render: value,
       toastId: customId,
-      position: toast.POSITION.TOP_CENTER,
       type: message,
-      autoClose: 2000,
-      transition: transition || Zoom,
-      isLoading: false
-    });
-
-    if (toast.isActive(customId))
-      toast.update(customId, {
-        render: value,
-        toastId: customId,
-        draggable: true,
-        type: message,
-        transition: transition || Zoom,
-        autoClose: 2000,
-        isLoading: false,
-      })
-
+      draggable: true,
+      transition: Zoom,
+      autoClose: 4000,
+      isLoading: false,
+    })
   }
 
 
@@ -157,7 +142,7 @@ function App() {
       <StateContext.Provider value={state}>
         <DispatchContext.Provider value={dispatch}>
           <Router>
-            <ToastContainer />
+            <ToastContainer closeOnClick={true} />
             <Header />
             <ScrollToTop />
             <Switch>

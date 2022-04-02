@@ -123,7 +123,6 @@ function ViewSingleMovie(props) {
 
     return (
         <>
-        
             {!state.cast || !state.genres || !state.similar ? <LoadingSingleMovie /> :
                 <>
                     <div id="single-movie" >

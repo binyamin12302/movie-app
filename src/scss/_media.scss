@@ -1,10 +1,11 @@
 @media screen and (max-width: 540px) {
   #header {
     .container {
-      display: flex;
-      align-items: center;
       flex-direction: column;
-      padding: 10px;
+      padding: 3%;
+      .logo-header {
+        font-weight: 900;
+      }
 
       .search {
         min-width: 60%;
@@ -83,13 +84,14 @@
       flex-direction: column;
       .movie-card {
         align-self: center;
+        margin-bottom: 6%;
         box-shadow: 0 20px 28px 0 rgba(0, 0, 0, 0.2);
       }
     }
   }
 
   .edit-profile {
-    width: 94%;
+    min-width: 93%;
 
     .custom-file-input::before {
       width: 144px;
@@ -99,9 +101,27 @@
   }
 
   .column-two {
-    .video{
+    .video {
       min-height: 50vh;
     }
+  }
+
+  .feedbacks {
+    overflow: auto;
+  }
+
+  .reviews {
+    display: contents;
+
+    .post {
+      max-width: 300px;
+
+      .postTextContainer{
+        flex-direction: column;
+      }
+    }
+
+    
   }
 }
 
@@ -190,9 +210,12 @@
 
     .comments {
       display: flex;
-      flex-direction: column;
+      flex-direction: column-reverse;
       .reviews {
-        display: flex;
+        display: contents;
+        // .postTextContainer{
+        //   flex-direction: column;
+        // }
       }
 
       .create-comment {
@@ -227,6 +250,10 @@
       display: none;
     }
   }
+
+
+
+
 }
 
 @media screen and (min-width: 542px) and (max-width: 840px) {
@@ -252,6 +279,8 @@
       }
     }
   }
+
+ 
 }
 
 @media screen and (min-width: 670px) {

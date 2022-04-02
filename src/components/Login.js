@@ -26,14 +26,14 @@ function Login() {
 
   const login = async (e) => {
     e.preventDefault();
-    appState.notificationLoading();
+    const idToast = appState.notificationLoading()
     try {
       await signInWithEmailAndPassword(
         auth,
         state.loginEmail,
         state.loginPassword
       );
-      appState.notification("You have successfully logged in.", `${toast.TYPE.SUCCESS}`)
+      appState.notification("You have successfully logged in.", `${toast.TYPE.SUCCESS}`,idToast)
     } catch (error) {
       appState.notification(error.message.split(':')[1], `${toast.TYPE.ERROR}`)
     }

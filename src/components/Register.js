@@ -17,13 +17,12 @@ function Register() {
 
   const register = async (e) => {
     e.preventDefault();
-
-
+    appState.notificationLoading();
     if (state.registerPassword !== state.confirmPassword)
       return appState.notification("The password confirmation does not match", `${toast.TYPE.ERROR}`);
+      
     try {
       
-    appState.notificationLoading();
       await createUserWithEmailAndPassword(
         auth,
         state.registerEmail,

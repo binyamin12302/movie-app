@@ -1,26 +1,27 @@
 import {
-    addDoc, collection, deleteDoc, doc, increment, onSnapshot, orderBy, query, updateDoc, where
+    addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, updateDoc
 } from 'firebase/firestore';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
 import { useImmer } from "use-immer";
 import { auth, db } from "../firebase/Firebase";
 import StateContext from "../StateContext";
-import Like from './LikeButton.js';
 
 function Comments({ id }) {
     const appState = useContext(StateContext);
+    const refTextArea = useRef(null);
 
     const [state, setState] = useImmer({
         title: "",
         text: "",
-        reviews: []
+        reviews: [],
+        count: false
     });
 
 
     const createComment = async () => {
         const commentsCollectionRef = collection(db, id)
-
+        appState.notificationLoading();
 
         if (state.title === "" || state.text === "")
             return appState.notification("A required field is missing.", `${toast.TYPE.ERROR}`)
@@ -30,10 +31,11 @@ function Comments({ id }) {
                 `${toast.TYPE.ERROR}`)
 
         try {
-            toast.dismiss()
+            // toast.dismiss()
             setState(draft => {
                 draft.title = "";
-                draft.text = ""
+                draft.text = "";
+                draft.count = true
             });
 
             await addDoc(commentsCollectionRef, {
@@ -42,10 +44,10 @@ function Comments({ id }) {
                 title: state.title,
                 comment: state.text,
                 name: auth.currentUser?.displayName !== "" ? auth.currentUser?.displayName : null,
-                like: increment(0),
                 timestamp: new Date()
             });
 
+            refTextArea.current.scrollTo(0, 0);
         } catch (error) {
             console.log(error)
         }
@@ -58,9 +60,7 @@ function Comments({ id }) {
         let active = true
         const q = query(collection(db, id), orderBy("timestamp", "desc"));
 
-
         const updateName = async (docId) => {
-            console.log(docId, id)
             const coRef = doc(db, id, docId);
             await updateDoc(coRef, {
                 name: auth.currentUser?.displayName,
@@ -69,10 +69,10 @@ function Comments({ id }) {
 
         onSnapshot(q, (querySnapshot) => {
             const docs = [];
-
             querySnapshot.forEach((doc) => {
                 docs.push({ ...doc.data(), id: doc.id });
-                console.log()
+                if (state.count) appState.notification("Review successfully submitted.", `${toast.TYPE.SUCCESS}`)
+
                 if (doc.data().user === auth.currentUser?.uid && doc.data().name !== auth.currentUser?.name)
                     updateName(doc.id);
             });
@@ -80,33 +80,16 @@ function Comments({ id }) {
             if (active) setState(draft => { draft.reviews = docs; });
         });
 
-
-
-
-
         return () => {
             active = false
         }
-    }, [id, setState])
+    }, [appState, id, setState, state.count])
 
 
     async function deletePost(commentId) {
-        const q = query(collection(db, `likeState-${id}`), where("commentId", "==", `${commentId}`));
         try {
             let confirm = window.confirm("Are you sure you want to delete your review?");
-            if (confirm) {
-                await deleteDoc(doc(db, `${id}`, commentId))
-                onSnapshot(q, (querySnapshot) => {
-                    querySnapshot.forEach((doc) => {
-                        deleteEachLikeState({ ...doc.data() }.commentId, { ...doc.data() }.user)
-                    });
-                });
-            }
-
-            const deleteEachLikeState = async (commentId, user) => {
-                await deleteDoc(doc(db, `likeState-${id}`, `${user + commentId}`));
-            }
-
+            if (confirm) await deleteDoc(doc(db, `${id}`, commentId))
         } catch (error) {
             console.log(error)
         }
@@ -115,11 +98,10 @@ function Comments({ id }) {
 
     return (
         <div className="comments">
-            <div className='feedbacks'>
+            <div className='feedbacks' ref={refTextArea}>
                 <h1 className='tc'>Reviews <i className="far fa-sticky-note"></i></h1>
                 <div className='reviews' >
                     {state.reviews?.map((comment) => {
-                        console.log(comment)
                         return <div className="post" key={comment.id}>
                             <div className='postHeader'>
                                 <div className='postTitle'>
@@ -137,8 +119,8 @@ function Comments({ id }) {
                                 <div className='av-info'>
                                     <p><span>Reviewed by </span> {`${comment.name || 'anonymous'}`}</p>
                                 </div>
-                                <div className='li-info'>
-                                    <Like id={id} commentId={comment.id} like={comment.like} />
+                                <div className='date-co'>
+                                    {comment.timestamp.toDate().toDateString()}
                                 </div>
                             </div>
                         </div>

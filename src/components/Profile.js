@@ -41,18 +41,19 @@ function Profile() {
 
 
     const saveChangesInformation = async () => {
+          appState.notificationLoading();
         if (state.newPassword !== state.repeatPassword)
-            return appState.notification("The repeat password does not match", `${toast.TYPE.ERROR}`);
+            return appState.notification("The repeat password does not match.", `${toast.TYPE.ERROR}`);
 
         if (state.newPassword === "" && state.repeatPassword === "" && state.email === "" && state.name === "")
-            return appState.notification("The fields are empty", `${toast.TYPE.ERROR}`);
+            return appState.notification("The fields are empty.", `${toast.TYPE.ERROR}`);
 
-        appState.notificationLoading();
+      
         try {
             state.name !== "" && await updateProfile(auth?.currentUser, { displayName: state.name })
             state.newPassword !== "" && await updatePassword(auth?.currentUser, state.newPassword)
             state.email !== "" && await updateEmail(auth?.currentUser, state.email)
-            appState.notification("The changes have been saved", `${toast.TYPE.SUCCESS}`)
+            appState.notification("The changes have been saved.", `${toast.TYPE.SUCCESS}`)
             setState(draft => {
                 draft.email = "";
                 draft.newPassword = "";

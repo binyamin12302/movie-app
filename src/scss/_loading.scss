@@ -1,14 +1,15 @@
 //loadingSingleMovie
 .loadingSingleMovie {
   .content {
-    margin: 2rem;
-    background-color: $alpha-color;
     display: flex;
-    flex-direction: row;
+    margin: 1%;
+    background-color: $alpha-color;
+    position: relative;
+    min-height: 75vh;
     .container-movie {
       background: linear-gradient(91deg, #37386a 8%, #404170 18%, #363960 33%);
       /*  padding: 100px 100px; */
-      margin: 2%;
+      margin: 1%;
       // height: 530px;
       padding: 140px;
       background-size: 200% 100%;
