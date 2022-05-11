@@ -2,6 +2,8 @@
 
 A movie app where you can catch up on movies and get information about them.
 
+![screencapture-movieapp-71dcd-web-app-2022-05-11-22_33_42](https://user-images.githubusercontent.com/57687331/167931260-c8b17b11-fb17-470a-9e97-c7b33c832f53.png)
+
 ## Project Description
 
 In the Movie app you can login, logout, sign up, 
