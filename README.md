@@ -21,6 +21,7 @@ The management of the users on the app is with the help of firebase.
 2. Create account in ThemovieDB website to get an api key.
 3. Create a .env file in then root and add the following 
 
+```bash
 FIREBASE_API_KEY = ___
 FIREBASE_AUTH_DOMAIN = ___
 FIREBASE_PROJECT_ID = __
@@ -29,13 +30,7 @@ FIREBASE_MESSAGING_SENDER_ID = ___
 FIREBASE_APP_ID = ___
 FIREBASE_MEASUREMENT_ID = ___
 THEMOVIEDB_API_KEY = your api key 
-
-
-NODE_ENV = development
-PORT = 5000
-MONGO_URI = your mongodb uri
-JWT_SECRET = your own string
-PAYPAL_CLIENT_ID = your paypal client id
+```
 
 
 ## Tech Stack
