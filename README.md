@@ -31,6 +31,13 @@ FIREBASE_MEASUREMENT_ID = ___
 THEMOVIEDB_API_KEY = your api key 
 
 
+NODE_ENV = development
+PORT = 5000
+MONGO_URI = your mongodb uri
+JWT_SECRET = your own string
+PAYPAL_CLIENT_ID = your paypal client id
+
+
 ## Tech Stack
 
  React, Sass, Firebase and HTML.
