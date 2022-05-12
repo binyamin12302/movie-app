@@ -20,6 +20,7 @@ The management of the users on the app is with the help of firebase.
 1. Create account in Firbase and create a project to get the data.
 2. Create account in ThemovieDB website to get an api key.
 3. Create a .env file in then root and add the following 
+4. Npm start to start the application.
 
 ```bash
 FIREBASE_API_KEY = ___
