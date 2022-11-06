@@ -26,8 +26,8 @@ function Comments({ id }) {
         if (state.title === "" || state.text === "")
             return appState.notification("A required field is missing.", `${toast.TYPE.ERROR}`)
 
-        if (state.text.replace(/\s/g, '').length < 100)
-            return appState.notification("Sorry, your review is too short. It needs to contain at least 100 characters.",
+        if (state.text.replace(/\s/g, '').length < 10)
+            return appState.notification("Sorry, your review is too short. It needs to contain at least 10 characters.",
                 `${toast.TYPE.ERROR}`)
 
         try {
