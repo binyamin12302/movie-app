@@ -1,5 +1,7 @@
 # Movie App 
 
+![screencapture-movieapp-71dcd-web-app-2023-02-07-20_08_42](https://user-images.githubusercontent.com/57687331/217329799-1bfb0546-68e8-411c-b9ec-79556c757104.png)
+
 In the Movie app you can login, logout, sign up, 
 search for movies, watch trailers, 
 write a comment to a movie in real-time and  
