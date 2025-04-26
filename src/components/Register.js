@@ -85,7 +85,7 @@ function Register() {
         <hr />
         <p>
           By creating an account you agree to our &nbsp;
-          <Link className="nav-link " to="terms/">
+          <Link className="nav-link " to="/terms">
             Terms & Privacy
           </Link>
           .
@@ -96,7 +96,7 @@ function Register() {
         </button>
         <p>
           Already have an account? &nbsp;
-          <Link className="nav-link " to="login/">
+          <Link className="nav-link " to="/login">
             Login
           </Link>
           .

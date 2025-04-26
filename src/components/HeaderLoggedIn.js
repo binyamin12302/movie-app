@@ -1,13 +1,12 @@
 import { signOut } from "@firebase/auth";
 import Axios from "axios";
 import { debounce } from "lodash";
-import { React, useCallback, useContext, useMemo } from "react";
+import React, { useCallback, useContext, useMemo, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Bounce, toast } from 'react-toastify';
 import DispatchContext from "../DispatchContext.js";
 import { auth } from "../firebase/Firebase";
 import StateContext from "../StateContext";
-
 
 function HeaderLoggedIn() {
   const appDispatch = useContext(DispatchContext);
@@ -16,16 +15,18 @@ function HeaderLoggedIn() {
 
   const logout = async () => {
     appState.notificationLoading();
-    history.push('/')
+    history.push('/');
     await signOut(auth);
-    appState.notification("You have successfully logged out.", `${toast.TYPE.SUCCESS}`, Bounce);
-  }
+    appState.notification("You have successfully logged out.", toast.TYPE.SUCCESS, Bounce);
+  };
 
   const searchMovie = useMemo(
     () =>
-      debounce(async (e) => {
+      debounce(async (searchTerm) => {
         try {
-          const response = await Axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${appState.apiKey}&query="${e}"`);
+          const response = await Axios.get(
+            `https://api.themoviedb.org/3/search/movie?api_key=${appState.apiKey}&query=${encodeURIComponent(searchTerm)}`
+          );
           appDispatch({ type: "setFilteredMovies", value: response.data.results });
         } catch (error) {
           console.log("There was a problem.");
@@ -34,15 +35,20 @@ function HeaderLoggedIn() {
     [appDispatch, appState.apiKey]
   );
 
+  useEffect(() => {
+    return () => {
+      searchMovie.cancel(); 
+    };
+  }, [searchMovie]);
 
   const handleInputChange = useCallback(
-    e => {
+    (e) => {
       appDispatch({ type: "setFilteredMovies", value: null });
-      appDispatch({ type: "searchInput", value: e.target.value })
-      searchMovie(e.target.value)
+      appDispatch({ type: "searchInput", value: e.target.value });
+      searchMovie(e.target.value);
     },
-    [appDispatch, searchMovie]);
-
+    [appDispatch, searchMovie]
+  );
 
   return (
     <>
@@ -55,19 +61,23 @@ function HeaderLoggedIn() {
         placeholder="Search"
       />
       <div className="secnav">
-        {appState.userProfile ?
+        {appState.userProfile ? (
           <img
             src={appState.userProfile}
-            alt='Avatar'
-            className='con-image'
+            alt="Avatar"
+            className="con-image"
             onClick={() => history.push("/profile")}
-          /> :
+          />
+        ) : (
           <div className="con-image"></div>
-        }
-        <button className="home-btn" onClick={() => {
-          history.push("/")
-          appDispatch({ type: "clearSearch" })
-        }}>
+        )}
+        <button
+          className="home-btn"
+          onClick={() => {
+            history.push("/");
+            appDispatch({ type: "clearSearch" });
+          }}
+        >
           Home
         </button>
         <button className="logout-btn" type="button" onClick={logout}>

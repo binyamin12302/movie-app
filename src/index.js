@@ -93,31 +93,35 @@ function App() {
 
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
-        localStorage.setItem("userLoggedIn", state.loggedIn);
-        dispatch({ type: "login", value: user.uid });
+        await user.reload(); 
+        const updatedUser = auth.currentUser; 
+        localStorage.setItem("userLoggedIn", true);
+        localStorage.setItem("userProfile", updatedUser.photoURL || 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png');
+        
+        dispatch({ type: "login", value: updatedUser.uid });
         dispatch({
           type: "userProfile",
-          value: user.photoURL || 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png'
+          value: updatedUser.photoURL || 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png'
         });
-
-        // "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
       } else {
-        // No user is signed in...code to handle unauthenticated users.
         console.log("sorry");
         localStorage.removeItem("userLoggedIn");
+        localStorage.removeItem("userProfile");
         localStorage.removeItem('pageNumber');
         localStorage.removeItem('currentMoviesUrl');
         localStorage.removeItem('currentClassName');
         localStorage.removeItem('profileComment');
         dispatch({ type: "logout" });
+
+        dispatch({ type: "POPULAR" });
+        dispatch({ type: "selectedPage", value: 1 });
       }
     });
+  
     return () => unsubscribe();
-
-  }, [dispatch, state.loggedIn]);
+  }, [dispatch]);
 
 
   const isUserSearchingForMovies = state.searchInput === "" ? HomeUser : FilteredMovies

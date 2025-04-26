@@ -5,28 +5,30 @@ function HeaderLoggedOut() {
   const history = useHistory();
   const location = useLocation();
 
-  const currentText = location.pathname === "/login" ? "Register" : "Login"
+  const isOnLoginPage = location.pathname === "/login";
+  const buttonText = isOnLoginPage ? "Register" : "Login";
 
+  function handleClick() {
+    if (isOnLoginPage) {
+      history.push("/register");
+    } else {
+      history.push("/login");
+    }
+  }
 
-  function handleClick(event) {
-    let text = event.target.innerText;
-
-    return text === "Login"
-      ? history.push("/login")
-      : history.push("/register")
+  function goHome() {
+    history.push("/");
   }
 
   return (
-    <>
-      <div className="navigation">
-        <button className="home-btn" onClick={() => history.push("/")}>
-          Home
-        </button>
-        <button className="login-btn" type="button" onClick={handleClick}>
-          {currentText}
-        </button>
-      </div>
-    </>
+    <div className="navigation">
+      <button className="home-btn" onClick={goHome}>
+        Home
+      </button>
+      <button className="login-btn" type="button" onClick={handleClick}>
+        {buttonText}
+      </button>
+    </div>
   );
 }
 
